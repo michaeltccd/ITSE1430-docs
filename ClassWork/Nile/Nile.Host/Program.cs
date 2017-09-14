@@ -32,38 +32,53 @@ namespace Nile.Host
         }
 
         private static void AddProduct()
-        {
+        {            
             Console.Write("Enter product name: ");
             productName = Console.ReadLine().Trim();
 
             //Ensure not empty
 
             Console.Write("Enter price (> 0): ");
-            string price = Console.ReadLine();
+            productPrice = ReadDecimal();
 
             Console.Write("Enter optional description: ");
             productDescription = Console.ReadLine().Trim();
 
             Console.Write("Is it discontinued (Y/N): ");
-            string discontinued = Console.ReadLine().Trim();
+            productDiscontinued = ReadYesNo();
         }
 
         private static void ListProducts()
         {
-            throw new NotImplementedException();
+            //Name $price [Discontinued]
+            //Description
+            //Option 1
+            //string msg = String.Format("{0}\t\t\t${1}\t\t{2}", productName, productPrice
+            //, productDiscontinued ? "[Discontinued]" : "");
+
+            //Option 2
+            //Console.WriteLine("{0}\t\t\t${1}\t\t{2}", productName, productPrice
+            //                 , productDiscontinued ? "[Discontinued]" : "");
+
+            //Option 3
+            string msg = $"{productName}\t\t\t${productPrice}\t\t{(productDiscontinued ? "[Discontinued]" : "")}";
+                        
+            Console.WriteLine(msg);
+            Console.WriteLine(productDescription);            
         }        
 
         static char GetInput ()
         {
             while (true)
             {
+                Console.WriteLine();
                 Console.WriteLine("Main Menu");
                 Console.WriteLine("".PadLeft(10, '-'));
                 Console.WriteLine("A)dd Product");
                 Console.WriteLine("L)ist Products");
                 Console.WriteLine("Q)uit");
 
-                string input = Console.ReadLine().Trim();
+                var input = Console.ReadLine().Trim();
 
                 //Option 1 = string literal
                 //if (input != "")
@@ -127,6 +142,76 @@ namespace Nile.Host
 
             //Option 3
             string format3 = $"{name} worked for {hours} hours";
+
+            //Value type
+            int value1 = 10;
+            var program = new Program();
+
+            var areEqual1 = value1 == 10;
+            var areEqual2 = program == program;
+            var areEqual3 = program == new Program();
+        }
+
+        /// <summary>Reads a boolean from Console.</summary>
+        /// <returns>The boolean value.</returns>
+        static bool ReadYesNo()
+        {
+            do
+            {
+                string input = Console.ReadLine();
+
+                if (!String.IsNullOrEmpty(input))
+                {
+                    switch (Char.ToUpper(input[0]))
+                    {
+                        case 'Y': return true;
+                        case 'N': return false;
+                    };
+                };
+
+                Console.WriteLine("Enter either Y or N");
+            } while (true);
+        }
+
+        /// <summary>Reads a decimal from Console.</summary>
+        /// <returns>The decimal value.</returns>
+        static decimal ReadDecimal ()
+        {
+            do
+            {
+                var input = Console.ReadLine();
+
+                //decimal result;
+                if (Decimal.TryParse(input, out var result))
+                    return result;
+
+                Console.WriteLine("Enter a valid decimal");
+            } while (true);
+        }
+
+        static string ReadString ( string errorMessage, bool allowEmpty )
+        {
+            //if (errorMessage == null)
+            //errorMessage = "Enter a valid string";
+            //else
+            //  errorMessage = errorMessage.Trim();
+
+            //null coalesce
+            errorMessage = errorMessage ?? "Enter a valid string";
+
+            //null conditional
+            errorMessage = errorMessage?.Trim();
+
+            do
+            {
+                var input = Console.ReadLine();
+                if (String.IsNullOrEmpty(input) && allowEmpty)
+                    return "";
+                else if (!String.IsNullOrEmpty(input))
+                    return input;
+
+                Console.WriteLine(errorMessage);
+            } while (true);
         }
 
         //Product
