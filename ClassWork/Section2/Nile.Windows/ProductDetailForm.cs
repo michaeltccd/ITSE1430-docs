@@ -12,9 +12,46 @@ namespace Nile.Windows
 {
     public partial class ProductDetailForm : Form
     {
-        public ProductDetailForm()
+        #region Construction
+
+        public ProductDetailForm () //: base()
+        {
+            Initialize();            
+        }
+
+        private void Initialize ()
         {
             InitializeComponent();
+        }
+
+        public ProductDetailForm ( string title )
+        {
+            Initialize();
+            //InitializeComponent();
+
+            Text = title;
+        }
+
+        public ProductDetailForm( string title, Product product )
+        {
+            InitializeComponent();
+
+            Text = title;
+            Product = product;
+        }
+        #endregion
+
+        protected override void OnLoad( EventArgs e )
+        {
+            base.OnLoad(e);
+
+            if (Product != null)
+            {
+                _txtName.Text = Product.Name;
+                _txtDescription.Text = Product.Description;
+                _txtPrice.Text = Product.Price.ToString();
+                _chkDiscontinued.Checked = Product.IsDiscontinued;
+            };
         }
 
         /// <summary>Gets or sets the product being shown.</summary>
@@ -26,6 +63,11 @@ namespace Nile.Windows
             Close();
         }
 
+        private void ShowError ( string message, string title )
+        {
+            MessageBox.Show(this, message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         private void OnSave( object sender, EventArgs e )
         {
             var product = new Product();
@@ -35,7 +77,14 @@ namespace Nile.Windows
             product.Price = GetPrice();
             product.IsDiscontinued = _chkDiscontinued.Checked;
 
-            //TODO: Add validation
+            //Add validation
+            var error = product.Validate();
+            if (!String.IsNullOrEmpty(error))
+            {
+                //Show the error
+                ShowError(error, "Validation Error");
+                return;
+            };
 
             Product = product;
             this.DialogResult = DialogResult.OK;

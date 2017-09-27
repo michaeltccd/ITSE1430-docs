@@ -12,6 +12,11 @@ namespace Nile
     /// </remarks>
     public class Product
     {
+        public Product ()
+        {
+            //Cross field initialization
+        }
+
         //public readonly Product None = new Product();
 
         /// <summary>Gets or sets the name.</summary>
@@ -58,17 +63,32 @@ namespace Nile
             }
         }
 
-        public int ICanOnlySetIt { get; private set; }
-        public int ICanOnlySetIt2 { get; }
-
-        public void Foo( string name )
+        public override string ToString()
         {
-            name = "Hello";
+            return Name;
         }
 
+        /// <summary>Validates the object.</summary>
+        /// <returns>The error message or null.</returns>
+        public string Validate ()
+        {
+            //Name cannot be empty
+            if (String.IsNullOrEmpty(Name))
+                return "Name cannot be empty.";
+
+            //Price >= 0
+            if (Price < 0)
+                return "Price must be >= 0.";
+
+            return null;
+        }
+
+        //public int ICanOnlySetIt { get; private set; }
+        //public int ICanOnlySetIt2 { get; }
+                       
         private string _name;
         private string _description;
 
-        private readonly double _someValueICannotChange = 10;
+        //private readonly double _someValueICannotChange = 10;
     }
 }
