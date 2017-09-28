@@ -16,27 +16,16 @@ namespace Nile.Windows
 
         public ProductDetailForm () //: base()
         {
-            Initialize();            
+            InitializeComponent();            
         }
-
-        private void Initialize ()
+        
+        public ProductDetailForm ( string title ) : this()
         {
-            InitializeComponent();
-        }
-
-        public ProductDetailForm ( string title )
-        {
-            Initialize();
-            //InitializeComponent();
-
             Text = title;
         }
 
-        public ProductDetailForm( string title, Product product )
+        public ProductDetailForm( string title, Product product ) : this(title)
         {
-            InitializeComponent();
-
-            Text = title;
             Product = product;
         }
         #endregion
@@ -62,7 +51,7 @@ namespace Nile.Windows
             this.DialogResult = DialogResult.Cancel;
             Close();
         }
-
+        
         private void ShowError ( string message, string title )
         {
             MessageBox.Show(this, message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);

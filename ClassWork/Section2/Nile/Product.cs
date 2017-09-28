@@ -68,9 +68,11 @@ namespace Nile
             return Name;
         }
 
+        //public abstract string Validate2();
+
         /// <summary>Validates the object.</summary>
         /// <returns>The error message or null.</returns>
-        public string Validate ()
+        public virtual string Validate ()
         {
             //Name cannot be empty
             if (String.IsNullOrEmpty(Name))
