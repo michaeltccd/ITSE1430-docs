@@ -139,6 +139,8 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Product Details";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProductDetailForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ProductDetailForm_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 

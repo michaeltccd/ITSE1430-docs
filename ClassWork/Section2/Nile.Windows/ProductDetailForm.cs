@@ -88,5 +88,34 @@ namespace Nile.Windows
             //TODO: Validate price            
             return 0;
         }
+
+        private void ProductDetailForm_FormClosing( object sender, FormClosingEventArgs e )
+        {
+            //Please no
+            //var form = (Form)sender;
+
+            //Please yes
+            var form = sender as Form;
+
+            //casting for value types
+            if (sender is int)
+            {
+                var intValue2 = (int)sender;
+            };
+
+            //Pattern matching
+            if (sender is int intValue)
+            {
+
+            };
+
+            if (MessageBox.Show(this, "Are you sure?", "Closing", MessageBoxButtons.YesNo) == DialogResult.No)
+                e.Cancel = true;
+        }
+
+        private void ProductDetailForm_FormClosed( object sender, FormClosedEventArgs e )
+        {
+
+        }
     }
 }
