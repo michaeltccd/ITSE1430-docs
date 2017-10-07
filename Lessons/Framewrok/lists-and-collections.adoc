@@ -1,0 +1,30 @@
+= Lists and Collections
+Michael Taylor
+v1.0, 2017-10-06
+:source-language: c#
+:toc:
+
+.DRAFT
+****
+This document is a work in progress.
+****
+
+== Introduction
+
+== Declaring a List or Collection
+
+== Returning Lists from Properties and Methods
+
+== Collection Initializers
+
+== List vs Collection
+
+== Lists vs Arrays
+
+== See Also
+
+Arrays
+Dictionaries
+Generic Types
+IEnumerable and IEnumerator
+Interfaces

@@ -1,0 +1,21 @@
+= Generic Types
+Michael Taylor
+v1.0, 2017-10-06
+:source-language: c#
+:toc:
+
+.DRAFT
+****
+This document is a work in progress.
+****
+
+== Introduction
+
+== Creating Instances of Generic Types
+
+== Open vs Closed Types
+
+== Defining Generic Types
+
+== Covariant vs Contravariant
+

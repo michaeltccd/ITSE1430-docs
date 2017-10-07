@@ -1,0 +1,29 @@
+= IEnumerable and IEnumerator
+Michael Taylor
+v1.0, 2017-10-06
+:source-language: c#
+:toc:
+
+.DRAFT
+****
+This document is a work in progress.
+****
+
+== Introduction
+
+== IEnumerator
+
+== IEnumerable
+
+== Implementing IEnumerable
+
+== Using IEnumerable Over a List or Collections
+
+== Uses of IEnumerable
+
+== See Also
+
+Foreach
+Interfaces
+Iterators
+Lists and Collections

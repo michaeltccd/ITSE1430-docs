@@ -1,0 +1,28 @@
+= Foreach Statement
+Michael Taylor
+v1.0, 2017-10-06
+:source-language: c#
+:toc:
+
+.DRAFT
+****
+This document is a work in progress.
+****
+
+== Introduction
+
+== Syntax
+
+== Enumerating Arrays and Collections
+
+== Compared to For Statement
+
+Readonly
+
+Changing collecticon
+
+== See Also
+
+Array
+For
+Interfaces

@@ -1,0 +1,24 @@
+= Controls
+Michael Taylor
+v1.0, 2017-10-06
+:link-base: https://github.com/michaeltccd/itse1430/lessons
+
+.DRAFT
+****
+This document is a work in progress.
+****
+
+== Introduction
+
+== Control Class
+
+== Common Properties
+
+Name
+Text
+Enabled
+Parent
+
+== Control vs Component
+
+== See Also

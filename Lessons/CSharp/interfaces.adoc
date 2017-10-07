@@ -1,0 +1,26 @@
+= Interfaces
+Michael Taylor
+v1.0, 2017-10-06
+:source-language: c#
+:toc:
+
+.DRAFT
+****
+This document is a work in progress.
+****
+
+== Introduction
+
+== Declaring an Interface
+
+== Implementing an Interface
+
+== Abstract Base Classes
+
+== Benefits of an Interfaces
+
+== Generic Interfaces
+
+== See Also
+
+IEnumerable

@@ -1,0 +1,16 @@
+= Section 3 (ITSE 1430)
+Michael Taylor
+v1.0, 2017-10-06
+:link-base: https://github.com/michaeltccd/itse1430/lessons
+
+.DRAFT
+****
+This document is a work in progress.
+****
+
+{link-base}/csharp/types/arrays.adoc[Arrays]
+
+link:csharp/statements/foreach.adoc[Foreach Statement]
+
+link:csharp/
+

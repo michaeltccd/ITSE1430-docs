@@ -1,0 +1,36 @@
+= String (C#)
+Michael Taylor
+v1.0, 2017-10-06
+:source-language: c#
+:toc:
+
+.DRAFT
+****
+This document is a work in progress.
+****
+
+== Introduction
+
+== Determining If a String Is Null or Empty
+
+null conditional
+null coalesce
+String.IsNullOrEmpty
+String.IsNullOrWhitespace
+
+== String Literals
+
+== Escape Sequences
+
+== Verbatim Strings
+
+== String Interpolation
+
+== Comparing Strings using Operators
+
+equality and inequality
+case matters
+
+== See Also
+
+String Class

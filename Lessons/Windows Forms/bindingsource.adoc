@@ -1,0 +1,23 @@
+= Binding Source
+Michael Taylor
+v1.0, 2017-10-06
+
+.DRAFT
+****
+This document is a work in progress.
+****
+
+== Introduction
+
+== Declaring a Binding Source
+
+== Adding New Items
+
+== Detecting Changes
+
+== Benefits over Binding Directly to Data
+
+== See Also
+
+DataGridView
+ListBox

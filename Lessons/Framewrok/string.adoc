@@ -1,0 +1,37 @@
+= Strings
+Michael Taylor
+v1.0, 2017-10-06
+:source-language: c#
+:toc:
+
+.DRAFT
+****
+This document is a work in progress.
+****
+
+== Introduction
+
+ref type with value semantics
+
+== Determining the Length
+
+== Comparing Strings
+
+case
+
+== Formatting Strings
+
+String.Format
+IFormattableString
+
+== Getting Portions of a Strings
+
+Left
+Right
+Substring
+
+== Splitting a String
+
+== See Also
+
+String (C#)

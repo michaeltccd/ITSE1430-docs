@@ -1,0 +1,26 @@
+= Dictionaries
+Michael Taylor
+v1.0, 2017-10-06
+:source-language: c#
+:toc:
+
+.DRAFT
+****
+This document is a work in progress.
+****
+
+== Introduction
+
+== Declaring a Dictionary
+
+== Finding Items in a Dictionary
+
+== Dictionary Initializers
+
+== Implementing IDictionary
+
+== See Also
+
+Interfaces
+Lists and Collections
+Collection Initializers

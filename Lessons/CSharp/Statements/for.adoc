@@ -1,0 +1,21 @@
+= For Statement
+Michael Taylor
+v1.0, 2017-10-06
+:source-language: c#
+:toc:
+
+.DRAFT
+****
+This document is a work in progress.
+****
+
+== Introduction
+
+== Syntax
+
+== Enumerating Arrays
+
+== See Also
+
+link:../types/arrays.adoc[Arrays]
+Foreach

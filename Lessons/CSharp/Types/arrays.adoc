@@ -1,9 +1,13 @@
 = Arrays
-Doc Writer <Michael Taylor>
+Michael Taylor
 v1.0, 2017-10-06
 :source-language: c#
-:markup-in-source: normal,quotes
 :toc:
+
+.DRAFT
+****
+This document is a work in progress.
+****
 
 == Introduction
 
@@ -16,7 +20,7 @@ Examples of when an array might used include the students in a class, the produc
 Declaring an array follows the same syntax any variable declaration in C# except the type must include square brackets (the array specifier).
 
 .Formal Syntax
-[source]
+[source,subs="quotes"]
 ----
 T[] _identifier_;
 ----
@@ -31,5 +35,11 @@ int[] hours;
 Class[] classes;
 ----
 
+== Using Arrays
 
+== Returning Arrays from Members
 
+== See Also
+
+Foreach Statement
+Lists and Collections
