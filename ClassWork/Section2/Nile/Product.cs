@@ -17,6 +17,9 @@ namespace Nile
             //Cross field initialization
         }
 
+        /// <summary>Gets or sets the unique identifier.</summary>
+        public int Id { get; set; }
+
         //public readonly Product None = new Product();
 
         /// <summary>Gets or sets the name.</summary>
