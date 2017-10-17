@@ -66,20 +66,30 @@ namespace Nile.Windows
                 return;
             };
 
-            var product = new Product();
-            product.Id = Product?.Id ?? 0;
-            product.Name = _txtName.Text;
-            product.Description = _txtDescription.Text;
+            //var product = new Product();
+            //product.Id = Product?.Id ?? 0;
+            //product.Name = _txtName.Text;
+            //product.Description = _txtDescription.Text;
+            //product.Price = GetPrice(_txtPrice);
+            //product.IsDiscontinued = _chkDiscontinued.Checked;
 
-            product.Price = GetPrice(_txtPrice);
-            product.IsDiscontinued = _chkDiscontinued.Checked;
+            //Object initializer syntax
+            var product = new Product() {
+                Id = Product?.Id ?? 0,
+                Name = _txtName.Text,
+                Description = _txtDescription.Text,
+                Price = GetPrice(_txtPrice),
+                IsDiscontinued = _chkDiscontinued.Checked,
+            };
 
             //Add validation
-            var error = product.Validate();
-            if (!String.IsNullOrEmpty(error))
+            //var error = product.Validate();
+            //if (!String.IsNullOrEmpty(error))
+            //Using IValidatableObject
+            if (!ObjectValidator.TryValidate(product, out var errors))                
             {
                 //Show the error
-                ShowError(error, "Validation Error");
+                ShowError("Not valid", "Validation Error");
                 return;
             };
 
