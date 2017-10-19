@@ -89,9 +89,14 @@ namespace Nile
 
         //public abstract string Validate2();
 
+        //IEnumerable<ValidationResult> IValidatableObject.Validate( ValidationContext validationContext )
+        //{
+
+        //}
+
         /// <summary>Validates the object.</summary>
         /// <returns>The error message or null.</returns>      
-        public IEnumerable<ValidationResult> Validate( ValidationContext validationContext )
+        public IEnumerable<ValidationResult> Validate ( ValidationContext validationContext )
         {
             //var errors = new List<ValidationResult>();
 

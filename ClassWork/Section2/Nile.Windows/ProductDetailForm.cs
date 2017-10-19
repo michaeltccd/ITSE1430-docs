@@ -82,6 +82,9 @@ namespace Nile.Windows
                 IsDiscontinued = _chkDiscontinued.Checked,
             };
 
+            //System.ComponentModel.DataAnnotations.IValidatableObject vo = product;
+            //vo.
+
             //Add validation
             //var error = product.Validate();
             //if (!String.IsNullOrEmpty(error))
