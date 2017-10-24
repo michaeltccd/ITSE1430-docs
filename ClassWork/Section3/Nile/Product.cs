@@ -13,32 +13,15 @@ namespace Nile
     /// </remarks>
     public class Product : IValidatableObject
     {
-        //Don't need this constructor
-        public Product ()
-        {
-            //Cross field initialization
-        }
-
         /// <summary>Gets or sets the unique identifier.</summary>
         public int Id { get; set; }
-
-        //public readonly Product None = new Product();
 
         /// <summary>Gets or sets the name.</summary>
         /// <value>Never returns null.</value>
         public string Name
         {
-            // string get_Name ()
-            get 
-            {
-                return _name ?? "";
-            }
-
-            // void set_Name ( string value )
-            set 
-            {
-                _name = value?.Trim();
-            }
+            get { return _name ?? ""; }
+            set { _name = value?.Trim(); }
         }
         
         /// <summary>Gets or sets the description.</summary>
@@ -54,44 +37,27 @@ namespace Nile
         /// <summary>Determines if discontinued.</summary>
         public bool IsDiscontinued { get; set; }
 
-        public const decimal DiscontinuedDiscountRate = 0.10M;
-
-        /// <summary>Gets the discounted price, if applicable.</summary>
-        public decimal DiscountedPrice
-        {
-            get {
-                //if (IsDiscontinued)
-                if (this.IsDiscontinued)
-                    return Price * DiscontinuedDiscountRate;
-
-                return Price;
-            }
-        }
-
         public override string ToString()
         {
             return Name;
         }
 
         //Size of the product
-        public int[] Sizes
-        {
-            get 
-            {
-                var copySizes = new int[_sizes.Length];
-                Array.Copy(_sizes, copySizes, _sizes.Length);
+        //public int[] Sizes
+        //{
+        //    get 
+        //    {
+        //        var copySizes = new int[_sizes.Length];
+        //        Array.Copy(_sizes, copySizes, _sizes.Length);
 
-                return copySizes;
-            }
-        }
+        //        return copySizes;
+        //    }
+        //}
 
-        private int[] _sizes = new int[4];
-
-        //public abstract string Validate2();
+        //private int[] _sizes = new int[4];
 
         //IEnumerable<ValidationResult> IValidatableObject.Validate( ValidationContext validationContext )
         //{
-
         //}
 
         /// <summary>Validates the object.</summary>
@@ -112,13 +78,8 @@ namespace Nile
 
             //return errors;
         }
-
-        //public int ICanOnlySetIt { get; private set; }
-        //public int ICanOnlySetIt2 { get; }
-
+        
         private string _name;
         private string _description;
-
-        //private readonly double _someValueICannotChange = 10;
     }
 }
