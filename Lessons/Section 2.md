@@ -136,6 +136,12 @@
 - TableLayoutPanel https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.tablelayoutpanel?view=netframework-4.7
 - TabControl https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.tabcontrol?view=netframework-4.7
 
+## Delegates
+- Purpose https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/
+- Syntax https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/delegate
+- Action`T https://docs.microsoft.com/en-us/dotnet/api/system.action-1
+- Func`T https://docs.microsoft.com/en-us/dotnet/api/system.func-1
+
 ## Events
 - Purpose https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/events/
 - Handling Events https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/events/how-to-subscribe-to-and-unsubscribe-from-events

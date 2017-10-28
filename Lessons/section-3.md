@@ -1,5 +1,10 @@
 # Section 3 Lesson Notes (ITSE 1430)
 
+## Abstract Base Classes
+- Purpose https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/abstract-and-sealed-classes-and-class-members
+- Abstract Members https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/abstract 
+- Override https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/override
+
 ## Arrays
 - Purpose https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/arrays/#array-overview
 - Declaring an Array https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/arrays/
@@ -92,5 +97,6 @@
 - List vs Collection https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/guidelines-for-collections
 - Collections vs Arrays https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/arrays
 
-
+## Nameof Operator
+- nameof https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/nameof
 
