@@ -163,6 +163,9 @@ namespace Nile.Windows
             var product = GetSelectedProduct();
             if (product != null)
                 DeleteProduct(product);
+			
+			//Don't continue with key
+            e.SuppressKeyPress = true;
         }
 
         //private Product[] _products = new Product[100];
