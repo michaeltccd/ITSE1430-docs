@@ -12,25 +12,44 @@ namespace Nile.Stores
         /// <summary>Adds a product.</summary>
         /// <param name="product">The product to add.</param>
         /// <returns>The added product.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="product"/> is null.</exception>
+        /// <exception cref="ValidationException"><paramref name="product"/> is invalid.</exception>
         public Product Add ( Product product )
         {
             //Validate
             if (product == null)
-                return null;
-
-            if (!ObjectValidator.TryValidate(product, out var errors))
-                return null;
+                throw new ArgumentNullException(nameof(product), "Product was null");
             
-            return AddCore(product);
+            //System.ComponentModel.DataAnnotations.Validator.
+            //if (!ObjectValidator.TryValidate(product, out var errors))
+            //    throw new System.ComponentModel.DataAnnotations.ValidationException("Product was not valid", nameof(product));
+            //return null;
+            ObjectValidator.Validate(product);
+
+            try
+            {
+                return AddCore(product);
+            } catch (Exception e)
+            {
+                //Throw different exception
+                throw new Exception("Add failed", e);
+
+                //Re-throw
+                throw;
+                //throw e;
+                
+                //Silently ignore - almost always bad
+            };            
         }
 
         /// <summary>Get a specific product.</summary>
         /// <returns>The product, if it exists.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/> must be greater than or equal to 0.</exception> 
         public Product Get ( int id )
         {
             //Validate
             if (id <= 0)
-                return null;
+                throw new ArgumentOutOfRangeException(nameof(id), "Id must be > 0.");
 
             return GetCore(id);
         }
@@ -41,34 +60,40 @@ namespace Nile.Stores
         {
             return GetAllCore();
         }
-        
+
         /// <summary>Removes the product.</summary>
         /// <param name="id">The product to remove.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/> must be greater than or equal to 0.</exception> 
         public void Remove ( int id )
         {
             // Validate
             if (id <= 0)
-                return;
+                throw new ArgumentOutOfRangeException(nameof(id), "Id must be > 0.");
 
             RemoveCore(id);
         }
-        
+
         /// <summary>Updates a product.</summary>
         /// <param name="product">The product to update.</param>
         /// <returns>The updated product.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="product"/> is null.</exception>
+        /// <exception cref="ValidationException"><paramref name="product"/> is invalid.</exception>
+        /// <exception cref="Exception">Product not found.</exception>
         public Product Update ( Product product )
         {
             // Validate
             if (product == null)
-                return null;
+                throw new ArgumentNullException(nameof(product));
+
+            //if (!ObjectValidator.TryValidate(product, out var errors))
+            //  throw new ArgumentException("Product is invalid.", nameof(product));
+            ObjectValidator.Validate(product);
             
-            if (!ObjectValidator.TryValidate(product, out var errors))
-                return null;
-            
+            //Use throw expression
             //Get existing product
-            var existing = GetCore(product.Id);
-            if (existing == null)
-                return null;
+            var existing = GetCore(product.Id) ?? throw new Exception("Product not found.");
+            //if (existing == null)
+            //    throw new Exception("Product not found.");
 
             return UpdateCore(existing, product);
         }

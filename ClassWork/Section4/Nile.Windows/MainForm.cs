@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -33,12 +34,23 @@ namespace Nile.Windows
 
         private void OnProductAdd( object sender, EventArgs e )
         {
+            //_database.Add(null);
+
             var child = new ProductDetailForm("Product Details");
             if (child.ShowDialog(this) != DialogResult.OK)
                 return;
 
             //Save product
-            _database.Add(child.Product);
+            try
+            {
+                _database.Add(child.Product);
+            } catch (ValidationException ex)
+            {
+                MessageBox.Show(this, "Validation failed", "Error");
+            } catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "Error");
+            };
             UpdateList();
         }
 
@@ -48,9 +60,14 @@ namespace Nile.Windows
             if (product == null)
                 return;
 
-            DeleteProduct(product);
+            try
+            {
+                DeleteProduct(product);
+            } catch (Exception e)
+            {
+                MessageBox.
+            };
         }
-
         private void OnProductEdit( object sender, EventArgs e )
         {
             var product = GetSelectedProduct();
@@ -138,7 +155,7 @@ namespace Nile.Windows
             _bsProducts.DataSource = _database.GetAll().ToList();
         }
 
-        private IProductDatabase _database = new Nile.Stores.SeedMemoryProductDatabase();
+        private IProductDatabase _database = new Nile.Stores.MemoryProductDatabase();
         #endregion
     }
 }
