@@ -20,8 +20,14 @@ namespace Nile.Windows
         {
             base.OnLoad(e);
 
+            //_miFileExit.Click += OnFileExit;
+            _miFileExit.Click += (o, ea) => Close();
+
             _database = new Nile.Stores.FileProductDatabase("products.csv");
-            ProductDatabaseExtensions.WithSeedData(_database);
+
+            //Use the extension Luke
+            //ProductDatabaseExtensions.WithSeedData(_database);
+            _database.WithSeedData();
 
             _gridProducts.AutoGenerateColumns = false;
 
@@ -31,10 +37,10 @@ namespace Nile.Windows
         #region Event Handlers
 
         //Menus
-        private void OnFileExit( object sender, EventArgs e )
-        {
-            Close();
-        }
+        //private void OnFileExit( object sender, EventArgs e )
+        //{
+        //    Close();
+        //}
 
         private void OnProductAdd( object sender, EventArgs e )
         {
