@@ -20,16 +20,28 @@ namespace Nile
         /// <value>Never returns null.</value>
         public string Name
         {
-            get { return _name ?? ""; }
-            set { _name = value?.Trim(); }
+            get => _name ?? "";
+            set => _name = value?.Trim();
         }
         
         /// <summary>Gets or sets the description.</summary>
         public string Description
         {
-            get { return _description ?? ""; }
-            set { _description = value?.Trim(); }
+            get => _description ?? "";
+            set => _description = value?.Trim();
         }
+
+        //Calculated property
+        //public decimal CalculatedProperty
+        //{
+        //    get => 0M;
+        //}
+
+        //Getter only property
+        public decimal CalculatedProperty => 0M;
+
+        //Field, oops
+        public decimal CalculatedProperty2 = 0M;
 
         /// <summary>Gets or sets the price.</summary>
         public decimal Price { get; set; } = 0;      
@@ -37,10 +49,12 @@ namespace Nile
         /// <summary>Determines if discontinued.</summary>
         public bool IsDiscontinued { get; set; }
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        //public override string ToString()
+        //{
+        //    return Name;
+        //}
+
+        public override string ToString() => Name;
 
         /// <summary>Validates the object.</summary>
         /// <returns>The error message or null.</returns>      
