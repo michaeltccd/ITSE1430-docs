@@ -74,19 +74,20 @@ namespace Nile.Stores
 
             return CopyProduct(newProduct);
         }
-        
+
         //Copies one product to another
-        private Product CopyProduct ( Product product )
+        private Product CopyProduct( Product product )
         {
             if (product == null)
                 return null;
 
-            var newProduct = new Product();
-            newProduct.Id = product.Id;
-            newProduct.Name = product.Name;
-            newProduct.Description = product.Description;
-            newProduct.Price = product.Price;
-            newProduct.IsDiscontinued = product.IsDiscontinued;
+            var newProduct = new Product() {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                IsDiscontinued = product.IsDiscontinued
+            };
 
             return newProduct;
         }
@@ -100,9 +101,9 @@ namespace Nile.Stores
                     select product).FirstOrDefault();
 
             //Extension method approach
-            return _products.Where( p => p.Id == id )
-                            .Select( p => p )
-                            .FirstOrDefault();
+            //return _products.Where( p => p.Id == id )
+            //                .Select( p => p )
+            //                .FirstOrDefault();
             
             //foreach (var product in _products)
             //{
