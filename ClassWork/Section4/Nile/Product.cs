@@ -37,11 +37,11 @@ namespace Nile
         //    get => 0M;
         //}
 
-        //Getter only property
-        public decimal CalculatedProperty => 0M;
+        //Getter only property with expression body
+        //public decimal CalculatedProperty => 0M;
 
-        //Field, oops
-        public decimal CalculatedProperty2 = 0M;
+        //Field, oops, with expression body
+        //public decimal CalculatedProperty2 = 0M;
 
         /// <summary>Gets or sets the price.</summary>
         public decimal Price { get; set; } = 0;      
