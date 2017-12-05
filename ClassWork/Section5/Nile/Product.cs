@@ -38,7 +38,8 @@ namespace Nile
         //}
 
         //Getter only property with expression body
-        //public decimal CalculatedProperty => 0M;
+        [Obsolete("Deprecated in v1. Use something else.")]
+        public decimal CalculatedProperty => 0M;
 
         //Field, oops, with expression body
         //public decimal CalculatedProperty2 = 0M;
