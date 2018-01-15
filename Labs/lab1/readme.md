@@ -11,9 +11,9 @@ Create a new console project to hold your code.
 2. Create a new project.
     1. Select the ```Console App (.NET Framework)``` project template.
     2. Ensure the ```.NET Framework 4.6.1``` option is set.
-    3. Set the project name to *Name*```.Host``` where *Name* is your name (no spaces).
+    3. Set the project name to *Name*```.MovieLib.Host``` where *Name* is your name (no spaces).
     4. Set the solution name to ```Lab1```.
-    5. Ensure the project location is under your ```Labs``` folder in your local Git repository.
+    5. Ensure the location is under your ```Labs``` folder in your local Git repository.
     5. Create the project.
 3. Commit the changes to Github to verify everything is correct.
 
@@ -75,9 +75,18 @@ Prompt the user to confirm they want to delete the movie. If they confirm the de
 
 Exit the program.
 
+## Test Scenarios
+
+- Listing movies when none are entered shows nothing.
+- Listing movies when a movie exists shows the correct information.
+- Adding a movie properly validates the data.
+- Adding a movie when one already exists overwrites the existing data.
+- Removing a movie when no movie exists does nothing.
+- Removing a movie when a movie exists and then listing the movies.
+- Exiting the program terminates it.
+
 ## Requirements
 
-Your program must meet all the following requirements.
 - Compile cleanly with no warnings or errors.
 - Meet all the points mentioned in the solution.
 - Ensure each file has a file header indicating the course, your name and date.
