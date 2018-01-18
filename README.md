@@ -4,6 +4,7 @@ Course material for this class.
 
 ## Prerequisites
 
+
 Before you begin note the following prerequisites for your environment.
 
 1.	Windows  7 SP1 or higher or Windows Server 2008 R2 SP1 or higher 
