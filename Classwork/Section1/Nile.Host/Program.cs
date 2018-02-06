@@ -60,7 +60,7 @@ namespace Nile.Host
                 //if (Decimal.TryParse(value, out decimal result) && result >= minValue)
                 //    return result;
 
-                if (Decimal.TryParse(value, out decimal result))
+                if (Decimal.TryParse(value, out var result))
                 {
                     //If not required or not empty
                     if (result >= minValue)
@@ -222,6 +222,39 @@ namespace Nile.Host
             double ceiling = Math.Ceiling(rate);
             double floor = ceiling;
 
+        }
+
+        static void PlayingWithReferences ()
+        {
+            var message = "Hello";
+            string name = null;
+
+            name = new string('*', 10);
+
+            object instance = message;
+
+            //Is operator
+            if (instance is string)
+            {
+                string str2 = (string)instance;
+                Console.WriteLine(str2);
+            } else
+                Console.WriteLine("Not a string");
+
+            //As operator
+            string str = instance as string;
+            if (str != null)
+            {
+                Console.WriteLine(str);
+            } else
+                Console.WriteLine("Not a string");
+
+            //pattern matching
+            if (instance is string str3)
+            {
+                Console.WriteLine(str3);
+            } else
+                Console.WriteLine("Not a string");
         }
     }
 }
