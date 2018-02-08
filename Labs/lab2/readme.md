@@ -45,7 +45,7 @@ Owned   |   Boolean |   Y   | True if the movie is owned or false if it is on th
 
 To keep things simple, store an instance of the ```Movie``` class as a field of the main form. Pass the instance to any code that needs it. 
 
-* Note: A null movie indicates a movie has not been added yet and/or it has been deleted. This is a valid situation that some commands will check for.*
+*Note: A null movie indicates a movie has not been added yet and/or it has been deleted. This is a valid situation that some commands will check for.*
 
 ## Main Form
 
