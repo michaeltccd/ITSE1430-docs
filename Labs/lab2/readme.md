@@ -45,7 +45,7 @@ Owned   |   Boolean |   Y   | True if the movie is owned or false if it is on th
 
 To keep things simple, store an instance of the ```Movie``` class as a field of the main form. Pass the instance to any code that needs it. 
 
-* Note: A null movie indicates a movie has not been added yet and/or it has been deleted. This is a valid situation that some commands will check for.*
+*Note: A null movie indicates a movie has not been added yet and/or it has been deleted. This is a valid situation that some commands will check for.*
 
 ## Main Form
 
@@ -85,7 +85,7 @@ Display the ```Movie Detail``` form. The form should start out empty. If the use
 
 If there is no movie defined yet then display an error message. Otherwise display the ```Movie Detail``` form. The form should display the values of the form’s movie. If the user selects the ```OK``` option then update the form’s movie to the new, edited movie otherwise do nothing.
 
-* Note: Copy the existing movie details into a temporary movie object while editing. If the user decides to cancel the editing or if they attempt to save the changes and validation fails then you do not want to have the form corrupt the original movie data.*
+*Note: Copy the existing movie details into a temporary movie object while editing. If the user decides to cancel the editing or if they attempt to save the changes and validation fails then you do not want to have the form corrupt the original movie data.*
 
 ### Movie \ Delete
 
@@ -119,7 +119,7 @@ For all fields ensure the labels line up as do the controls in a reasonable fash
 
 When the form loads, if a movie is associated with it then the details of the movie will be filled into the fields on the form. Otherwise the fields will be empty.
 
-* Note: Forms should not expose their controls to callers. When dealing with data input forms it is generally best to provide a get/set property to allow the data to be set and retrieved as an object. The caller is responsible for initializing the property.*
+*Note: Forms should not expose their controls to callers. When dealing with data input forms it is generally best to provide a get/set property to allow the data to be set and retrieved as an object. The caller is responsible for initializing the property.*
 
 When the Save button is selected then validate the fields (as defined later). If the fields are valid then save the values to either the movie that was provided or a new movie. Then close the form. If the fields are invalid then display an error and return to the form.
 
