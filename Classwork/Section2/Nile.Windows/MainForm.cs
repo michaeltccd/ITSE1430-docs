@@ -3,13 +3,6 @@
  * Classwork
  */
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Nile.Windows
@@ -69,5 +62,55 @@ namespace Nile.Windows
             //Validate the new product
             error = productB.Validate();
         }
+
+        #region Event Handlers
+
+        private void OnFileExit( object sender, EventArgs e )
+        {
+            MessageBox.Show(this, "Not implemented", "File Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        }
+
+        private void OnProductAdd ( object sender, EventArgs e )
+        {
+            var form = new ProductDetailForm();
+            form.Text = "Add Product";
+
+            //Show form modally
+            var result = form.ShowDialog(this);
+            if (result != DialogResult.OK)
+                return;
+
+            //"Add" the product
+            _product = form.Product;
+        }
+
+        private void OnProductEdit( object sender, EventArgs e )
+        {
+            MessageBox.Show(this, "Not implemented", "Product Edit", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        }
+
+        private void OnProductRemove( object sender, EventArgs e )
+        {
+            if (!ShowConfirmation("Are you sure?", "Remove Product"))                             
+                return;
+
+            //TODO: Remove product
+            MessageBox.Show("Not implemented");
+        }        
+        
+        private void OnHelpAbout( object sender, EventArgs e )
+        {
+            MessageBox.Show(this, "Not implemented", "Help About", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        }
+        #endregion
+
+        private bool ShowConfirmation ( string message, string title )
+        {
+            return MessageBox.Show(this, message, title
+                             , MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                           == DialogResult.Yes;
+        }
+
+        private Product _product;
     }
 }
