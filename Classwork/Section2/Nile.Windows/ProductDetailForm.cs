@@ -116,6 +116,7 @@ namespace Nile.Windows
 
             if (String.IsNullOrEmpty(textbox.Text))
             {
+
                 _errorProvider.SetError(textbox, "Name is required");
                 e.Cancel = true;
             } else
