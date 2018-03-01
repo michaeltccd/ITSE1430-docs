@@ -9,6 +9,7 @@ namespace Nile.Data.Memory
     /// <summary>Provides an in-memory product database.</summary>
     public class MemoryProductDatabase
     {
+        /// <summary>Initializes an instance of the <see cref="MemoryProductDatabase"/> class.</summary>
         public MemoryProductDatabase()
         {
             //_products = new Product[25];
@@ -35,6 +36,14 @@ namespace Nile.Data.Memory
             _products.Add(product);
         }
 
+        /// <summary>Add a new product.</summary>
+        /// <param name="product">The product to add.</param>
+        /// <param name="message">Error message.</param>
+        /// <returns>The added product.</returns>
+        /// <remarks>
+        /// Returns an error if product is null, invalid or if a product
+        /// with the same name already exists.
+        /// </remarks>
         public Product Add ( Product product, out string message )
         {
             //Check for null
@@ -71,6 +80,14 @@ namespace Nile.Data.Memory
             return product;
         }
 
+        /// <summary>Edits an existing product.</summary>
+        /// <param name="product">The product to update.</param>
+        /// <param name="message">Error message.</param>
+        /// <returns>The updated product.</returns>
+        /// <remarks>
+        /// Returns an error if product is null, invalid, product name
+        /// already exists or if the product cannot be found.
+        /// </remarks>
         public Product Edit ( Product product, out string message )
         {
             //Check for null
@@ -107,6 +124,8 @@ namespace Nile.Data.Memory
             return product;
         }
 
+        /// <summary>Gets all products.</summary>
+        /// <returns>The list of products.</returns>
         public Product[] GetAll ()
         {
             //Return a copy so caller cannot change the underlying data
@@ -122,8 +141,12 @@ namespace Nile.Data.Memory
             return items.ToArray();
         }
 
+        /// <summary>Removes a product.</summary>
+        /// <param name="id">The product ID.</param>
         public void Remove ( int id )
         {
+            //TODO: Return an error if id <= 0
+
             if (id > 0)
             {
                 var existing = GetById(id);
@@ -131,6 +154,8 @@ namespace Nile.Data.Memory
                     _products.Remove(existing);
             };
         }
+
+        #region Private Members
 
         //Clone a product
         private Product Clone ( Product item )
@@ -141,6 +166,7 @@ namespace Nile.Data.Memory
             return newProduct;
         }
 
+        //Copy a product from one object to another
         private void Copy ( Product target, Product source )
         {
             target.Id = source.Id;
@@ -161,6 +187,7 @@ namespace Nile.Data.Memory
         //    return -1;
         //}
 
+        //Find a product by its ID
         private Product GetById ( int id )
         {
             //for (var index = 0; index < _products.Length; ++index)
@@ -175,5 +202,7 @@ namespace Nile.Data.Memory
 
         private readonly List<Product> _products = new List<Product>();
         private int _nextId = 1;
+
+        #endregion
     }
 }
