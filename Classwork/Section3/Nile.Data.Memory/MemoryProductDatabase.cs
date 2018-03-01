@@ -59,8 +59,11 @@ namespace Nile.Data.Memory
                 return null;
             };
 
+            //TODO: Clone the object
             _products[index] = product;
             message = null;
+
+            //TODO: Return a copy
             return product;
         }
 
@@ -91,13 +94,17 @@ namespace Nile.Data.Memory
                 return null;
             };
 
+            //TODO: Clone the object
             _products[existingIndex] = product;
             message = null;
+
+            //TODO: Return a copy
             return product;
         }
 
         public Product[] GetAll ()
         {
+            //TODO: Return a copy so caller cannot change the underlying data
             return _products;
         }
 

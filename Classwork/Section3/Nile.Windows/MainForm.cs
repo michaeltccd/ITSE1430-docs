@@ -106,7 +106,7 @@ namespace Nile.Windows
         {
             //Get products
             var products = _database.GetAll();
-
+            
             //Bind to grid
             dataGridView1.DataSource = products;
         }
