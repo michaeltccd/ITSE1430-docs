@@ -119,7 +119,7 @@ namespace Nile.Windows
         {
             //Get products
             var products = _database.GetAll();
-            products[0].Name = "Product A";
+            //products[0].Name = "Product A";
             
             //Bind to grid
             dataGridView1.DataSource = products;
