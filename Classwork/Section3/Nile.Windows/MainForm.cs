@@ -3,7 +3,10 @@
  * Classwork
  */
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows.Forms;
+using Nile.Data;
 using Nile.Data.Memory;
 
 namespace Nile.Windows
@@ -72,7 +75,7 @@ namespace Nile.Windows
 
             //Update the product
             form.Product.Id = product.Id;
-            _database.Edit(form.Product, out var message);
+            _database.Update(form.Product, out var message);
             if (!String.IsNullOrEmpty(message))
                 MessageBox.Show(message);
 
@@ -120,9 +123,9 @@ namespace Nile.Windows
             //Get products
             var products = _database.GetAll();
             //products[0].Name = "Product A";
-            
+
             //Bind to grid
-            dataGridView1.DataSource = products;
+            dataGridView1.DataSource = new List<Product>(products);
         }
 
         private bool ShowConfirmation ( string message, string title )
@@ -132,6 +135,6 @@ namespace Nile.Windows
                            == DialogResult.Yes;
         }
 
-        private MemoryProductDatabase _database = new MemoryProductDatabase();
+        private IProductDatabase _database = new MemoryProductDatabase();
     }
 }

@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\IProductDatabase.cs" />
+    <Compile Include="Data\ProductDatabase.cs" />
     <Compile Include="ObjectValidator.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
