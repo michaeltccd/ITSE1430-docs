@@ -3,7 +3,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Nile.Data
@@ -55,22 +54,7 @@ namespace Nile.Data
         public IEnumerable<Product> GetAll ()
         {
             return GetAllCore();
-        }
-
-        //public IEnumerable<Product> GetAll ()
-        //{
-        //    //Return a copy so caller cannot change the underlying data
-        //    var items = new List<Product>();
-
-        //    //for (var index = 0; index < _products.Length; ++index)
-        //    foreach (var product in _products)
-        //    {
-        //        if (product != null)                
-        //            items.Add(Clone(product));
-        //    };
-
-        //    return items;
-        //}
+        }        
 
         /// <summary>Removes a product.</summary>
         /// <param name="id">The product ID.</param>

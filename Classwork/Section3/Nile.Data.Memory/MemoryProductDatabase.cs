@@ -89,24 +89,7 @@ namespace Nile.Data.Memory
                     yield return Clone(product);
             };
         }
-
-        //public IEnumerable<Product> GetAll ()
-        //{
-        //    //Return a copy so caller cannot change the underlying data
-        //    var items = new List<Product>();
-
-        //    //for (var index = 0; index < _products.Length; ++index)
-        //    foreach (var product in _products)
-        //    {
-        //        if (product != null)                
-        //            items.Add(Clone(product));
-        //    };
-
-        //    return items;
-        //}
-
-        /// <summary>Removes a product.</summary>
-        /// <param name="id">The product ID.</param>
+        
         public void Remove ( int id )
         {
             //TODO: Return an error if id <= 0
@@ -119,14 +102,6 @@ namespace Nile.Data.Memory
             };
         }
 
-        /// <summary>Edits an existing product.</summary>
-        /// <param name="product">The product to update.</param>
-        /// <param name="message">Error message.</param>
-        /// <returns>The updated product.</returns>
-        /// <remarks>
-        /// Returns an error if product is null, invalid, product name
-        /// already exists or if the product cannot be found.
-        /// </remarks>
         public Product Update ( Product product, out string message )
         {
             //Check for null
@@ -137,7 +112,6 @@ namespace Nile.Data.Memory
             };
 
             //Validate product using IValidatableObject
-            //var error = product.Validate();
             var errors = ObjectValidator.Validate(product);
             if (errors.Count() > 0)
             {
