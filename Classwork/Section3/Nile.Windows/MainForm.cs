@@ -111,6 +111,7 @@ namespace Nile.Windows
 
         private Product GetSelectedProduct ( )
         {
+            //TODO: Use the binding source
             //Get the first selected row in the grid, if any
             if (dataGridView1.SelectedRows.Count > 0)
                 return dataGridView1.SelectedRows[0].DataBoundItem as Product;
@@ -125,7 +126,8 @@ namespace Nile.Windows
             //products[0].Name = "Product A";
 
             //Bind to grid
-            dataGridView1.DataSource = new List<Product>(products);
+            productBindingSource.DataSource = new List<Product>(products);
+            //dataGridView1.DataSource 
         }
 
         private bool ShowConfirmation ( string message, string title )
