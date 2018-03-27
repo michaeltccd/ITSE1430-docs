@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using Nile.Data;
+using Nile.Data.IO;
 using Nile.Data.Memory;
 
 namespace Nile.Windows
@@ -22,6 +23,8 @@ namespace Nile.Windows
         protected override void OnLoad( EventArgs e )
         {
             base.OnLoad(e);
+
+            _database = new FileProductDatabase("products.csv");
 
             RefreshUI();
         }
@@ -168,7 +171,7 @@ namespace Nile.Windows
                            == DialogResult.Yes;
         }
 
-        private IProductDatabase _database = new MemoryProductDatabase();
+        private IProductDatabase _database;
 
         #endregion
     }

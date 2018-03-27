@@ -90,6 +90,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Nile.Data.IO\Nile.Data.IO.csproj">
+      <Project>{F97FC0C7-20B4-43A3-B5C2-E18363D7E871}</Project>
+      <Name>Nile.Data.IO</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nile.Data.Memory\Nile.Data.Memory.csproj">
       <Project>{f95ae9be-fb3f-41c6-b6fe-a7a4c32edeff}</Project>
       <Name>Nile.Data.Memory</Name>
