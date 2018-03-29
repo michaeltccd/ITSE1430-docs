@@ -158,7 +158,7 @@ namespace Nile.Windows
 
             try
             {
-                _database.Update(form.Product, out var message);
+                _database.Update(form.Product);
             } catch (Exception e)
             {
                 MessageBox.Show(e.Message);
@@ -179,8 +179,16 @@ namespace Nile.Windows
         private void RefreshUI ()
         {
             //Get products
-            var products = _database.GetAll();
-            productBindingSource.DataSource = products.ToList();
+            IEnumerable<Product> products = null;
+            try
+            {
+                products = _database.GetAll();
+            } catch (Exception)
+            {
+                MessageBox.Show("Error loading products");
+            };
+
+            productBindingSource.DataSource = products?.ToList();
         }
 
         private bool ShowConfirmation ( string message, string title )
