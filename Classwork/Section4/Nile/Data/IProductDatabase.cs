@@ -10,14 +10,13 @@ namespace Nile.Data
     {
         /// <summary>Adds a product to the database.</summary>
         /// <param name="product">The product to add.</param>
-        /// <param name="message">The error message, if any.</param>
         /// <returns>The added product.</returns>
         /// <remarks>
         /// Generates an error if:
         /// <paramref name="product"/> is null or invalid.
         /// A product with the same name already exists.
         /// </remarks>
-        Product Add( Product product, out string message );
+        Product Add( Product product );
 
         /// <summary>Gets all the products.</summary>
         /// <returns>The list of products.</returns>

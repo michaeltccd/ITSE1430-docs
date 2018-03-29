@@ -18,14 +18,13 @@ namespace Nile.Data
         /// Returns an error if product is null, invalid or if a product
         /// with the same name already exists.
         /// </remarks>
-        public Product Add ( Product product, out string message )
+        public Product Add ( Product product )
         {
+            var message = "";
+
             //Check for null
             if (product == null)
-            {
-                message = "Product cannot be null.";
-                return null;
-            };
+                throw new ArgumentNullException(nameof(product));
 
             //Validate product 
             var errors = product.Validate();
