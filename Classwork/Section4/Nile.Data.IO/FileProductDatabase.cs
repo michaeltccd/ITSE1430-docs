@@ -40,26 +40,39 @@ namespace Nile.Data.IO
         {
             EnsureInitialized();
 
-            foreach (var item in _items)
-            {
-                if (item.Id == id)
-                    return item;
-            };
+            //Use Enumerable.FirstOrDefault
+            return _items.FirstOrDefault(i => i.Id == id);
+            //foreach (var item in _items)
+            //{
+            //    if (item.Id == id)
+            //        return item;
+            //};
 
-            return null;
+            //return null;
         }
+        
+        //Compiler converts previous lambda into a private type with
+        //this method, effectively
+        //private bool IsId ( Product product )
+        //{
+        //    return product.Id == id;
+        //}
 
         protected override Product GetProductByNameCore( string name )
         {
             EnsureInitialized();
 
-            foreach (var item in _items)
-            {
-                if (String.Compare(item.Name, name, true) == 0)
-                    return item;
-            };
+            //Use Enumerable.FirstOrDefault
+            return _items.FirstOrDefault(
+                    i => String.Compare(i.Name, name, true) == 0);
 
-            return null;
+            //foreach (var item in _items)
+            //{
+            //    if (String.Compare(item.Name, name, true) == 0)
+            //        return item;
+            //};
+
+            //return null;
         }
 
         protected override void RemoveCore( int id )
@@ -97,13 +110,19 @@ namespace Nile.Data.IO
             {
                 _items = LoadData();
 
-                _id = 0;
-                foreach (var item in _items)
+                //_id = 0;
+                //foreach (var item in _items)
+                //{
+                //    if (item.Id > _id)
+                //        _id = item.Id;
+                //};
+                //Using Enumerable.Any
+                if (_items.Any())
                 {
-                    if (item.Id > _id)
-                        _id = item.Id;
+                    //Using Enumerable.Max
+                    _id = _items.Max(i => i.Id);
+                    ++_id;
                 };
-                ++_id;
             };
         }
 
@@ -118,6 +137,8 @@ namespace Nile.Data.IO
                     return items;
 
                 var lines = File.ReadAllLines(_filename);
+
+                //Could do with Enumerable.Select
                 foreach (var line in lines)
                 {
                     var fields = line.Split(',');
@@ -143,10 +164,28 @@ namespace Nile.Data.IO
 
         private void SaveData()
         {
+            using (var stream = File.OpenWrite(_filename))
+            using (var writer = new StreamWriter(stream))
+            { 
+                //Not easily doable with Enumerable, stick with foreach
+                foreach (var item in _items)
+                {
+                    var line = $"{item.Id},{item.Name},{item.Description}," +
+                               $"{item.Price},{(item.IsDiscontinued ? 1 : 0)}";
+
+                    writer.WriteLine(line);
+                };            
+            };
+        }
+
+        private void SaveDataPoorer()
+        {
+            Stream stream = null;
+            StreamWriter writer = null;
             try
             {
-                var stream = File.OpenWrite(_filename);
-                var writer = new StreamWriter(stream);
+                stream = File.OpenWrite(_filename);
+                writer = new StreamWriter(stream);
 
                 foreach (var item in _items)
                 {
@@ -154,10 +193,7 @@ namespace Nile.Data.IO
                                $"{item.Price},{(item.IsDiscontinued ? 1 : 0)}";
 
                     writer.WriteLine(line);
-                };
-
-                writer.Close();
-                stream.Close();                
+                };                
             } catch (ArgumentException e)
             {
                 //Example of rethrowing an exception
@@ -168,19 +204,28 @@ namespace Nile.Data.IO
             {
                 //Example of wrapping an exception to hide details
                 throw new Exception("Save failed", e);
+            } finally
+            {
+                writer?.Close();
+                stream?.Close();
             };
         }
 
         private void SaveDataNonstream ()
         {
-            var lines = new List<string>();
+            //Using Enumerable.Select
+            var lines = _items.Select(item => 
+                            $"{item.Id},{item.Name},{item.Description}," +
+                            $"{item.Price},{(item.IsDiscontinued ? 1 : 0)}");
 
-            foreach (var item in _items)
-            {
-                var line = $"{item.Id},{item.Name},{item.Description}," +
-                           $"{item.Price},{(item.IsDiscontinued ? 1 : 0)}";
-                lines.Add(line);
-            };
+            //var lines = new List<string>();
+
+            //foreach (var item in _items)
+            //{
+            //    var line = $"{item.Id},{item.Name},{item.Description}," +
+            //               $"{item.Price},{(item.IsDiscontinued ? 1 : 0)}";
+            //    lines.Add(line);
+            //};
 
             File.WriteAllLines(_filename, lines);
         }
