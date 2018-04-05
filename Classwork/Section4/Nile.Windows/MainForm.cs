@@ -37,7 +37,7 @@ namespace Nile.Windows
             var product = GetSelectedProduct();
             if (product == null)
                 return;
-
+            
             EditProduct(product);
         }
 
@@ -167,13 +167,33 @@ namespace Nile.Windows
             RefreshUI();
         }
 
+        //private sealed class SelectedRowType
+        //{
+        //    public int Index { get; set; }
+        //    public Product Product { get; set; }
+        //}
         private Product GetSelectedProduct ( )
         {
+            //This is correct, just demoing something new...
             //Get the first selected row in the grid, if any
-            if (dataGridView1.SelectedRows.Count > 0)
-                return dataGridView1.SelectedRows[0].DataBoundItem as Product;
+            //var items = (from r in dataGridView1.SelectedRows.OfType<DataGridViewRow>()
+            //            select new SelectedRowType() {
+            //                Index = r.Index,
+            //                Product = r.DataBoundItem as Product
+            //            }).FirstOrDefault();
+            //Playing with anonymous types
+            var items = (from r in dataGridView1.SelectedRows.OfType<DataGridViewRow>()
+                         select new {
+                             Index = r.Index,
+                             Product = r.DataBoundItem as Product
+                         }).FirstOrDefault();
 
-            return null;
+            return items.Product;
+
+            //if (dataGridView1.SelectedRows.Count > 0)
+            //    return dataGridView1.SelectedRows[0].DataBoundItem as Product;
+
+            //return null;
         }
 
         private void RefreshUI ()
