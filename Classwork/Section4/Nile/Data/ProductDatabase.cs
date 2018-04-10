@@ -63,7 +63,7 @@ namespace Nile.Data
             // Option 1 - LINQ
             return from p in GetAllCore()
                    orderby p.Name, p.Id descending
-                   select p;                                    .
+                   select p;                                   
         }
 
         /// <summary>Removes a product.</summary>
