@@ -80,10 +80,10 @@ namespace Nile.Data.Sql
                     {
                         var product = new Product() {
                             Id = Convert.ToInt32(row["Id"]),
-                            Name = row.Field<string>("Name"),
-                            Description = row.Field<string>("Description"),
-                            Price = row.Field<decimal>("Price"),
-                            IsDiscontinued = row.Field<bool>("IsDiscontinued")
+                            Name = Convert.ToString(row["Name"]),
+                            Description = Convert.ToString(row["Description"]),
+                            Price = Convert.ToDecimal(row["Price"]),
+                            IsDiscontinued = Convert.ToBoolean(row["IsDiscontinued"])
                         };
 
                         items.Add(product);
