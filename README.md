@@ -28,7 +28,7 @@ If you are unable to meet the above requirements then you will need to use the C
 
 ## Getting Started
 
-[Getting Started with Visual Studio](documentation/VisualStudio/gettingstarted/readme.md)
+[Getting Started with Visual Studio](documentation/visualstudio/gettingstarted/readme.md)
 
 [Style Guidelines](documentation/style/readme.md)
 
