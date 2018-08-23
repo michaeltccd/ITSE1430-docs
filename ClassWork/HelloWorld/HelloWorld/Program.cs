@@ -10,8 +10,17 @@ namespace HelloWorld
     {
         static void Main( string[] args )
         {
-            double y = 4.65;
+            //string name;
+            //name = "Bob";
+            string name = "Bob";
+            //string Name;            
+
+            double payRate = 4.5;
+            Console.WriteLine(name);            
+
+            /*double y = 4.65;
             int x = 10;
+            */
             Console.WriteLine("Hello world");
         }
     }
