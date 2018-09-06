@@ -97,9 +97,15 @@ namespace Section1
                 names[index] = Console.ReadLine();
             };
 
-            for (int index = 0; index < count; ++index)
+            foreach (string name in names)
+            //for (int index = 0; index < names.Length; ++index)
             {
-                Console.WriteLine(names[index]);
+                //readonly - not allowed
+                //name = "";
+                string str = name;
+                str = "";
+                //Console.WriteLine(names[index]);
+                Console.WriteLine(name);
             };
         }
 
@@ -155,7 +161,9 @@ namespace Section1
 
         private static void AddMovie()
         {
-            Console.WriteLine("AddMovie");
+            name = ReadString("Enter a name: ", true);
+            description = ReadString("Enter a description: ");
+            runLength = ReadInt32("Enter run length (in minutes): ", 0);
         }
 
         private static int ReadInt32 ( string message, int minValue )
@@ -174,5 +182,30 @@ namespace Section1
                 Console.WriteLine($"You must enter an integer value >= {minValue}");
             };
         }
+
+        private static string ReadString ( string message )
+        {
+            return ReadString(message, false);
+        }
+
+        private static string ReadString( string message, bool required )
+        {
+            while (true)
+            {
+                Console.WriteLine(message);
+                string input = Console.ReadLine();
+
+                if (!String.IsNullOrEmpty(input) || !required)
+                    return input;
+
+                Console.WriteLine("You must enter a value");
+            };
+        }
+
+        //A movie
+        static string name;
+        static string description;
+        static int runLength;
+        //static DateTime releaseDate;
     }
 }
