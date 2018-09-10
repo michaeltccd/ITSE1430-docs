@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/*
+ * ITSE 1430
+ * Sample implementation
+ */
+using System;
 
 namespace Section1
 {
@@ -123,40 +123,103 @@ namespace Section1
                 switch (input[0])
                 {
                     case 'a':
-                    case 'A': AddMovie(); return true;
+                    case 'A':
+                    AddMovie();
+                    return true;
 
                     case 'e':
-                    case 'E': EditMovie(); return true;
+                    case 'E':
+                    EditMovie();
+                    return true;
 
                     case 'd':
-                    case 'D': DeleteMovie(); return true;
+                    case 'D':
+                    DeleteMovie();
+                    return true;
 
                     case 'v':
-                    case 'V': ViewMovies(); return true;
+                    case 'V':
+                    ViewMovies();
+                    return true;
 
                     case 'q':
-                    case 'Q': return false;
+                    case 'Q':
+                    return false;
 
                     default:
-                        Console.WriteLine("Please enter a valid value.");
-                        break;
+                    Console.WriteLine("Please enter a valid value.");
+                    break;
                 };
             };
         }
 
         private static void DeleteMovie()
         {
-            Console.WriteLine("DeleteMovie");
+            if (Confirm("Are you sure you want to delete this movie?"))
+            {
+                //"Delete" the movie
+                name = null;
+                description = null;
+                runLength = 0;
+            };
+        }
+
+        private static bool Confirm( string message )
+        {
+            Console.WriteLine($"{message} (Y/N)");
+
+            do
+            {
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                switch (key.KeyChar)
+                {
+                    case 'Y':
+                    case 'y':
+                    return true;
+
+                    case 'N':
+                    case 'n':
+                    return false;
+                };
+            } while (true);
+            //if (key.KeyChar == 'Y')
+            //    return true;
+            //else if (key.KeyChar == 'N')
+            //    return false;
         }
 
         private static void ViewMovies()
         {
-            Console.WriteLine("ViewMovies");
+            if (String.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("No movies available");
+                return;
+            };
+
+            Console.WriteLine(name);
+
+            if (!String.IsNullOrEmpty(description))
+                Console.WriteLine(description);
+
+            //Console.WriteLine("Run length (mins) = " + runLength);
+            Console.WriteLine($"Run length = {runLength} mins");
         }
 
         private static void EditMovie()
         {
-            Console.WriteLine("EditMovie");
+            ViewMovies();
+
+            var newName = ReadString("Enter a name (or press ENTER for default): ", false);
+            if (!String.IsNullOrEmpty(newName))
+                name = newName;
+
+            var newDescription = ReadString("Enter a description (or press ENTER for default): ");
+            if (!String.IsNullOrEmpty(newDescription))
+                description = newDescription;
+
+            var newLength = ReadInt32("Enter run length (in minutes): ", 0);
+            if (newLength > 0)
+                runLength = newLength;
         }
 
         private static void AddMovie()
@@ -166,14 +229,14 @@ namespace Section1
             runLength = ReadInt32("Enter run length (in minutes): ", 0);
         }
 
-        private static int ReadInt32 ( string message, int minValue )
+        private static int ReadInt32( string message, int minValue )
         {
             while (true)
             {
                 Console.WriteLine(message);
-                string input = Console.ReadLine();
+                var input = Console.ReadLine();
 
-                if (Int32.TryParse(input, out int result))
+                if (Int32.TryParse(input, out var result))
                 {
                     if (result >= minValue)
                         return result;
@@ -183,7 +246,7 @@ namespace Section1
             };
         }
 
-        private static string ReadString ( string message )
+        private static string ReadString( string message )
         {
             return ReadString(message, false);
         }
