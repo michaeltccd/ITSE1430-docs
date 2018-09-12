@@ -19,6 +19,59 @@ namespace Section1
             //PlayWithStrings();
         }
 
+        private static void PlayWithObjects ()
+        {
+            int hours = 10;
+            Int32 hoursFull = 10;
+            var areEqual = hours == hoursFull;
+                        
+            var obj1 = "Hello";
+            DisplayObject(obj1);
+        }
+
+        private static void DisplayObject ( object value )
+        {
+            if (value == null)
+                return;
+
+            //Approach 1
+            if (value is string)
+            {
+                var str = (string)value;
+                Console.WriteLine(str);
+            } else
+            {
+                var str = value.ToString();
+                Console.WriteLine(str);
+            };
+
+            //Approach 2
+            var str2 = value as string;
+            if (str2 != null)
+                Console.WriteLine(str2);
+            else
+                Console.WriteLine(value.ToString());
+
+            //Approach 3
+            var str3 = value as string;
+            Console.WriteLine((str3 != null) ? str3.ToString() : value.ToString());
+
+            //Approach 4
+            var str4 = value as string;
+            Console.WriteLine((str4 ?? value).ToString());
+
+            //Approach 5**
+            //var str5 = value is string;
+            if (value is string str5)
+                Console.WriteLine(str5.ToString());
+            else
+                Console.WriteLine(value.ToString());
+
+            //Approach 6**
+            var str6 = value as string;
+            Console.WriteLine(str6?.ToString());
+        }
+
         private static void PlayWithStrings()
         {
             string hoursString = "10A";
@@ -236,6 +289,7 @@ namespace Section1
                 Console.WriteLine(message);
                 var input = Console.ReadLine();
 
+                //int.TryParse();
                 if (Int32.TryParse(input, out var result))
                 {
                     if (result >= minValue)
