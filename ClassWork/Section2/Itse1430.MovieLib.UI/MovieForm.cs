@@ -17,6 +17,8 @@ namespace Itse1430.MovieLib.UI
             InitializeComponent();
         }
 
+        public Movie Movie;
+
         private void OnCancel( object sender, EventArgs e )
         {
             DialogResult = DialogResult.Cancel;
@@ -27,24 +29,26 @@ namespace Itse1430.MovieLib.UI
         {
             var movie = new Movie();
             var movie2 = new Movie();
+            var name = movie2.GetName();
 
             //Name is required
-            movie.Name = _txtName.Text;
+            movie.SetName(_txtName.Text);
             if (String.IsNullOrEmpty(_txtName.Text))
                 return;
 
-            movie.Description = _txtDescription.Text;
+            movie.SetDescription(_txtDescription.Text);
 
             //Release year is numeric, if set
-            movie.ReleaseYear = GetInt32(_txtReleaseYear);
-            if (movie.ReleaseYear < 0)
+            movie.SetReleaseYear(GetInt32(_txtReleaseYear));
+            if (movie.GetReleaseYear() < 0)
                 return;
 
             //Run length, if set
-            movie.RunLength = GetInt32(_txtRunLength);
-            if (movie.RunLength < 0)
+            movie.SetRunLength(GetInt32(_txtRunLength));
+            if (movie.GetRunLength() < 0)
                 return;
 
+            Movie = movie;
             DialogResult = DialogResult.OK;
             Close();
         }
