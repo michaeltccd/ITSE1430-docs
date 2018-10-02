@@ -8,53 +8,97 @@ namespace Itse1430.MovieLib
 {
     public class Movie
     {
-        public string GetName ()
+        //Property to back the name field
+        public string Name
         {
-            return _name ?? "";
-        }
-        public void SetName ( string value )
-        {
-            _name = value;
-        }
-        private string _name;
-        //public System.String Name;
-
-        public string GetDescription ()
-        {
-            return _description ?? "";
+            get { return _name ?? ""; }  // string get ()
+            set { _name = value; }       // void set ( string value )
         }
 
-        //public void SetDescription ( Movie this, string value )
-        public void SetDescription ( string value )
+        //Backing field for name
+        private string _name = "";
+               
+        public string Description
         {
-            //this._description = value;
-            //this.
-            _description = value;
-        }
+            get { return _description ?? ""; }
+            set { _description = value; }
+        }        
 
         private string _description;
 
-        public int GetReleaseYear()
-        {
-            return _releaseYear;
-        }
-        public void SetReleaseYear ( int value )
-        {
-            if (value >= 1900)
-                _releaseYear = value;
-        }
-        private int _releaseYear;
+        //Using auto property with field initializer
+        public int ReleaseYear { get; set; } = 1900;
+        
+        //Using auto property
+        public int RunLength { get; set; }
+        
+        //Using mixed accessibility
+        public int Id { get; private set; }
 
-        public int GetRunLength ()
+        //Using calculated property with no setter
+        public bool IsColor
         {
-            return _runLength;
+            get { return ReleaseYear > 1940; }
         }
-        public void SetRunLength ( int value )
-        {
-            if (value >= 0)
-                _runLength = value;
-        }
-        private int _runLength;
+
+        #region Unused Code
+
+        //Don't make fields public
+        //public System.String Name;
+
+        //public string GetName ()
+        //{
+        //    return _name ?? "";
+        //}
+        //public void SetName ( string value )
+        //{
+        //    _name = value;
+        //}
+
+        //public string GetDescription ()
+        //{
+        //    return _description ?? "";
+        //}
+
+        //public void SetDescription ( Movie this, string value )
+        //public void SetDescription ( string value )
+        //{
+        //    //this._description = value;
+        //    //this.
+        //    _description = value;
+        //}
+
+        //{
+        //    get { return _releaseYear; }
+        //    set {
+        //        if (value >= 1900)
+        //            _releaseYear = value;
+        //    }
+        //}
+
+        //public int GetReleaseYear()
+        //{
+        //    return _releaseYear;
+        //}
+        //public void SetReleaseYear ( int value )
+        //{
+        //    if (value >= 1900)
+        //        _releaseYear = value;
+        //}
+        //private int _releaseYear = 1900;
+
+        //Auto property syntax
+
+        //public int GetRunLength()
+        //{
+        //    return _runLength;
+        //}
+        //public void SetRunLength( int value )
+        //{
+        //    if (value >= 0)
+        //        _runLength = value;
+        //}
+        //private int _runLength;
 
         //int someValue;
         //private int someValue2;
@@ -68,5 +112,6 @@ namespace Itse1430.MovieLib
         //    var y = someValue;
 
         //}
+        #endregion
     }
 }

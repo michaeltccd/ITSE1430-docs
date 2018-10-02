@@ -28,29 +28,35 @@ namespace Itse1430.MovieLib.UI
         private void OnSave( object sender, EventArgs e )
         {
             var movie = new Movie();
-            var movie2 = new Movie();
-            var name = movie2.GetName();
-
+            
             //Name is required
-            movie.SetName(_txtName.Text);
-            if (String.IsNullOrEmpty(_txtName.Text))
+            movie.Name = _txtName.Text;
+            if (String.IsNullOrEmpty(movie.Name))
                 return;
 
-            movie.SetDescription(_txtDescription.Text);
+            movie.Description = _txtDescription.Text;
 
             //Release year is numeric, if set
-            movie.SetReleaseYear(GetInt32(_txtReleaseYear));
-            if (movie.GetReleaseYear() < 0)
+            movie.ReleaseYear = GetInt32(_txtReleaseYear);
+            if (movie.ReleaseYear < 0)
                 return;
 
             //Run length, if set
-            movie.SetRunLength(GetInt32(_txtRunLength));
-            if (movie.GetRunLength() < 0)
+            movie.RunLength = GetInt32(_txtRunLength);            
+            if (movie.RunLength < 0)
                 return;
 
             Movie = movie;
             DialogResult = DialogResult.OK;
             Close();
+
+            //Using properties so don't need the method calls
+            //movie.SetName(_txtName.Text);
+            //movie.SetDescription(_txtDescription.Text);
+            //movie.SetReleaseYear(GetInt32(_txtReleaseYear));
+            //if (movie.GetReleaseYear() < 0)
+            //movie.SetRunLength(GetInt32(_txtRunLength));
+            //if (movie.GetRunLength() < 0)
         }
 
         private int GetInt32 ( TextBox textBox )
