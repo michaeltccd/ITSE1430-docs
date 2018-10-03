@@ -40,10 +40,23 @@ namespace Itse1430.MovieLib.UI
                 return;
 
             //MessageBox.Show("Adding movie");
-            Movie = form.Movie;
+            _database.Add(form.Movie);
             //Movie.Name = "";
+            RefreshMovies();
         }
 
-        private Movie Movie;
+        private MovieDatabase _database = new MovieDatabase();
+
+        private void MainForm_Load( object sender, EventArgs e )
+        {
+            RefreshMovies();
+        }
+
+        private void RefreshMovies ()
+        {
+            var movies = _database.GetAll();
+
+            _listMovies.Items.AddRange(movies);
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace Itse1430.MovieLib.UI
             InitializeComponent();
         }
 
-        public Movie Movie;
+        public Movie Movie { get; set; }
 
         private void OnCancel( object sender, EventArgs e )
         {
@@ -45,6 +45,8 @@ namespace Itse1430.MovieLib.UI
             movie.RunLength = GetInt32(_txtRunLength);            
             if (movie.RunLength < 0)
                 return;
+
+            movie.IsOwned = _chkOwned.Checked;
 
             Movie = movie;
             DialogResult = DialogResult.OK;

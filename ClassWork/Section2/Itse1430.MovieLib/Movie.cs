@@ -41,6 +41,8 @@ namespace Itse1430.MovieLib
             get { return ReleaseYear > 1940; }
         }
 
+        public bool IsOwned { get; set; }
+
         #region Unused Code
 
         //Don't make fields public
