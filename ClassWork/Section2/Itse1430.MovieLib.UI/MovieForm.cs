@@ -1,23 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Itse1430.MovieLib.UI
 {
     public partial class MovieForm : Form
     {
+        #region Construction
+
         public MovieForm()
         {
             InitializeComponent();
         }
+        #endregion
 
         public Movie Movie { get; set; }
+
+        private void MovieForm_Load( object sender, EventArgs e )
+        {
+            if (Movie != null)
+            {
+                _txtName.Text = Movie.Name;
+                _txtDescription.Text = Movie.Description;
+                _txtReleaseYear.Text = Movie.ReleaseYear.ToString();
+                _txtRunLength.Text = Movie.RunLength.ToString();
+                _chkOwned.Checked = Movie.IsOwned;
+            };
+        }
+
+        #region Event Handlers
 
         private void OnCancel( object sender, EventArgs e )
         {
@@ -61,6 +71,10 @@ namespace Itse1430.MovieLib.UI
             //if (movie.GetRunLength() < 0)
         }
 
+        #endregion
+
+        #region Private Members
+
         private int GetInt32 ( TextBox textBox )
         {
             if (String.IsNullOrEmpty(textBox.Text))
@@ -71,5 +85,6 @@ namespace Itse1430.MovieLib.UI
 
             return -1;
         }
+        #endregion        
     }
 }

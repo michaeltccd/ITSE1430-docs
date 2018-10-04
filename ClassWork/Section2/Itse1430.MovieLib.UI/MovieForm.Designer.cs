@@ -156,6 +156,7 @@
             this.Name = "MovieForm";
             this.ShowInTaskbar = false;
             this.Text = "Movie Details";
+            this.Load += new System.EventHandler(this.MovieForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
