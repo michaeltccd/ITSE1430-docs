@@ -17,6 +17,7 @@ namespace Itse1430.MovieLib.UI
 
         private void MovieForm_Load( object sender, EventArgs e )
         {
+            //_btnSave.Click += _btnSave_Click;
             if (Movie != null)
             {
                 _txtName.Text = Movie.Name;
@@ -25,6 +26,11 @@ namespace Itse1430.MovieLib.UI
                 _txtRunLength.Text = Movie.RunLength.ToString();
                 _chkOwned.Checked = Movie.IsOwned;
             };
+        }
+
+        private void _btnSave_Click( object sender, EventArgs e )
+        {
+            throw new NotImplementedException();
         }
 
         #region Event Handlers

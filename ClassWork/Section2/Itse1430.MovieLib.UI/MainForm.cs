@@ -13,8 +13,19 @@ namespace Itse1430.MovieLib.UI
         }
         #endregion
 
-        private void MainForm_Load( object sender, EventArgs e )
+        //This method can be overridden in a derived type
+        protected virtual void SomeFunction ()
+        { }
+
+        //This method MUST BE defined in a derived type
+        //protected abstract void SomeAbstractFunction();
+
+        /// <summary></summary>
+        /// <param name="e"></param>
+        protected override void OnLoad( EventArgs e )
         {
+            base.OnLoad(e);
+
             _listMovies.DisplayMember = "Name";
             RefreshMovies();
         }
@@ -49,6 +60,24 @@ namespace Itse1430.MovieLib.UI
                 
         private void OnMovieDelete( object sender, EventArgs e )
         {
+            DeleteMovie();
+        }
+
+        private void OnMovieEdit( object sender, EventArgs e )
+        {
+            EditMovie();
+        }
+
+        private void OnMovieDoubleClick( object sender, EventArgs e )
+        {
+            EditMovie();
+        }
+        #endregion
+
+        #region Private Members
+
+        private void DeleteMovie ()
+        {
             //Get selected movie, if any
             var item = GetSelectedMovie();
             if (item == null)
@@ -59,7 +88,7 @@ namespace Itse1430.MovieLib.UI
             RefreshMovies();
         }
 
-        private void OnMovieEdit( object sender, EventArgs e )
+        private void EditMovie ()
         {
             //Get selected movie, if any
             var item = GetSelectedMovie();
@@ -77,10 +106,6 @@ namespace Itse1430.MovieLib.UI
             RefreshMovies();
         }
 
-        #endregion
-
-        #region Private Members
-
         private void RefreshMovies ()
         {
             var movies = _database.GetAll();
@@ -97,5 +122,13 @@ namespace Itse1430.MovieLib.UI
         private MovieDatabase _database = new MovieDatabase();
 
         #endregion
+
+        private void OnListKeyUp( object sender, KeyEventArgs e )
+        {
+            if (e.KeyData == Keys.Delete)
+            {
+                DeleteMovie();
+            };           
+        }
     }
 }
