@@ -1,7 +1,7 @@
 # Contact Manager (ITSE 1430)
 ## Version 1.0
 
-In this lab you will create a Windows Forms application to manage contacts for someon. In this application we will only track their name and email address. 
+In this lab you will create a Windows Forms application to manage contacts for someone. In this application we will only track their name and email address. 
 
 *Note: This program will not actually send any emails. We are going to simulate that functionality.*
 
