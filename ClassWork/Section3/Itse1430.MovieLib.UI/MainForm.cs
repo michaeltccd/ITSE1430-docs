@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using Itse1430.MovieLib.Memory;
 
 namespace Itse1430.MovieLib.UI
 {
@@ -127,7 +128,7 @@ namespace Itse1430.MovieLib.UI
             return _listMovies.SelectedItem as Movie;
         }
 
-        private MovieDatabase _database = new MovieDatabase();
+        private MovieDatabase _database = new MemoryMovieDatabase();
 
         #endregion        
     }
