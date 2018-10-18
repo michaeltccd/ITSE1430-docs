@@ -27,6 +27,10 @@ namespace Itse1430.MovieLib.UI
         {
             base.OnLoad(e);
 
+            //Seed database
+            //var seed = new SeedDatabase();
+            SeedDatabase.Seed(_database);
+
             _listMovies.DisplayMember = "Name";
             RefreshMovies();
         }
