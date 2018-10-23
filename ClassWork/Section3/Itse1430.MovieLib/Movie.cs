@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Itse1430.MovieLib
 {
-    public class Movie
+    public class Movie : IValidatableObject
     {
         //Property to back the name field
         public string Name
@@ -42,6 +43,25 @@ namespace Itse1430.MovieLib
         }
 
         public bool IsOwned { get; set; }
+
+        public IEnumerable<ValidationResult> Validate( ValidationContext validationContext )
+        {
+            //Using iterator syntax instead of List<T>
+            //var results = new List<ValidationResult>();
+
+            if (String.IsNullOrEmpty(Name))
+                yield return new ValidationResult("Name is required.",
+                                new[] { nameof(Name) });
+
+            if (ReleaseYear < 1900)
+                yield return new ValidationResult("Release year must be >= 1900",
+                                new[] { nameof(ReleaseYear) });
+
+            if (RunLength < 0)
+                yield return new ValidationResult("Run length must be >= 0",
+                                new[] { nameof(RunLength) });
+        }
+
 
         #region Unused Code
 

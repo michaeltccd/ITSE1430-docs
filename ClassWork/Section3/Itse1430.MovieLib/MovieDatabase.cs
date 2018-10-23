@@ -22,7 +22,7 @@ namespace Itse1430.MovieLib
         
         /// <summary>Gets all the movies.</summary>
         /// <returns>The list of movies.</returns>
-        public Movie[] GetAll()
+        public IEnumerable<Movie> GetAll()
         {
             return GetAllCore();
         }
@@ -75,7 +75,7 @@ namespace Itse1430.MovieLib
 
         /// <summary>Gets all the movies.</summary>
         /// <returns>The list of movies.</returns>
-        protected abstract Movie[] GetAllCore();
+        protected abstract IEnumerable<Movie> GetAllCore();
 
         /// <summary>Removes a movie.</summary>
         /// <param name="name">The name of the movie.</param>
