@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace Itse1430.MovieLib
 {
     /// <summary>Manages a set of movies.</summary>
-    public abstract class MovieDatabase
+    public abstract class MovieDatabase : IMovieDatabase
     {        
         /// <summary>Adds a movie to the database.</summary>
         /// <param name="movie">The movie to add.</param>

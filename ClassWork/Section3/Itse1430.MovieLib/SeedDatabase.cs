@@ -8,11 +8,14 @@ using System.Linq;
 namespace Itse1430.MovieLib
 {
     /// <summary>Provides extensions for <see cref="MovieDatabase"/>.</summary>
-    public static class SeedDatabase
-    {
+    public static class MovieDatabaseExtensions
+    {        
         /// <summary>Seeds a database.</summary>
-        /// <param name="database">The database to seed.</param>
-        public static void Seed ( MovieDatabase database )
+        /// <param name="source">The database to seed.</param>
+        /// <remarks>
+        /// Extension method to see a database.
+        /// </remarks>
+        public static void Seed ( this IMovieDatabase source )
         {
             var movies = new[] {
                 new Movie() {
@@ -26,16 +29,19 @@ namespace Itse1430.MovieLib
                     ReleaseYear = 2004,
                 },
             };
-            Seed(database, movies);
+            Seed(source, movies);
         }
 
         /// <summary>Seeds a database.</summary>
-        /// <param name="database">The database to seed.</param>
+        /// <param name="source">The database to seed.</param>
         /// <param name="movies">The movies to seed with.</param>
-        public static void Seed ( MovieDatabase database, Movie[] movies )
+        /// <remarks>
+        /// Extension method to see a database.
+        /// </remarks>
+        public static void Seed ( this IMovieDatabase source, Movie[] movies )
         {
             foreach (var movie in movies)
-                database.Add(movie);
+                source.Add(movie);
         }
     }
 }
