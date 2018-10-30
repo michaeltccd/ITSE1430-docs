@@ -126,13 +126,14 @@ namespace Itse1430.MovieLib.UI
 
         private void RefreshMovies ()
         {
-            var movies = _database.GetAll();
+            //OrderBy
+            //var movies = _database.GetAll();
+            var movies = from m in _database.GetAll()
+                         orderby m.Name
+                         select m;
 
             _listMovies.Items.Clear();
             
-            //foreach (var movie in movies)
-            //    _listMovies.Items.Add(movie);
-
             //Use ToArray extension method from LINQ
             _listMovies.Items.AddRange(movies.ToArray());
         }

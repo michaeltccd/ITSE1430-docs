@@ -12,8 +12,13 @@ namespace Itse1430.MovieLib
         //Property to back the name field
         public string Name
         {
-            get { return _name ?? ""; }  // string get ()
-            set { _name = value; }       // void set ( string value )
+            //Using expression body
+            //get { return _name ?? ""; }  // string get ()
+            get => _name ?? "";
+
+            //Using expression body
+            //set { _name = value; }       // void set ( string value )
+            set => _name = value;
         }
 
         //Backing field for name
@@ -36,11 +41,14 @@ namespace Itse1430.MovieLib
         //Using mixed accessibility
         public int Id { get; private set; }
 
-        //Using calculated property with no setter
-        public bool IsColor
-        {
-            get { return ReleaseYear > 1940; }
-        }
+        //First line is a RW field, second line is using expression
+        //body getter property
+        //public bool IsColor = ReleaseYear > 1940;
+        public bool IsColor => ReleaseYear > 1940;
+        //{
+        //    //get { return ReleaseYear > 1940; }
+        //    get => ReleaseYear > 1940;
+        //}
 
         public bool IsOwned { get; set; }
 
