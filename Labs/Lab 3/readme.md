@@ -1,5 +1,5 @@
 # Contact Manager (ITSE 1430)
-## Version 1.1
+## Version 1.2
 
 In this lab you will create a Windows Forms application to manage contacts for someone. In this application we will only track their name and email address. 
 
@@ -59,10 +59,10 @@ Create an interface to represent the messaging service. This interface abstracts
 
 1. A method accepting the message to send. The message will need to include the email address, subject and message.
 
-Create an interface to represent a contact item. The interface will need the following members.
+Create a class to represent a contact item. The class will need the following members.
 
 1. A property that represents the name of the contact.
-1. A method that can be used to send a message to the contact. The method should accept the subject and message to be sent and the messaging service to use.
+1. A property that represents the email address of the user.
 
 ### Notes
 
