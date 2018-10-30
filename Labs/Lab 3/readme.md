@@ -1,5 +1,5 @@
 # Contact Manager (ITSE 1430)
-## Version 1.0
+## Version 1.1
 
 In this lab you will create a Windows Forms application to manage contacts for someone. In this application we will only track their name and email address. 
 
@@ -67,7 +67,7 @@ Create an interface to represent a contact item. The interface will need the fol
 ### Notes
 
 1. DO NOT reference Windows Forms or `Console` in the business project. It must remain UI agnostic.
-1. CONSIDER using a base name for the business project and a more specialized name for the UI project. (e.g. `ContactManager` and `ContactManager.UUI`) This will reduce the number of 
+1. CONSIDER using a base name for the business project and a more specialized name for the UI project. (e.g. `ContactManager` and `ContactManager.UI`) This will reduce the number of 
 `using` statements you'll need.
 1. DO start interface names with `I`.
 1. DO drop the `I` on base classes used to implement base interface functionality.
