@@ -28,6 +28,9 @@ namespace Itse1430.MovieLib.UI
         {
             base.OnLoad(e);
 
+            //TODO: Remove this line
+            //_database.Add(new Movie());
+
             //Seed database
             //var seed = new SeedDatabase();
             //SeedDatabase.Seed(_database);

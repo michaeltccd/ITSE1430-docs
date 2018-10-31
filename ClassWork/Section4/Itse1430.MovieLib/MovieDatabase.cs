@@ -13,9 +13,12 @@ namespace Itse1430.MovieLib
         /// <param name="movie">The movie to add.</param>
         public void Add( Movie movie )
         {
-            //TODO: Validate
+            //Validate
             if (movie == null)
-                return;
+                throw new ArgumentNullException("movie");
+            ObjectValidator.Validate(movie);
+
+            //if (movie == null) return;
 
             AddCore(movie);
         }
@@ -32,16 +35,20 @@ namespace Itse1430.MovieLib
         /// <param name="movie">The new movie.</param>
         public void Edit( string name, Movie movie )
         {
-            //TODO: Validate
-            if (String.IsNullOrEmpty(name))
-                return;
+            //Validate
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            else if (name == "")
+                throw new ArgumentException("Name cannot be empty.", nameof(name));
+
             if (movie == null)
-                return;
+                throw new ArgumentNullException(nameof(movie));
+            ObjectValidator.Validate(movie);
 
             //Find movie by name
             var existing = FindByName(name);
             if (existing == null)
-                return;
+                throw new Exception("Movie not found.");
 
             EditCore(existing, movie);
         }
@@ -50,10 +57,12 @@ namespace Itse1430.MovieLib
         /// <param name="name">The movie to remove.</param>
         public void Remove( string name )
         {
-            //TODO: Validate
-            if (String.IsNullOrEmpty(name))
-                return;
-
+            //Validate
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            else if (name == "")
+                throw new ArgumentException("Name cannot be empty.", nameof(name));
+            
             RemoveCore(name);
         }
 
