@@ -6,13 +6,21 @@ In this lab you will modify an existing product inventory application to support
 *Note: As with most maintenance work you must follow the existing styling and naming conventions. DO NOT change the existing styling/naming rules. ENSURE your code matches the rules being used.*
 
 [Skills Needed](#skills-needed)
+
 [Story 1](#story-1)
+
 [Story 2](#story-2)
+
 [Story 3](#story-3)
+
 [Story 4](#story-4)
+
 [Story 5](#story-5)
+
 [Story 6](#story-6)
+
 [Story 7](#story-7)
+
 [Requirements](#requirements)
 
 ## Skills Needed
