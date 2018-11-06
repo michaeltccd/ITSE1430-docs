@@ -18,9 +18,15 @@ namespace Itse1430.MovieLib
                 throw new ArgumentNullException("movie");
             ObjectValidator.Validate(movie);
 
+            //Wrap errors in a generic message
             //if (movie == null) return;
-
-            AddCore(movie);
+            try
+            {
+                AddCore(movie);
+            } catch (Exception e)
+            {
+                throw new Exception("Add failed", e);
+            };
         }
         
         /// <summary>Gets all the movies.</summary>
