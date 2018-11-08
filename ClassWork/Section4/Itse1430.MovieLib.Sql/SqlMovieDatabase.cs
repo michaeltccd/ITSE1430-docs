@@ -12,6 +12,8 @@ namespace Itse1430.MovieLib.Sql
     /// <summary>Provides an implementation of <see cref="IMovieDatabase"/> using SQL Server.</summary>
     public class SqlMovieDatabase : MovieDatabase
     {
+        /// <summary>Initializes an instance of the <see cref="SqlMovieDatabase"/> class.</summary>
+        /// <param name="connectionString">The connection string.</param>
         public SqlMovieDatabase ( string connectionString )
         {
             //Validate
@@ -28,8 +30,9 @@ namespace Itse1430.MovieLib.Sql
         protected override void AddCore( Movie movie )
         {
             //var conn = new SqlConnection(_connectionString);
-            
+
             #region Approaches to adding parameters
+
             //Approach 1
             //var param = new SqlParameter("@title", System.Data.SqlDbType.VarChar);
             //param.Value = movie.Name;
@@ -38,9 +41,11 @@ namespace Itse1430.MovieLib.Sql
             //Approach 2
             //var param = cmd.Parameters.Add("@title", System.Data.SqlDbType.VarChar);
             //param.Value = movie.Name;
-            #endregion
 
             //Approach 3            
+            //cmd.Parameters.AddWithValue("@title", movie.Name);
+
+            #endregion
 
             //Run command
             //try
@@ -84,12 +89,7 @@ namespace Itse1430.MovieLib.Sql
                 cmd.ExecuteNonQuery();
             };
         }
-
-        private object GetMovieId( Movie oldMovie )
-        {
-            return 1;
-        }
-
+                
         protected override Movie FindByName( string name )
         {
             throw new NotImplementedException();
@@ -121,7 +121,20 @@ namespace Itse1430.MovieLib.Sql
             };
         }
 
+        #region Private Members
+
+        //Creates a connection to the DB
         private SqlConnection CreateConnection()
                 => new SqlConnection(_connectionString);
+
+        //Gets the ID if this is a SQL movie
+        private object GetMovieId ( Movie movie )
+        {
+            var sql = movie as SqlMovie;
+
+            return sql?.Id ?? 0;
+        }
+
+        #endregion
     }
 }
