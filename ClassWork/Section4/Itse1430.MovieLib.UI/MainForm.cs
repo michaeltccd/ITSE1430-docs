@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using System.Windows.Forms;
 using Itse1430.MovieLib.Memory;
@@ -28,7 +29,11 @@ namespace Itse1430.MovieLib.UI
         protected override void OnLoad( EventArgs e )
         {
             base.OnLoad(e);
-            
+
+            var connString = ConfigurationManager
+                                .ConnectionStrings["Database"]
+                                .ConnectionString;
+            _database = new SqlMovieDatabase(connString);
             //Seed database
             //var seed = new SeedDatabase();
             //SeedDatabase.Seed(_database);
@@ -171,7 +176,7 @@ namespace Itse1430.MovieLib.UI
             return _listMovies.SelectedItem as Movie;
         }
 
-        private IMovieDatabase _database = new SqlMovieDatabase();
+        private IMovieDatabase _database;// = new SqlMovieDatabase();
 
         #endregion        
     }
