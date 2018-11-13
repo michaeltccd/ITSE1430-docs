@@ -4,6 +4,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 
@@ -92,13 +93,79 @@ namespace Itse1430.MovieLib.Sql
                 
         protected override Movie FindByName( string name )
         {
-            throw new NotImplementedException();
+            //Use a data reader
+            using (var conn = CreateConnection())
+            {
+                var cmd = new SqlCommand("GetAllMovies", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var movieName = reader.GetString(1);
+                        if (String.Compare(movieName, name, true) != 0)
+                            continue;
+
+                        //reader.GetOrdinal("Id");
+
+                        return new SqlMovie() {
+                            Id = reader.GetFieldValue<int>(0),
+                            Name = movieName,
+                            Description = Convert.ToString(reader.GetValue(2)),
+                            ReleaseYear = 1900,
+                            RunLength = reader.GetFieldValue<int>(3),
+                            IsOwned = reader.GetBoolean(4),
+                        };
+                    };
+                };
+            };
+
+            return null;
         }
 
         protected override IEnumerable<Movie> GetAllCore()
         {
-            //throw new NotImplementedException();
-            return new Movie[0];
+            //Using a data set
+            var ds = new DataSet();
+            
+            //Create connection
+            using (var conn = CreateConnection())
+            {
+                var da = new SqlDataAdapter();
+                var cmd = new SqlCommand("GetAllMovies", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                //Use data adapter to fill dataset
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+            };
+
+            //Must have at least one table
+            //if (!ds.Tables.OfType<DataTable>().Any())
+            //    return Enumerable.Empty<Movie>();
+            var table = ds.Tables.OfType<DataTable>().FirstOrDefault();
+            if (table == null)
+                return Enumerable.Empty<Movie>();
+
+            //Enumerate the rows
+            var movies = new List<Movie>();
+            foreach (var row in table.Rows.OfType<DataRow>())
+            {
+                //Use ordinal or column names
+                var movie = new SqlMovie() {
+                    Id = Convert.ToInt32(row["Id"]),
+                    Name = row.Field<string>("Title"),
+                    Description = Convert.ToString(row[2]),
+                    ReleaseYear = 1900,
+                    RunLength = row.Field<int>(3),
+                    IsOwned = Convert.ToBoolean(row[4]),
+                };
+                movies.Add(movie);
+            };
+
+            return movies;
         }
 
         protected override void RemoveCore( string name )
