@@ -148,6 +148,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MovieController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -195,6 +196,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Views\Movie\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -208,6 +210,16 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Itse1430.MovieLib.Sql\Itse1430.MovieLib.Sql.csproj">
+      <Project>{6bb9ab6d-00c1-4d79-a5b4-2facddb5475b}</Project>
+      <Name>Itse1430.MovieLib.Sql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Itse1430.MovieLib\Itse1430.MovieLib.csproj">
+      <Project>{91878698-9b61-4d03-868b-6a9803407efe}</Project>
+      <Name>Itse1430.MovieLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
