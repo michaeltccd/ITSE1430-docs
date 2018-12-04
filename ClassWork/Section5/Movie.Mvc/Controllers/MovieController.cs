@@ -88,6 +88,33 @@ namespace Movie.Mvc.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public ActionResult Delete ( int id )
+        {
+            var item = _database.GetAll().FirstOrDefault(i => i.Id == id);
+
+            return View(new MovieModel(item));
+        }
+
+        [HttpPost]
+        public ActionResult Delete ( MovieModel model )
+        {
+            try
+            {
+                var existing = _database.GetAll().FirstOrDefault(i => i.Id == model.Id);
+                if (existing == null)
+                    return HttpNotFound();
+
+                _database.Remove(existing.Name);
+
+                return RedirectToAction("Index");
+            } catch (Exception e)
+            {
+                ModelState.AddModelError("", e.Message);
+                return View(model);
+            };
+        }
+
         private readonly IMovieDatabase _database;
     }
 }
