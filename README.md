@@ -30,6 +30,8 @@ If you are unable to meet the above requirements then you will need to use the C
 
 [Getting Started with Visual Studio](documentation/visualstudio/gettingstarted/readme.md)
 
+[Getting Started with GitHub](documentation/github/getting-started/readme.md)
+
 [Style Guidelines](documentation/style/readme.md)
 
 ## Class Repository 
