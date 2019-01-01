@@ -10,7 +10,7 @@ If you do not yet have a Github account associated with your MyTccd email then d
 2. Enter a username (ex. Mynametccd). Note that the user name is generally part of the URL you will share so use a generic user name.
 3. Enter your MyTccd email address.
 4. Enter a password.
-5. Click ```Sign up for GitHub```.
+5. Click `Sign up for GitHub`.
 
 ![Sign Up](signup.png)
 
@@ -25,9 +25,9 @@ In order to store and share code you will need to create a repository. A reposit
 ![Add Repo](add-repo.png)
 
 2. Clicking the plus will give you the option of creating a new repository. 
-3. For the repository name enter ```ITSE1430```.
+3. For the repository name enter `ITSE1430`.
 4. Ensure the repository is public so that the repository can be seen by others. It is free.
-5. Click the ```Create repository``` button to create the repository.
+5. Click the `Create repository` button to create the repository.
 
 ![Create Repo](create-repo.png)
 
@@ -35,11 +35,9 @@ In order to store and share code you will need to create a repository. A reposit
 
 To ensure everyone starts out on the correct foot there is a template repository defined in the class repository site. For now this will be done using the web interface.
 
-1. In your repository created earlier click the ```Upload files``` option.
-2. There should be no files. Using Windows Explorer, drag and drop all the content from the ```Template``` folder (in the class repository that you cloned previously) to your empty repository.
-2. Under ```Commit changes``` put a comment message about seeding the repository.
-3. Click the ```Commit changes``` button to commit the changes to Github.
+1. In your repository created earlier click the `Upload files` option.
+2. There should be no files. Using Windows Explorer, drag and drop all the content from the `Template` folder (in the class repository that you cloned previously) to your empty repository.
+2. Under `Commit changes` put a comment message about seeding the repository.
+3. Click the `Commit changes` button to commit the changes to Github.
 
-![Seed Repo](seed-repo.png)
-
-The files will now be available when you later clone your repository.
+The files will now be available when you later clone your repository. Refer to the [Getting Started with GitHub](getting-started.md) for more information on using GitHub.
