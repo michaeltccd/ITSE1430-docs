@@ -35,6 +35,8 @@ In order to store and share code you will need to create a repository. A reposit
 
 To ensure everyone starts out on the correct foot there is a template repository defined in the class repository site. For now this will be done using the web interface.
 
+*Note: You must have already cloned the class Shared repository to your local machine.*
+
 1. In your repository created earlier click the `Upload files` option.
 2. There should be no files. Using Windows Explorer, drag and drop all the content from the `Template` folder (in the class repository that you cloned previously) to your empty repository.
 2. Under `Commit changes` put a comment message about seeding the repository.
