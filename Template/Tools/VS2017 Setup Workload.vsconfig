@@ -1,0 +1,22 @@
+{
+	"version": "1.0",
+	"components": [
+		"Microsoft.VisualStudio.Workload.ManagedDesktop",
+		"Microsoft.VisualStudio.Workload.NetWeb",
+		"Microsoft.VisualStudio.Workload.Data",
+		"microsoft.net.componentgroup.targetingpacks.common",
+		"microsoft.componentgroup.blend",
+		"microsoft.visualstudio.component.diagnostictools",
+		"microsoft.visualstudio.component.liveunittesting",
+		"microsoft.visualstudio.component.fsharp.desktop",
+		"microsoft.net.componentgroup.4.7.1.developertools",
+		"microsoft.net.componentgroup.4.7.2.developertools",
+		"microsoft.netcore.componentgroup.developmenttools",
+		"microsoft.visualstudio.componentgroup.web.cloudtools",
+		"microsoft.visualstudio.component.aspnet45",
+		"microsoft.visualstudio.component.testtools.core",
+		"microsoft.visualstudio.component.git",
+		"component.github.visualstudio",
+		"component.microsoft.visualstudio.liveshare"
+	]
+}
