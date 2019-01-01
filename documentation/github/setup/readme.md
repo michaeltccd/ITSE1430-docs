@@ -40,4 +40,6 @@ To ensure everyone starts out on the correct foot there is a template repository
 2. Under `Commit changes` put a comment message about seeding the repository.
 3. Click the `Commit changes` button to commit the changes to Github.
 
+![Seed Repo](seed-repo.png)
+
 The files will now be available when you later clone your repository. Refer to the [Getting Started with GitHub](getting-started.md) for more information on using GitHub.
