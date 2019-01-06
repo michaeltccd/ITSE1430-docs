@@ -9,7 +9,7 @@ The general process will be.
 1. Set up Git.
 2. Clone our shared class repository (this repository).
 3. Clone the semester class repository.
-4. Set up your own class repository.
+4. Set up your own class repository using the `Template` folder to see the repository.
 
 Each time you sit down at the computer you'll need to repeat the following.
 
