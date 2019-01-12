@@ -101,6 +101,19 @@ In general errors will occur when pushing if they are going to occur. That is be
 
 The first step in diagnosing the issue is looking in the `Team Explorer` window at the error that is displayed. It will often explain the exact issue. The other place to look is in the ```Output``` window of Visual Studio under the ```Source Control - Git``` category.
 
+## Undoing Changes
+
+Sometimes you make changes that you want to revert. It is important to note that you need to undo changes before you have committed them. Once changes are committed (or pushed) it becomes more difficult to undo them.
+
+1. To undo several changes.
+   1. Go to the `Changes` tab in `Team Explorer`.
+   1. For each change you want to undo select the file (or the entire folder) and select `Undo`.
+   1. If the change was an addition then select `Delete`. Alternatively you can also go to the file system and simply remove the file/folder that you added.
+   1. Some times you have to undo changes and then delete them.
+1. To undo changes to a single file (modifications only). 
+   1. Right click the file in `Solution Explorer`.
+   1. Select the `Undo` option to undo the changes.
+
 ### Authentication
 
 When you connect to Git you must have permissions to perform the action you are requesting. Reads are almost always available to everyone and will work but pushing changes requires write access. If you receive an access denied or 403 error then this means your user account is incorrect. To correct this, log back in.
