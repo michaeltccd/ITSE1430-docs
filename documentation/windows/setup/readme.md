@@ -1,4 +1,4 @@
-# Recommended Programs and Features
+# Configuring Windows
 
 Windows is designed for a novice user. Programming is considered advanced user tasks and therefore the default Windows settings and programs are not ideal. The following are recommended changes you make to your computer to simplify your programming efforts.
 
