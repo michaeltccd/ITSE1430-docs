@@ -4,7 +4,6 @@ Course material for this class.
 
 ## Prerequisites
 
-
 Before you begin note the following prerequisites for your environment.
 
 1.	Windows  7 SP1 or higher or Windows Server 2008 R2 SP1 or higher 
@@ -36,30 +35,7 @@ If you are unable to meet the above requirements then you will need to use the C
 
 ## Class Repository 
 
-The class repository is where daily classwork will be stored and lab instructions will be posted.
+This repository is for documentation only. You do not need to clone this repository. It is available only to provide some documentation. The class repository will be provided in class and contains the work that you will want to sync with throughout the sememster.
 
-### ClassWork
-
-Work done while in class will be stored in this folder.
-
-### Labs
-
-Lab assignments will be placed in here.
-
-### Lessons
-
-Lesson notes are available here.
-
-### Template
-
-Copy this folder as the root of your Git repo so you have the appropriate structure set up for this course. It contains several
-subfolders.
-
-- ClassWork - This is the equivalent folder for your work done in class.
-- Labs - This folder is for you to place your lab assignments (in appropriate subfolders).
-- Tools - This folder contains some tools for working with Visual Studio.
-
-The files in this folder provide some assistance with working with Visual Studio.
-
-- .editorconfig => Provides some standard styling and naming rules for C# code.
-- .gitignore => Provides a standard ignore file that can be used in Git repositories for C#.
+- `documentation` is where the core documentation for setting up your machine and learning to work with Visual Studio and Github are at. The repository readme files link to this documentation directly.
+- `lessons` is where a list of topics are stored related to stuff we are studying. Eventually it will evolve into detailed documentation or links but for now it is just links to additional information.
