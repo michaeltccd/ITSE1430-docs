@@ -14,34 +14,20 @@ If you do not yet have a Github account associated with your MyTccd email then d
 
 ![Sign Up](signup.png)
 
-## Creating a Class Repository
+## Creating Your Class Repository
 
-In order to store and share code you will need to create a repository. A repository is where you will store your work including lab assignments and daily class work. 
+You need a repository to work with Github. A repository is a collection of files. For this class you will have a repository for the work we do during the semester. Both your in class work and lab assignments will be placed here.
 
-*Note: Everything in the repository is visible to others.*
+Normally to use a repository you need to either create a new repository (if this is brand new) or [clone](getting-started) an existing repository (if you're starting with someone else's code). However we will use a template repository instead. 
 
-1. In the top right corner, you will see a plus sign next to your profile. 
+To use the existing class repository as a template do the following.
 
-![Add Repo](add-repo.png)
+1. Make sure you are logged into Github with your TCCD profile.
+1. Go to the class repository (URL will be provided in class).
+1. You should see an option to `Use this template` at the top of the repository just before the list of files.
+1. Click the `Use this template` button.
+1. Enter the repository name (use `itse1430` or similar).
+1. Enter an optional description such as `ITSE 1430 Programming in C#`).
+1. Click the create button to create the repository and copy the contents to your own repository.
 
-2. Clicking the plus will give you the option of creating a new repository. 
-3. For the repository name enter `ITSE1430`.
-4. Ensure the repository is public so that the repository can be seen by others. It is free.
-5. Click the `Create repository` button to create the repository.
-
-![Create Repo](create-repo.png)
-
-## Seeding the Repository
-
-To ensure everyone starts out on the correct foot there is a template repository defined in the class repository site. For now this will be done using the web interface.
-
-*Note: You must have already cloned the class Shared repository to your local machine.*
-
-1. In your repository created earlier click the `Upload files` option.
-2. There should be no files. Using Windows Explorer, drag and drop all the content from the `Template` folder (in the class repository that you cloned previously) to your empty repository.
-2. Under `Commit changes` put a comment message about seeding the repository.
-3. Click the `Commit changes` button to commit the changes to Github.
-
-![Seed Repo](seed-repo.png)
-
-The files will now be available when you later clone your repository. Refer to the [Getting Started with GitHub](getting-started.md) for more information on using GitHub.
+After the repository has been set up you do not need to do anything else. You now have your own copy of the class repository.
