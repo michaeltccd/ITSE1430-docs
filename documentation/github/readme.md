@@ -7,12 +7,9 @@ To learn the basics of Git refer to the [Getting Started](getting-started/readme
 The general process will be.
 
 1. Set up Git.
-2. Clone our shared class repository (this repository).
-3. Clone the semester class repository.
-4. Set up your own class repository using the `Template` folder to see the repository.
+1. Use the class repository as a template to create your own repository for the semester (e.g. `itse1430`).
 
 Each time you sit down at the computer you'll need to repeat the following.
 
 1. Open Visual Studio.
 2. Sync your own class repository.
-3. (Optional) Sync the semester class repository.
