@@ -1,6 +1,7 @@
 # Exceptions
 *Updated: 4/6/2020*
 
+[Why](#why) \
 [Exception](#exception) \
 [Common Exceptions](#common-exceptions) \
 [Argument Exceptions](#argument-exceptions) \
@@ -10,9 +11,19 @@
 [System Exceptions](#system-exceptions) \
 [See Also](#see-also)
 
-An exception is an error that occurs in a program. In most cases an exception is an "exception" to the normal flow of the code. When an error occurs the runtime captures information about the error into an object, the exception. For more information on how to report an error refer to [Reporting Errors](reporting-errors.md). 
+An exception is an error that occurs in a program. In most cases an exception is an "exception" to the normal flow of the code. When an error occurs the runtime captures information about the error into an object, the exception. For more information on how to report an error refer to [Throwing Exceptions](throwing-exceptions.md). 
 
-Reporting errors, or raising/throwing an exception, is important so that calling code can potentially recover from an error, such as a missing file. Refer to the section [Handling Errors](handling-errors.md) for more information on how to handle errors.
+Reporting errors, or raising/throwing an exception, is important so that calling code can potentially recover from an error, such as a missing file. Refer to the section [Handling Exceptions](handling-exceptions.md) for more information on how to handle errors.
+
+## Why
+
+The first question that tends to come up when moving from a language that does not support exceptions is why? In languages likes C++ (that do support exceptions) it is common to use the return type of a function to indicate success or failure. The problem with this approach is that it is opt-in. Calling code must:
+
+- Know to check the return value of the function.
+- Explicitly check the return value.
+- Verify they are correctly interpreting the results.
+
+While opt-in error handling may be useful in some cases (e.g. try methods) most of the time errors are errors and code should be forced to handle them. That is why exceptions are preferred. Relying on calling code to check for errors is about as useful as simply ignoring errors altogether. 
 
 ## Exception
 
@@ -81,5 +92,5 @@ Fatal exceptions can be handled but will most likely fail when being handled. In
 
 ## See Also
 
-[Handling Errors](handling-errors.md) \
-[Reporting Errors](reporting-errors.md)
+[Handling Exceptions](handling-exceptions.md) \
+[Throwing Exceptions](throwing-exceptions.md)
