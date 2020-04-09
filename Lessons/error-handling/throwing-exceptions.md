@@ -1,11 +1,14 @@
 # Throwing Exceptions
 *Updated: 4/8/2020*
 
+[Throw Statement](#throw-statement) \
 [Rethrowing an Exception](#rethrowing-an-exception) \
 [Throw Expression](#throw-expression) \
 [How Exception Handling Works](#how-exception-handling-works)
 
 To report an error in code you must raise (or throw) an [exception](exceptions.md). Raising an exception notifies any callers higher in the call stack that an error has occurred and allows the caller to handle the error, if possible.
+
+## Throw Statement
 
 To throw an exception you use the [throw](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/throw) expression.
 
@@ -32,6 +35,22 @@ try
 ```
 
 This is known as a "rethrow". The statement does not accept an expression but instead rethrows the current exception. This is the preferred approach to rethrowing an exception as it allows the original exception, including stack trace, to be retained.
+
+## Throw Expression
+
+Starting with C# 7.x the `throw` statement can also be treated as an expression. This allows you to throw an exception as part of an expression. A common case is when checking the return value of a method.
+
+```csharp
+//Pre-7.x C#
+var result = GetResult();
+if (result == null)
+   throw new Exception("Method returned null");
+
+//7.x+ C#
+var result = GetResult() ?? throw new Exception("Method returned null");
+```
+
+Exceptions that are treated as expressions are thrown when the expression is evaluated. 
 
 ## How Exception Handling Works
 
