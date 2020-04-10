@@ -1,50 +1,8 @@
 # Section 4 Data Access
+* Updated: 04/10/2020*
 
-Namespace: ```System.IO```
+TBD
 
-## Error Handling
-
-[Purpose](https://docs.microsoft.com/en-us/dotnet/standard/exceptions/)
-
-[Guidelines](https://docs.microsoft.com/en-us/dotnet/standard/exceptions/best-practices-for-exceptions)
-
-### Exceptions
-
-[Exception Class](https://docs.microsoft.com/en-us/dotnet/api/system.exception)
-
-[Throwing an Exception](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/throw)
-
-[Throw Expression](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/throw#the-throw-expression)
-
-### Common Exceptions
-
-[ArgumentExceptions](https://docs.microsoft.com/en-us/dotnet/api/system.argumentexception)
-
-[ArgumentNullException](https://docs.microsoft.com/en-us/dotnet/api/system.argumentnullexception)
-
-[ArgumentOutOfRangeException](https://docs.microsoft.com/en-us/dotnet/api/system.argumentoutofrangeexception)
-
-[FormatException](https://docs.microsoft.com/en-us/dotnet/api/system.formatexception)
-
-[InvalidOperationException](https://docs.microsoft.com/en-us/dotnet/api/system.invalidoperationexception)
-
-[NotImplementedException](https://docs.microsoft.com/en-us/dotnet/api/system.notimplementedexception)
-
-[NullReferenceException](https://docs.microsoft.com/en-us/dotnet/api/system.nullreferenceexception)
-
-[UnauthorizedAccessException](https://docs.microsoft.com/en-us/dotnet/api/system.unauthorizedaccessexception)
-
-### Handling Exceptions
-
-[Try-Catch Statement](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch)
-
-[Catching Specific Exceptions](https://docs.microsoft.com/en-us/dotnet/standard/exceptions/how-to-use-specific-exceptions-in-a-catch-block)
-
-[Try-Catch-Finally Statement](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch-finally)
-
-[Rethrowing Exceptions](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/throw#re-throwing-an-exception)
-
-[Filtering Exceptions](https://msdn.microsoft.com/en-us/magazine/mt620018.aspx)
 
 ## Files
 

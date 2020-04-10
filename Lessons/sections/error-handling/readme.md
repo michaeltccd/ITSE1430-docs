@@ -1,5 +1,7 @@
-# Exceptions
+# Error Handling
 *Updated: 4/6/2020*
+
+WIP 
 
 [Why](#why) \
 [Exception](#exception) \

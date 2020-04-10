@@ -1,20 +1,13 @@
-# Section 3 Lesson Notes (ITSE 1430)
+# Collections and Interfaces
+* Updated: 04/10/2020*
+
+WIP
 
 ## Abstract Base Classes
 - Purpose https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/abstract-and-sealed-classes-and-class-members
 - Abstract Members https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/abstract 
 - Override https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/override
 
-## Arrays
-- Purpose https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/arrays/#array-overview
-- Declaring an Array https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/arrays/
-- Implicit Typing https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/arrays/implicitly-typed-arrays
-- Initializing an Array https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/arrays/single-dimensional-arrays#array-initialization
-- Getting the Length https://docs.microsoft.com/en-us/dotnet/api/system.array.length
-- Accessing Elements https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/index-operator
-- Returning from Members https://docs.microsoft.com/en-us/visualstudio/code-quality/ca1819-properties-should-not-return-arrays
-- Arrays as Arguments https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/arrays/passing-arrays-as-arguments
-- String.Split https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/how-to-parse-strings-using-string-split
 
 ## BindingSource
 - Purpose https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/bindingsource-component-overview
@@ -38,23 +31,7 @@
     - Handling Mouse Events https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.datagridview.celldoubleclick
     - Handling Keyboard Events https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.keydown
 
-## Dictionaries
-- Purpose https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2
-- Adding Items https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2.add
-- Determining if an Item Exists https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2.trygetvalue
-- Updating Items https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2.item
-- Initializers https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/how-to-initialize-a-dictionary-with-a-collection-initializer
 
-## Foreach Statement
-- Syntax https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/foreach-in
-- Using with Arrays https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/arrays/using-foreach-with-arrays
-
-## Generic Types
-- Definition https://docs.microsoft.com/en-us/dotnet/standard/generics
-- Declaring an instance of a Generic Type https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/index
-- Benefits of Generic Types https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/benefits-of-generics
-- Generic Parameters https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generic-type-parameters
-- Generic Constraints https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters
 
 ## Initializers
 - Object Initializers https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/how-to-initialize-objects-by-using-an-object-initializer
@@ -73,8 +50,6 @@
     - INotifyPropertyChanged https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.inotifypropertychanged
     - IValidatableObject https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.ivalidatableobject
 
-## Iterators
-- Purpose https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/iterators
 
 ## ListBox
 - Purpose https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/listbox-control-windows-forms
@@ -86,16 +61,6 @@
 - Detecting Selection Changed https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selectedindexchanged
 - Binding Data https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/how-to-bind-a-windows-forms-combobox-or-listbox-control-to-data
 
-## Lists and Collections
-- Namespace https://docs.microsoft.com/en-us/dotnet/standard/collections/selecting-a-collection-class
-- List<T> Class https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1
-- Collection<T> Class https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.collection-1
-- Adding Items https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.add
-- Accessing Items https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.item
-- Removing Items https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.remove
-- Counting Items https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.count
-- List vs Collection https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/guidelines-for-collections
-- Collections vs Arrays https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/arrays
 
 ## Nameof Operator
 - nameof https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/nameof
