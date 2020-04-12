@@ -1,0 +1,34 @@
+# ITSE 1430 Introduction to C# Programming
+Michael Taylor
+2020-04-10
+:toc:
+
+NOTE: Work in Progress
+
+This is a link to the documentation for each topic discussed in class.
+
+## Section 1
+
+link:sections/basics/readme.adoc[C# Basics] +
+WIP
+
+## Section 2
+
+link:sections/oop/readme.adoc[Object Oriented Programming] +
+link:sections/delegation/readme.adoc[Delegation] +
+link:sections/winforms/readme.adoc[Windows Forms] +
+WIP 
+
+## Section 3
+
+link:sections/collections/readme.adoc[Collections] +
+link:sections/generics/readme.adoc[Generics] +
+WIP
+
+## Section 4
+
+WIP
+
+## Section 5
+
+WIP
