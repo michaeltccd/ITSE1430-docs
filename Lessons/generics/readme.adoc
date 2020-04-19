@@ -1,0 +1,10 @@
+# Generic Types
+ITSE 1430
+Work in Progress
+:toc:
+
+- https://docs.microsoft.com/en-us/dotnet/standard/generics[Generic Types]
+- https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/benefits-of-generics[Benefits]
+- https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/index[Declaring Instances] 
+- https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generic-type-parameters[Generic Parameters]
+- https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters[Generic Constraints]

@@ -1,18 +1,13 @@
 # Interfaces
-*Updated: 03/22/2020*
+ITSE 1430
+Work in Progress
+:toc:
 
-WIP
-
-[Common Interfaces](#common-interfaces)\
-[Consuming Interfaces](#consuming-interfaces)\
-[Creating Interfaces](#creating-interfaces)\
-[Implementing Interfaces](#implementing-interfaces) \
-[See Also](#see-also) \
-
-An [interface](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/interfaces/) is a type that declares members that other types will provide. It is a [contract](https://en.wikipedia.org/wiki/Design_by_contract) between two different components that allow them to interact with each other. The interface provides the members that are available and one of the components provides the implementation of each of those members. This decouples the implementation from the usage of that implementation. It is a core technique used to solve the problem of dependencies between components.
+An https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/interfaces[interface] is a type that declares members that other types will provide. It is a https://en.wikipedia.org/wiki/Design_by_contract[contract] between two different components that allow them to interact with each other. The interface provides the members that are available and one of the components provides the implementation of each of those members. This decouples the implementation from the usage of that implementation. It is a core technique used to solve the problem of dependencies between components.
 
 Here is an example of a simple interface in C# that allows an object to be selectable (such as in a drawing program).
 
+.Declaring an Interface
 ```csharp
 public interface ISelectable
 {
@@ -22,7 +17,7 @@ public interface ISelectable
 }
 ```
 
-The [syntax](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/interface) is very similar to a class with a few notable exceptions.
+The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/interface[syntax] is very similar to a class with a few notable exceptions.
 
 - The keyword `interface` replaces the keyword `class`.
 - There is no accessibility modifier on the members.
@@ -33,15 +28,16 @@ An interface defines the set of functionality available for calling code to use.
 
 ## Common Interfaces
 
-.NET ships with a lot of interfaces. Some interfaces you may already have used without realizing it.
+There are many interfaces that ship with .NET. Some interfaces you may already have used without realizing it.
 
-| Interface | Purpose |
-| - | - |
-| [ICloneable](https://docs.microsoft.com/en-us/dotnet/api/system.icloneable) | Supports cloning an object. |
-| [IComparable<T>](https://docs.microsoft.com/en-us/dotnet/api/system.icomparable-1) | Supports comparing two objects for ordering. |
-| [IEnumerable<T>](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1) | Supports enumerating over a set of data. |
-| [IList<T>](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ilist-1) | Supports managing a list of objects. |
-| [IValidatableObject](https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.ivalidatableobject) | Supports validation of an object. |
+|===
+| Interface | Purpose
+| https://docs.microsoft.com/en-us/dotnet/api/system.icloneable[ICloneable] | Supports cloning an object.
+| https://docs.microsoft.com/en-us/dotnet/api/system.icomparable-1[IComparable<T>] | Supports comparing two objects for ordering.
+| https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[IEnumerable<T>] | Supports enumerating over a set of data.
+| https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ilist-1[IList<T>] | Supports managing a list of objects.
+| https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.ivalidatableobject[IValidatableObject] | Supports validation of an object.
+|===
 
 In many cases you may not even realize you are using an interface. But in all cases you probably did not care how the functionality was provided, just that it worked. That is the benefit of interfaces.
 
@@ -51,6 +47,7 @@ Interfaces are treated as types in .NET. They are first class citizens. Therefor
 
 It is important to remember that an interface is just the declaration of functionality, without the implementation. Interfaces are what other languages call pure abstract classes. That is a type that has no implementation details. An interface is just a set of member declarations. Since an interface has no implementation an instance of an interface cannot be created directly using `new`. Attempting to do so results in a compiler error. 
 
+. Newing Up an Interface
 ```csharp
 ISelectable selectedItem = new ISelectable(); // ERROR
 ```
@@ -62,6 +59,7 @@ To get an interface instnace you must be passed an existing instance of a type t
 - Receive the instance as the argument of a function
 - Typecast an existing object
 
+.Getting an Interface
 ```csharp
 // Create an instance of a type that implements the interface
 ISelectable selectedItem = new SelectableObject();
@@ -78,6 +76,7 @@ ISelectable existing = someValue as ISelectable;
 
 Once you have an interface instance you can call its members like you would for any other type.
 
+.Using an Interface
 ```csharp
 //Select the object
 ISelectable selectedValue = GetSelectedObject();
@@ -90,6 +89,7 @@ Interfaces are reference types in .NET and therefore can be `null`. Code that wo
 
 Like traditional typecasting, an interface does not change the underlying instance. Using an interface simply tells the compiler to limit the members that are available to the calling code. The underlying instance is still typed as whatever type was used when it was created. Calling code can "upcast" back to the original type if it is confident this is true but that defeats the purpose of interfaces.
 
+.Casting to an Interface
 ```csharp
 var originalInstance = new SelectableObject();  //Implements ISelectable
 
@@ -107,7 +107,9 @@ Sometimes it may be necessary to create a new interface. Creating an interface s
 
 Creating a new interface is similar to creating a new class except no implementation details are needed.
 
-```grammar
+.Interface Syntax
+[source,text]
+----
 interface ::= [access] 'interface' <id> '{' member* '}'
 
 member ::= <method | property | event
@@ -119,7 +121,7 @@ property ::= <type> <id> '{' ['get;'] ['set;'] '}'
 method ::= <type> <id> '(' parameters* ');'
 
 parameters ::= standard parameter syntax
-```
+----
 
 It is the standard to start interfaces with "I". This helps indicate to calling code that the type is an interface. This is one of the rare cases where Hungarian notation is still used. Unlike regular types interfaces are generally named using verbs. Classes represent objects and therefore are nouns, interfaces represent functionality. Interfaces are used to identify functionality that types can provide such as comparability, enumerability and validatability. 
 
@@ -129,6 +131,7 @@ While there is no restriction on how many members can be in an interface each in
 
 For example if we want to support selection and resizing of objects we would use the `ISelectable` interface for selection and the `IResizable` interface for resizing. It might be defined like this.
 
+.Creating an Interface for Resizing
 ```csharp
 public interface IResizable
 {
@@ -142,20 +145,19 @@ It might seem wasteful to create two interfaces for four members but what this p
 
 Interfaces are immutable once they are released. Therefore it is critical that when creating a new interface you carefully design the interface to contain all the members that may be needed to consume the interface. Furthermore you must be careful to not include any implementation details in the interface but still allow enough flexibility for a variety of implementations to be created. This requires a good understanding of how the interface should behave and how it might be used. 
 
-*Note: It is common to create an interface as code is being written but this is almost never the correct approach. In the case of a single implementation there is no need for an interface. The recommendation is to rely on standard classes and inheritance until at least two different implementations exist and then normalize the shared behavior into an interface.*
+NOTE: It is common to create an interface as code is being written but this is almost never the correct approach. In the case of a single implementation there is no need for an interface. The recommendation is to rely on standard classes and inheritance until at least two different implementations exist and then normalize the shared behavior into an interface.
 
 ## Implementing Interfaces
 
-???
+NOTE: Work in Progress
 
 Interfaces are generally used to indicate that some type "supports" some functionality (e.g. selection). Therefore it is quite common for a type to implement one or more interfaces indicating it supports one or more features. 
 
-
 Continuing with the `ISelectable` interface, how you implement selection for a circle is different than how you might implement it for a rectangle. For non-rectangular objects you generally calculate a "bounding box" around the entire shape. In the case of a circle that would be a box that exactly encloses the circle. For a rectangle however it is the bounding box. Again, code wanting to select the object does not care whether it is a circle or rectangle, it simply "selects" the object. 
-
 
 A type indicates the interface(s) it implements by including them using the same syntax that is used for base types. This is a syntactical convenience and should not be used to imply an interface is a base type. 
 
+.Implementing an Interface
 ```csharp
 public class Circle : ISelectable, IResizable
 { ... }
@@ -163,6 +165,7 @@ public class Circle : ISelectable, IResizable
 
 A single type can implement any number of interfaces. When a type indicates it implements an interface it is agreeing to provide an implementation for all the members defined in the interface. Therefore the compiler will require that all the interface members have an implementation. Failure to do so results in a compiler error. To implement a member provide a public member that matches the signature of each interface member.
 
+.Implementing Interface Members
 ```csharp
 public class Circle : ISelectable, IResizable
 {
@@ -177,14 +180,15 @@ public class Circle : ISelectable, IResizable
 
 If multiple interfaces declare the same member then only a single implementation is needed. For properties it is allowed to add a getter/setter even if the interface does not explicitly allow it. This is for convenience.
 
-*Note: The interface members must be public.*
+NOTE: The interface members must be public.
 
-The above syntax is referred to as "implicit interface" syntax. In this mode all the interface members are also public members of the corresponding type. This is the most common situation. But there are times when you do not want this behavior. There is also an "explicit interface" syntax that can be used. (*Note: you can use both syntax in the same type, implementing some members explicitly and others implicitly*)
+The above syntax is referred to as "implicit interface" syntax. In this mode all the interface members are also public members of the corresponding type. This is the most common situation. But there are times when you do not want this behavior. There is also an "explicit interface" syntax that can be used. 
 
-??
-
+NOTE: You can use both syntax in the same type, implementing some members explicitly and others implicitly.
 
 ## Consuming an Interface
+
+NOTE: Needs more information.
 
 ? Compared to base types - is-a, changing POV
   ? value types
@@ -207,5 +211,3 @@ The above syntax is referred to as "implicit interface" syntax. In this mode all
 ? IValidatableObject and Validator
 
 ## See Also
-
-[Abstract Classes]() \

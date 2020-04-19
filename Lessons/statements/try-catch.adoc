@@ -1,0 +1,12 @@
+# Try-Catch
+ITSE 1430
+Work in Progress
+:toc:
+
+TBD: Should this just be syntax section with details pushed into other sections?
+
+## See Also
+
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch[C# Try-Catch] +
+link:../error-handling/exceptions.adoc[Error Handling] +
+link:try-finally.adoc[Try-Finally]

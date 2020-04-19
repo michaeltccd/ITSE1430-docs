@@ -1,5 +1,5 @@
 # C# Basics
-* Updated: 04/10/2020*
+*Updated: 04/10/2020*
 
 WIP
 

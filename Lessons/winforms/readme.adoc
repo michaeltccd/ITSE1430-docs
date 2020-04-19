@@ -1,0 +1,65 @@
+# Windows Forms
+ITSE 1430
+Work in Progress
+:toc:
+
+## Windows Forms
+- https://docs.microsoft.com/en-us/dotnet/framework/winforms/getting-started-with-windows-forms[Getting Started]
+- https://docs.microsoft.com/en-us/dotnet/framework/winforms/creating-a-new-windows-form[Creating a Form]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form[Form Class]
+
+## Windows Forms Controls
+- https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls[Definition]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control[Control Class]	
+- https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/windows-forms-controls-by-function[Common Controls]
+  - https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.button[Button]
+  - https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.checkbox[CheckBox]
+  - https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.label[Label]  
+  - https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.menustrip[MenuStrip]  
+  - https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.textbox[TextBox]
+  - https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstrip[ToolStrip]	
+	
+## Form Layouts
+- https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/putting-controls-on-windows-forms[Using the Designer]
+- https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/how-to-resize-controls-on-windows-forms[Resizing a Form]
+- https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/how-to-align-multiple-controls-on-windows-forms[Aligning Controls]
+- https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/how-to-set-the-tab-order-on-windows-forms[Tab Order]
+- https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/how-to-anchor-controls-on-windows-forms[Anchoring a Control]
+- https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/how-to-dock-controls-on-windows-forms[Docking Controls]
+
+## Containers
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.flowlayoutpanel[FLowLayoutPanel]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.panel[Panel]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.splitcontainer[SplitContainer]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.tablelayoutpanel[TableLayoutPanel]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.tabcontrol[TabControl]
+
+## MessageBox
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.messagebox[MessageBox Class]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.dialogresult[DialogResult Enumeration]
+
+## Child Forms
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.showdialog[ShowDialog]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.show[Show]
+
+## Form Lifetime
+- https://docs.microsoft.com/en-us/dotnet/framework/winforms/order-of-events-in-windows-forms[Form Events]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.formclosed[FormClosed Event]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.formclosing[FormClosing Event]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.load[Load Event]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.onformclosed[OnFormClosed Method]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.onformclosing[OnFormClosing Method]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.onload[OnLoad Method]
+
+## Validation
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.validating[Validating Event]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.validated[Validated Event]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.gotfocus[GotFocus Event]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.lostfocus[LostFocus Event]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.validatechildren[ValidateChildren Method]
+
+## Error Provider
+- https://docs.microsoft.com/en-us/dotnet/framework/winforms/user-input-validation-in-windows-forms[Form Validation]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.errorprovider[Error Provider]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.errorprovider.geterror[Getting Errors]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.errorprovider.seterror[Setting Errors]

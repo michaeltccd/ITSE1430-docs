@@ -1,0 +1,18 @@
+# Paths
+ITSE1430
+Work in Progress
+:toc:
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.io.path[Path] class is a static class that provides standard path management functionality. 
+
+NOTE: While the operating system defines the core path rules most file systems have additional rules. In many cases path validation and management is pushed down to the file system. Therefore you may see different results when you are targeting different file systems.
+
+## Common Operations
+
+NOTE: Work in Progress
+
+## See Also
+
+https://docs.microsoft.com/en-us/dotnet/api/system.io.directory[Directory Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.io.file[File Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.io.path[Path Class]

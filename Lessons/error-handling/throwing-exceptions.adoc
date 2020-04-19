@@ -1,29 +1,27 @@
 # Throwing Exceptions
-*Updated: 4/8/2020*
+ITSE 1430
+:toc:
 
-[Throw Statement](#throw-statement) \
-[Rethrowing an Exception](#rethrowing-an-exception) \
-[Throw Expression](#throw-expression) \
-[How Exception Handling Works](#how-exception-handling-works)
-
-To report an error in code you must raise (or throw) an [exception](exceptions.md). Raising an exception notifies any callers higher in the call stack that an error has occurred and allows the caller to handle the error, if possible.
+To report an error in code you must raise (or throw) an link:exceptions.adoc[exception]. Raising an exception notifies any callers higher in the call stack that an error has occurred and allows the caller to handle the error, if possible.
 
 ## Throw Statement
 
-To throw an exception you use the [throw](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/throw) expression.
+To throw an exception you use the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/throw[throw] expression.
 
+.Throwing an Exception
 ```csharp
 throw new Exception("Failed");
 ```
 
-`throw` requires an expression of type [Exception](https://docs.microsoft.com/en-us/dotnet/api/system.exception). In most cases the expression is a new instance but the exception could come from elsewhere, such as the return value of a method.
+`throw` requires an expression of type https://docs.microsoft.com/en-us/dotnet/api/system.exception[Exception]. In most cases the expression is a new instance but the exception could come from elsewhere, such as the return value of a method.
 
 When the statement executes the exception is raised. The current method stops executing and the runtime begins error handling as discussed later. The remainder of the method will not execute.
 
 ## Rethrowing an Exception
 
-When inside a [catch](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch) block the `throw` statement allows a shorter syntax.
+When inside a https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch[catch] block the `throw` statement allows a shorter syntax.
 
+.Rethrowing an Exception
 ```csharp
 try
 {
@@ -40,6 +38,7 @@ This is known as a "rethrow". The statement does not accept an expression but in
 
 Starting with C# 7.x the `throw` statement can also be treated as an expression. This allows you to throw an exception as part of an expression. A common case is when checking the return value of a method.
 
+.Using a Throw Expression
 ```csharp
 //Pre-7.x C#
 var result = GetResult();
@@ -57,14 +56,14 @@ Exceptions that are treated as expressions are thrown when the expression is eva
 When an exception is thrown the following steps are taken.
 
 1. The current method stops executing.
-1. The [StackTrace](https://docs.microsoft.com/en-us/dotnet/api/system.exception.stacktrace) of the exception is updated to match the location where the `throw` statement was executed.
+1. The https://docs.microsoft.com/en-us/dotnet/api/system.exception.stacktrace[StackTrace] of the exception is updated to match the location where the `throw` statement was executed.
 1. An appropriate exception handler is located, if any.
 1. The call stack is unwound until the method containing the exception handler is reached, if any.
 1. Execute continues inside the exception handler, if any.
 
 This is known as a first-chance exception. The application is given a chance to handle the exception. To locate an exception handler the runtime does the following.
 
-1. Starting with the current stack frame see if the code is wrapped in a [try-catch](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch) block. If it is then determine if the `catch` block can handle the exception. If the `catch` block can handle the exception is becomes the exception handler for the exception.
+1. Starting with the current stack frame see if the code is wrapped in a https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch[try-catch] block. If it is then determine if the `catch` block can handle the exception. If the `catch` block can handle the exception is becomes the exception handler for the exception.
 1. If the current stack frame cannot handle the exception (either because it does not have a `try-catch` or the `catch` blocks do not handle the exception) then move back to the previous stack frame and repeat the process.
 1. If the runtime gets to the root of the call stack then it is done.
 
@@ -72,6 +71,7 @@ If no exception handler is found then the exception becomes an unhandled excepti
 
 ## See Also
 
-[Exceptions](exceptions.md) \
-[Handling Exceptions](handling-exceptions.md) \
-[(C#) Throw](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/throw)
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/throw[(C#) Throw] +
+link:exceptions.adoc[Exceptions] +
+link:handling-exceptions.adoc[Handling Exceptions] +
+link:../statements/try-catch.adoc[Try-Catch] 
