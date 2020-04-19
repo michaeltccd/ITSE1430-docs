@@ -23,9 +23,16 @@ This is a link to the documentation for each topic discussed in class.
   
 ## Section 4
 
-- link:error-handling/readme.adoc[Error Handling]
-- link:io/files.adoc[Files]
-- link:data-access/readme.adoc[Data Access]
+- Error Handling
+  - link:error-handling/exceptions.adoc[Exceptions]
+  - link:error-handling/handling-exceptions.adoc[Handling Exceptions]
+  - link:error-handling/throwing-exceptions.adoc[Throwing Exceptions]
+- Files  
+  - link:io/files.adoc[Files]
+  - link:io/stream-io.adoc[Stream IO]
+  - link:io/paths.adoc[Paths]
+- Data Access
+  - link:data-access/readme.adoc[Data Access]
 
 ## Section 5
 
