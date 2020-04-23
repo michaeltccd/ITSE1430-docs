@@ -1,4 +1,4 @@
-# Reading Data with Datasets
+# Datasets
 ITSE 1430
 Work in Progress
 :toc:
@@ -21,19 +21,21 @@ Datasets have some pros and cons that you should consider before using them.
 
 You may want to use a dataset if any of the following apply.
 
+- The data needs to be modified and pushed back to the database.
+- You need to load and work with table relationships.
 - You do not have a .NET type that represents the data being returned by the query.
 - The amount of data being returned is small (e.g. less than a couple hundred rows).
-- The data needs to be modified and pushed back to the database.
-- You need a disconnected copy of the data (e.g. a mobile application).
+- You are on an unstable network (e.g. mobile applications) and need a disconnected copy of the data.
 - The structure of the data is not known in advance (e.g. dynamic queries).
 
 You should consider using a data reader or other approach if any of the following apply.
 
-- The amount of data is large (e.g. more than a couple hundred of rows).
-- Memory constraints are tight.
-- Performance is critical.
+- Performance is critical. Datasets use data readers under the hood to read data and must build the table structure which is slow.
+- Memory constraints are tight. Datasets keep a copy of the schema plus at least one copy of each row. 
+- The amount of data is large (e.g. more than a couple hundred of rows). The overhead of a dataset gets worse as the number of rows increase.
 - You are going to convert the rows of data to a business object.
 - You need read only access to the data.
 
 ## See Also
 
+link:datareader.adoc[Data Readers]

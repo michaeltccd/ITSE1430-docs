@@ -1,0 +1,25 @@
+# Data Readers
+ITSE 1430
+Work in Progress
+:toc:
+
+## Advantages and Disadvantages of Data Readers
+
+Data readers have some pros and cons that you should consider before using them.
+
+In general you should start with a data reader and only use something else if the data reader does not have the functionality you need. If any of the following conditions are true you should use a data reader.
+
+- Performance is critical. Data readers are always faster than datasets.
+- Memory is tight. Data readers store only the current row (plus buffering).
+- You are going to use a .NET object to store the data. Data readers have minimal overhead so duplication of data is minimized.
+
+You should not use a data reader if you need any of the following behavior.
+
+- You need to modify data in a table structure and push it back to the database.
+- You need to load and work with the table relationships directly.
+- You are running on an unreliable network (e.g. mobile applications) where the database connection is not stable.
+- You are working with dynamic data that may alter in structure (e.g. dynamic queries).
+
+## See Also
+
+link:dataset.adoc[Datasets]

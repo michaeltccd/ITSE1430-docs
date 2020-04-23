@@ -11,8 +11,8 @@ link:connections.adoc[Connecting to a Database]
 
 link:commands.adoc[Executing Commands]
 
-link:dataset.adoc[Reading Data with Datasets]
+link:dataset.adoc[Datasets]
 
-link:datareader.adoc[Reading Data with Data Readers]
+link:datareader.adoc[Data Readers]
 
 link:providers.adoc[Talking to Any Database]
