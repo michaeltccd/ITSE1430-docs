@@ -1,0 +1,16 @@
+# Building a Data Access Layer
+ITSE 1430
+Work in Progress
+:toc:
+
+It a typical architecture it is important to separate the layers of an application into different components. This helps with separation of concerns, maintability, ease of understanding and makes it more clear when changes may cross boundaries unexpectedly. In a typical 3-layer application the layers include: presentation, business and data. 
+
+## Presentation
+
+The presentation layer is the UI of the application. For applications 
+
+## Business
+
+## Data
+
+## See Also

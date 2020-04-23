@@ -1,0 +1,39 @@
+# Reading Data with Datasets
+ITSE 1430
+Work in Progress
+:toc:
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.data.dataset[Dataset] is an in-memory representation of a database. Since it is unrealistic to store the entire database in memory the dataset only contains the set of tables, columns and rows needed for the request. Specifically the dataset is populated with the table(s), columns and rows from the query that is used to populate it.
+
+## Populating a Dataset
+
+## Data Adapters
+
+## Enumerating the Data
+
+## Making Changes to the Data
+
+## Creating an In Memory Database
+
+## Advantages and Disadvantages of Datasets
+
+Datasets have some pros and cons that you should consider before using them.
+
+You may want to use a dataset if any of the following apply.
+
+- You do not have a .NET type that represents the data being returned by the query.
+- The amount of data being returned is small (e.g. less than a couple hundred rows).
+- The data needs to be modified and pushed back to the database.
+- You need a disconnected copy of the data (e.g. a mobile application).
+- The structure of the data is not known in advance (e.g. dynamic queries).
+
+You should consider using a data reader or other approach if any of the following apply.
+
+- The amount of data is large (e.g. more than a couple hundred of rows).
+- Memory constraints are tight.
+- Performance is critical.
+- You are going to convert the rows of data to a business object.
+- You need read only access to the data.
+
+## See Also
+

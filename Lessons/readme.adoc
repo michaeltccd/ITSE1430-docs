@@ -32,7 +32,7 @@ This is a link to the documentation for each topic discussed in class.
   - link:io/stream-io.adoc[Stream IO]
   - link:io/paths.adoc[Paths]
 - Data Access
-  - link:data-access/readme.adoc[Data Access]
+  - link:ado-net/readme.adoc[Data Access]
 
 ## Section 5
 
