@@ -1,17 +1,179 @@
 # Data Readers
 ITSE 1430
-Work in Progress
 :toc:
+
+A data reader is a streaming approach to reading data from a database. A data reader loads a single row from the database at a time. Therefore a data reader can support reading hundreds or thousands of rows without using up a lot of memory. Because a data reader has almost no overhead it is very lightweight irrelevant of the underlying query.
+
+NOTE: For reference purposes this document will use the SQL version of the types when needed. Every provider has its own provider-specific implementation but the general usage should remain the same.
+
+## Getting a Data Reader
+
+You cannot create a data reader directly. Instead you must use the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.executereader[DbCommand.ExecuteReader] method.
+
+.Opening a Data Reader
+[source,csharp]
+----
+using (var reader = cmd.ExecuteReader())
+{
+   //Read data
+};
+----
+
+Notice the `using` statement here. Data readers implement https://docs.microsoft.com/en-us/dotnet/api/system.idisposable[IDisposable]. The connection to the database must remain open for the life of the reader. It is streaming the data after all. When the reader is done the connection can be closed.
+
+NOTE: Data readers use the https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization[RAII] pattern. Therefore it is not necessary to close the connection directly but it is considered good style.
+
+## Enumerating Rows
+
+The reader that is returned from `ExecuteReader` has not yet read any data. To read data you must call the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.read[Read] method. A data reader works a lot like the `IEnumerable<T>` interface in that each call to `Read` moves to the next row. When there is no more rows to read then it returns `false`.
+
+.Enumerating Rows
+[source,csharp]
+----
+using (var reader = cmd.ExecuteReader())
+{
+   while (reader.Read())
+   {
+      //Read row      
+   };
+};
+----
+
+The reader acts as both the enumerable object and as the current row.
+
+## Reading Data
+
+Once the reader has acquired a row the data can be read using a variety of approaches.
+
+The first approach is to use the `Get...` methods that return primitives. For example the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.getint32[GetInt32] method returns an integreal value while the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.getstring[GetString] returns a string.
+
+.Read Using Get Methods
+[source,csharp]
+----
+var id = reader.GetInt32(0);
+var name = reader.GetString(1);
+----
+
+The methods accept a zero-based ordinal and returns the typed value. If the value cannot be converted then it will throw an exception.
+
+Alternatively the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.getfieldvalue[GetFieldValue] method can be used. This is the generic version of the `Get...` methods and is generally the preferred approach.
+
+.Reading using GetFieldValue
+[source,csharp]
+----
+var id = reader.GetFieldValue<int>(0);
+var name = reader.GetFieldValue<string>(1);
+----
+
+While the method is generic, attempting to use anything beyond a primitive, string or byte array will generally result in an exception.
+
+Yet another approach is to use array syntax on the reader.
+
+.Reading using Array Syntax
+[source,csharp]
+----
+var id = Convert.ToInt32(reader[0]);
+var name = reader[1]?.ToString();
+----
+
+The advantage of this approach is that value is returned as an `object` which makes it easier to handle unknown data. Calling code must convert to a more specific type if needed. Another advantage of this approach is that column names can be used in addition to ordinals.
+
+[sidebar]
+.Ordinals vs Strings
+--
+In some cases either a zero-based ordinal or a string name can be used to identify a column. Which approach to use can vary depending upon requirements.
+
+Ordinals have the following advantages
+
+- Names are often related to column names in tables and can change. Ordinals eliminate any dependency on the actual name.
+- Ordinals can be used to directly access the row value without any lookup.
+
+Strings have the following advantages
+
+- Eliminates the dependency on the column ordering.
+- Makes code easier to read.
+--
+
+## Handling Null
+
+In the database a value can be `NULL`. Database nulls are not the same as .NET `null`. Database nulls return the value of https://docs.microsoft.com/en-us/dotnet/api/system.dbnull.value[DBNull.Value] instead of `null`. This makes sense because most primitive types cannot be set to `null` so an `int`-returning function cannot represent `null`.
+
+Code must handle the case where the database has no value for a column. Unfortunately a simple null check does not work. Use the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.isdbnull[IsDbNull] method to check for a database null. Failure to check can result in an exception when retrieving a value.
+
+.Using IsDBNUll
+[source,csharp]
+----
+var description = reader.IsDBNull(0) ? "" : reader.GetString(0);
+----
+
+At this time the C# https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator[null coalescing] and https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators[null conditional] operators do not work with `DBNull`.
+
+## Working with Multiple Resultsets
+
+Most queries return a single table (resultset) but this is not required. In some cases returning multiple resultsets is useful. Each resultset is a separate "table" and can return different columns of data. By default the reader starts with the first table automatically. To move to the next table use the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.nextresult[NextResult] method.
+
+.Enumerate Resultsets
+[source,csharp]
+----
+using (var reader = cmd.ExecuteReader())
+{
+   do 
+   {
+      while (reader.Read())
+      {
+         //Read row      
+      };
+   } while (reader.NextResult());  //Move to next resultset
+};
+----
+
+## Getting Column Information
+
+Working with zero-based ordinals is not always beneficial. To get the ordinal, if any of a column given its name use the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.getordinal[GetOrdinal] method.
+
+.Getting a Column Ordinal
+[source,csharp]
+----
+var ordinal = reader.GetOrdinal("name");
+var name = reader.GetString[ordinal];
+----
+
+Unfortunately if the name does not exist it will throw an exception. The alternative approach is to get the column names based upon the ordinals using https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.getname[GetName]. To determine how many columns there are use the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.fieldcount[FieldCount] property.
+
+.Getting Column Names
+[source,csharp]
+----
+public static class DataReaderExtensions
+{
+   public static IEnumerable<string> GetColumnNames ( this IDataRecord source )
+   {
+      for (var ordinal = 0; ordinal < source.FieldCount; ++ordinal)
+         yield return source.GetName(ordinal);
+   }
+}
+----
+
+If the column type is not known then the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.getfieldtype[GetFieldType] method can be used.
+
+.Getting Column Type
+[source,csharp]
+----
+var type = reader.GetFieldType(0);
+----
+
+The return value can be `null` if .NET does not support the field type.
 
 ## Advantages and Disadvantages of Data Readers
 
-Data readers have some pros and cons that you should consider before using them.
+Data readers have some pros and cons that you should consider before using.
 
-In general you should start with a data reader and only use something else if the data reader does not have the functionality you need. If any of the following conditions are true you should use a data reader.
+NOTE: In general you should start with a data reader and only use something else if the data reader does not have the functionality you need.
 
-- Performance is critical. Data readers are always faster than datasets.
-- Memory is tight. Data readers store only the current row (plus buffering).
-- You are going to use a .NET object to store the data. Data readers have minimal overhead so duplication of data is minimized.
+If any of the following conditions are true you should use a data reader.
+
+- Performance is critical.
+- Memory is tight.
+- You are going to use a .NET object to store the data.
 
 You should not use a data reader if you need any of the following behavior.
 
@@ -22,4 +184,6 @@ You should not use a data reader if you need any of the following behavior.
 
 ## See Also
 
-link:dataset.adoc[Datasets]
+link:dataset.adoc[Datasets] +
+https://docs.microsoft.com/en-us/dotnet/api/system.dbnull[DBNull Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader[SqlDataReader Class]

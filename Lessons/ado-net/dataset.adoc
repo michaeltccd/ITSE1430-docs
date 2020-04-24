@@ -9,7 +9,9 @@ The https://docs.microsoft.com/en-us/dotnet/api/system.data.dataset[Dataset] is 
 
 ## Data Adapters
 
-## Enumerating the Data
+## Enumerating Rows
+
+## Reading Data
 
 ## Making Changes to the Data
 
