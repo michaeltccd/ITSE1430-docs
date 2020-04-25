@@ -5,19 +5,103 @@ Work in Progress
 
 The https://docs.microsoft.com/en-us/dotnet/api/system.data.dataset[Dataset] is an in-memory representation of a database. Since it is unrealistic to store the entire database in memory the dataset only contains the set of tables, columns and rows needed for the request. Specifically the dataset is populated with the table(s), columns and rows from the query that is used to populate it.
 
-## Populating a Dataset
-
 ## Data Adapters
 
+Before getting into using a dataset it is necessary to talk about a https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbdataadapter[data adapter]. Data adapters adapt data to and from the database. Ultimately a data adapter is simply a wrapper around the commands that need to be run to get data into and out of a database. Remember that a dataset is an in-memory representation of tables. Therefore it can be used to modify the tables and send them back to the database. To update data in the database ultimately requires an: insert, update or delete command depending upon the change. To retrieve data you need a select command. Since a dataset can do all this it needs all the commands in order to retrieve and set data. That is where the data adapter comes in.
+
+The data adapter contains the following core properties.
+
+.Data Adapter Properties
+|===
+| Property | Description
+| https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldataadapter.deletecommand[DeleteCommand] | Deletes rows from a table.
+| https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldataadapter.insertcommand[InsertCommand] | Inserts rows into the table.
+| https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldataadapter.updatecommand[UpdateCommand] | Updates rows in the table.
+| https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldataadapter.selectcommand[SelectCommand] | Reads data from the table.
+|===
+
+If the table is only being read then the `SelectCommand` needs to be set otherwise all the commands need to be set. Each command contains the SQL code to execute and the connection to use. 
+
+Refer to the section on modifying data for more information.
+
+CAUTION: While each command has its own connection object and could technically point to a different database this would ultimately cause the update to fail.
+
+## Populating a Dataset
+
+To populate a dataset do the following.
+
+1. Create the dataset.
+1. Create the select command.
+1. Create the data adapter.
+1. Set the `SelectCommand` on the data adapter.
+1. Call https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbdataadapter.fill[Fill] on the data adapter passing the dataset to it.
+
+.Populating a Dataset
+[source,csharp]
+----
+var command = conn.CreateCommand();
+command.CommandText = "SELECT ...";
+
+var da = new SqlDataAdapter() {
+   SelectCommand = command
+};
+
+var ds = new Dataset();
+
+da.Fill(ds);
+----
+
+Once the method returns the dataset contains the data from the select command.
+
 ## Enumerating Rows
+
+A dataset can contain multiple tables (or none) but generally a query returns one table. Unfortunately ADO.NET was written before generics and none of the existing types were updated to support https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[IEnumerable<T>] and therefore LINQ does not work.
 
 ## Reading Data
 
 ## Making Changes to the Data
 
+To modify data using a dataset first load the data using `Fill`. Then make changes to the data in the dataset. This can include adding new rows, modifying existing data or deleting rows. Once done then use the https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbdataadapter.update[Update] method on the data adapter to push the changes back to the database.
+
+.Configuring a Data Adapter
+[source,csharp]
+----
+var insertCommand = conn.CreateCommand();
+insertCommand.CommandText = "INSERT INTO ...";
+
+var deleteCommand = conn.CreateCommand();
+deleteCommand.CommandText = "DELETE FROM ...";
+
+var updateCommand = conn.CreateCommand();
+updateCommand.CommandText = "UPDATE ...";
+
+var selectCommand = conn.CreateCommand();
+selectCommand.CommandText = "SELECT ...";
+
+var da = new SqlDataAdapter() {
+   InsertCommand = insertCommand,
+   DeleteCommand = deleteCommand,
+   UpdateCommand = updateCommand
+};
+
+//Load the data
+var ds = new Dataset();
+da.Fill(ds);
+
+//Modify the data
+//...
+
+//Save the data
+da.Update(ds);
+----
+
+The dataset tracks the original values loaded and any changes made. When `Update` is called it enumerates all the changes and applies them to the database. This is all done in a batch so either all changes are made or they all fail.
+
 ## Creating an In Memory Database
 
 ## Advantages and Disadvantages of Datasets
+
+The primary benefit of datasets is the ability to quickly load data from a database and be able to manipulate the data without adding too much extra code.
 
 Datasets have some pros and cons that you should consider before using them.
 
@@ -40,4 +124,5 @@ You should consider using a data reader or other approach if any of the followin
 
 ## See Also
 
+https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbdataadapter[Data Adapters] +
 link:datareader.adoc[Data Readers]
