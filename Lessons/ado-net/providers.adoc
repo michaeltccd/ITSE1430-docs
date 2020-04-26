@@ -1,0 +1,86 @@
+# Database Providers
+ITSE 1430
+:toc:
+
+ADO.NET supports any database that has a database provider. While in this tutorial SQL Server has been used there are many other providers. For the most part they all work the same and use similar types. The biggest differences lie in the type names themselves and how parameters and commands are handled. Refer to the documentation for each provider for more detailed information. Here are some common providers.
+
+.Command ADO.NET Providers
+|===
+| Provider | Namespace | Description
+| SQL Server |  `System.Data.SqlClient` | Microsoft SQL Server
+| Oracle | `System.Data.OracleClient` | [Deprecated] Oracle
+| ODP.NET | `Oracle.ManagedDataAccess.Client` | Oracle (current version)
+| MySQL | `MySql.Data.MySqlClient` | MySQL
+| Sqlite | `System.Data.SQLite` | Sqlite
+| Access | `System.Data.OleDb` | Microsoft Access
+|===
+
+## OLE DB
+
+https://en.wikipedia.org/wiki/OLE_DB[OLE DB] is a COM-based API provided by Windows for working with arbitrary databases. It was designed to be a replacement to the older `ODBC` interface. In theory any database that supports OLE DB, which is most of them, can be access through this interface. The https://docs.microsoft.com/en-us/dotnet/api/system.data.oledb[System.Data.OleDb] namespace contains the provider and types needed to talk to these databases. When using this provider code must follow the rules of OLE DB whic may differ from the regular providers. Furthermore none of the advanced features of a database are available when using the generic interface.
+
+If a program needs to use Microsoft Access then OLE DB must be used with the JET database provider.
+
+## ODBC
+
+https://en.wikipedia.org/wiki/Open_Database_Connectivity[ODBC] is an even older legacy technology. The biggest advantage of ODBC is that it is not platform specific so every database supports it. The https://docs.microsoft.com/en-us/dotnet/api/system.data.odbc[System.Data.Odbc] namespace contains the types for this provider. Unfortunately ODBC is outdated and has very specific requirements that other providers do not have. ODBC should only be used in the rare cases where no other provider will work.
+
+NOTE: In general do not use ODBC in .NET code. If generic behavior is needed then consider using OLE DB instead.
+
+## Getting a Generic Connection
+
+ADO.NET was written to be database agnostic and it does provide the infrastructure to allow code to be written in a database agnostic way through discovery and use of the base types like https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection[DbConnection], https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand[DbCommand] and https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbparameter[DbParameter]. Code can be written to use these base types if desired. There is little inherit advantage one way or the other. Any database-specific rules must still be followed.
+
+To talk to any database code would first need to get access to the connection type. This information is available through the https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbproviderfactory[DbProviderFactory] abstract class. To get a specific provider, or a list of all providers, use https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbproviderfactories[DbProviderFactories].
+
+.Getting Available Providers
+[source,csharp]
+----
+DataTable factories = DbProviderFactories.GetFactoryClasses();
+foreach (var factory in factories.Rows.OfType<DataRow>())
+{
+   var name = factory["Name"];
+   var description = factory["Description"];
+   var invariantName = factory["InvariantName"];
+   var typeName = factory["AssemblyQualifiedName"];
+};
+----
+
+Once the list of factories is available the `DataRow` or invariant name can be used to get an instance of the provider factory.
+
+.Get Provider Factory
+[source,csharp]
+----
+DbProviderFactory factory = DbProviderFactories.GetFactory(invariantName);
+----
+
+The provider factory exposes methods to create connections, commands, data adapters and parameters. Only the connection is really needed to write provider-agnostic code as the other types can be created from the connection or related types.
+
+.Creating a Connection
+[source,csharp]
+----
+DbConnection conn = factory.CreateConnection();
+----
+
+## Calling Generic Commands
+
+The hard part of working with generic code is that all the provider-specific rules must be followed including naming convention. Some of this is obtainable through analyzing data from the https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection.getschema[GetSchema] method of the connection. Unfortunately the information returned varies by providers.
+
+.Getting Parameter Prefix
+[source,csharp]
+----
+DataTable dt = conn.GetSchema("DataSourceInformation");
+var row = dt.Rows.OfType<DataRow>().FirstOrDefault();
+if (row != null)
+{
+   var parameterFormat = row.Field<string>("ParameterMarkerFormat");
+};
+----
+
+Refer to https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/retrieving-database-schema-information[Retrieving Database Schema Information] for more information.
+
+## See Also
+
+https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/data-providers[.NET Framework Data Providers] +
+https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbproviderfactory[DbProviderFactory] +
+https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/retrieving-database-schema-information[Retrieving Database Schema Information]

@@ -1,6 +1,5 @@
 # Datasets
 ITSE 1430
-Work in Progress
 :toc:
 
 The https://docs.microsoft.com/en-us/dotnet/api/system.data.dataset[Dataset] is an in-memory representation of a database. Since it is unrealistic to store the entire database in memory the dataset only contains the set of tables, columns and rows needed for the request. Specifically the dataset is populated with the table(s), columns and rows from the query that is used to populate it.
@@ -55,13 +54,136 @@ Once the method returns the dataset contains the data from the select command.
 
 ## Enumerating Rows
 
-A dataset can contain multiple tables (or none) but generally a query returns one table. Unfortunately ADO.NET was written before generics and none of the existing types were updated to support https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[IEnumerable<T>] and therefore LINQ does not work.
+A dataset can contain multiple tables (or none) but generally a query returns one table. Unfortunately ADO.NET was written before generics and none of the existing types were updated to support https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[IEnumerable<T>] and therefore LINQ does not work. However the https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.oftype[OfType] method from LINQ can convert an `IEnumerable` to `IEnumerable<T>` safely.
+
+.Convering IEnumerable to IEnumerable<T>
+[source,csharp]
+----
+IEnuemrable<DataTable> tables = ds.Tables.OfType<DataTable>();
+----
+
+Once converted to an `IEnumerable<T>` LINQ is now available. To get the first table from the dataset use the https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.firstordefault[FirstOrDefault] method.
+
+.Get the First Table
+[source,csharp]
+----
+var table = ds.Tables.OfType<DataTable>.FirstOrDefault();
+if (table != null)
+{ 
+   ...
+};
+----
+
+To enumerate the rows of a table use a similar approach of casting the `IEnumerable` https://docs.microsoft.com/en-us/dotnet/api/system.data.datatable.rows[Rows] property to `IEnumerable<DataRow>`.
+
+.Enumerating Rows of a Table
+[source,csharp]
+----
+foreach (var row in table.Rows.OfType<DataRow>())
+{
+   ...
+};
+----
 
 ## Reading Data
 
+Reading data from a row can be done in several different ways.
+
+NOTE: Refer to the section link:ordinal-vs-string.adoc[Ordinal vs String] for information on using ordinals vs strings when reading data.
+
+### Field Method
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.data.datarowextensions.field[Field<T>] extension method can be used. This is an extension method that added generic support to retrieving data.
+
+.Reading using Field
+[source,csharp]
+----
+var id = row.Field<int>(0);
+var name = row.Field<string>("Name");
+----
+
+The method can be used with either a zero-based ordinal or a column name. While the method is generic, attempting to use anything beyond a primitive, string or byte array will generally result in an exception.
+
+### Array Syntax
+
+Yet another approach is to use array syntax on the reader.
+
+.Reading using Array Syntax
+[source,csharp]
+----
+var id = Convert.ToInt32(row[0]);
+var name = row["Name"]?.ToString();
+----
+
+Once again either a zero-based ordinal or column name can be used to identify the column.
+
+The advantage of this approach is that value is returned as an `object` which makes it easier to handle unknown data. Calling code must convert to a more specific type if needed. 
+
+## Handling Null
+
+In the database a value can be `NULL`. Database nulls are not the same as .NET `null`. Database nulls return the value of https://docs.microsoft.com/en-us/dotnet/api/system.dbnull.value[DBNull.Value] instead of `null`. This makes sense because most primitive types cannot be set to `null` so an `int`-returning function cannot represent `null`.
+
+Code must handle the case where the database has no value for a column. Unfortunately a simple null check does not work. Use the https://docs.microsoft.com/en-us/dotnet/api/system.data.datarow.isnull[IsNull] method to check for a database null. Failure to check can result in an exception when retrieving a value.
+
+.Using IsNUll
+[source,csharp]
+----
+var description = row.IsNull(0) ? "" : row.Field<string>(0);
+var rating = row.IsNull("Rating") ? "" : row.Field<string>("Rating");
+----
+
+At this time the C# https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator[null coalescing] and https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators[null conditional] operators do not work with `DBNull`.
+
 ## Making Changes to the Data
 
-To modify data using a dataset first load the data using `Fill`. Then make changes to the data in the dataset. This can include adding new rows, modifying existing data or deleting rows. Once done then use the https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbdataadapter.update[Update] method on the data adapter to push the changes back to the database.
+To modify data using a dataset first load the data using `Fill`. Then make changes to the data in the dataset. This can include adding new rows, modifying existing data or deleting rows. 
+
+### Adding Rows
+
+To add a row to a datatable there are a couple of approaches. The first approach is to create the `DataRow` instance, populate the columns and then add the row. Because a row require a specific set of columns it has to be created using the https://docs.microsoft.com/en-us/dotnet/api/system.data.datatable.newrow[DataTable.NewRow] method. This method only creates the row, it does not add it.
+
+.Adding a Row
+[source,csharp]
+----
+var row = table.NewRow();
+row["Name"] = "Jaws";
+row["Description"] = "Shark movie";
+row["Rating"] = "PG";
+
+table.Rows.Add(row);
+----
+
+`DataRow` allows either ordinal or column names to be used.
+
+CAUTION: Ensure that the row is added to the datatable using the `Add` method. Creating a new row does not add it to the table.
+
+### Modifying Rows
+
+To modify an existing row find it in the table and then use the array syntax to modify the column values using either ordinal or column names.
+
+.Modifying a Row
+[source,csharp]
+----
+var row = table.Rows.Find(10);
+
+row["Description"] = "First movie";
+----
+
+### Deleting Rows
+
+To delete a row use the https://docs.microsoft.com/en-us/dotnet/api/system.data.datarowcollection.remove[Remove] method of the `DataTable.Rows` property.
+
+.Deleting a Row
+[source,csharp]
+----
+var row = table.Rows.Find(10);
+
+table.Rows.Remove(row);
+----
+
+### Saving Changes
+
+Once the rows have been modified use the https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbdataadapter.update[Update] method on the data adapter to push the changes back to the database.
 
 .Configuring a Data Adapter
 [source,csharp]
@@ -99,6 +221,61 @@ The dataset tracks the original values loaded and any changes made. When `Update
 
 ## Creating an In Memory Database
 
+Since a dataset represents an in-memory database it can be used to build a database structure in code for such things as testing or for seeding a database. To build an in-memory database code must define the table(s) in the database and the columns for each table. Optionally the code can add rows for each table.
+
+### Creating a Table
+
+To create a table create an instance of https://docs.microsoft.com/en-us/dotnet/api/system.data.datatable[DataTable] and set the columns. Tables should generally be given descriptive names but this is only necessary if persisting data. Once the table is created add it to the https://docs.microsoft.com/en-us/dotnet/api/system.data.dataset.tables[Dataset.Tables] property.
+
+.Creating a Table
+[source,csharp]
+----
+var table = new DataTable("Products");
+
+//Add columns
+//Optionally add rows
+
+//Add to parent dataset
+dsParent.Tables.Add(table);
+----
+
+The order in which tables are added does not matter however if relationships need to be set up it is generally better to add tables in order.
+
+### Creating a Column
+
+To create a simple column in a table use the https://docs.microsoft.com/en-us/dotnet/api/system.data.datacolumncollection.add[Add] method of the https://docs.microsoft.com/en-us/dotnet/api/system.data.datatable.columns[DataTable.Columns] property. It requires just the column name and type.
+
+.Adding a Simple Column
+[source,csharp]
+----
+var colName = table.Columns.Add("Name", typeof(string));
+----
+
+Alternatively create the https://docs.microsoft.com/en-us/dotnet/api/system.data.datacolumn[DataColumn] instance explicitly with the appropriate name, type and constraints and use the overload of `Add` that accepts the column instance.
+
+.Adding a Complex Column
+[source,csharp]
+----
+var colId = new DataColumn("Id", typeof(int))
+colId.AllowDBNull = false;
+colId.AutoIncrement = true;
+
+table.Columns.Add(colId);
+----
+
+### Adding Rows
+
+Adding rows to an in-memory dataset works just like a dataset obtained from a database. You can use the https://docs.microsoft.com/en-us/dotnet/api/system.data.datatable.rows[DataTable.Rows] property to add rows.
+
+.Adding Rows to a Table
+[source,csharp]
+----
+var row = table.NewRow();
+row["Id"] = 1;
+row["Name"] = "Bob";
+table.Rows.Add(row);
+----
+
 ## Advantages and Disadvantages of Datasets
 
 The primary benefit of datasets is the ability to quickly load data from a database and be able to manipulate the data without adding too much extra code.
@@ -125,4 +302,7 @@ You should consider using a data reader or other approach if any of the followin
 ## See Also
 
 https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbdataadapter[Data Adapters] +
-link:datareader.adoc[Data Readers]
+link:datareader.adoc[Data Readers] +
+https://docs.microsoft.com/en-us/dotnet/api/system.data.datarow[DataRow Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.data.datatable[DataTable Class] +
+link:ordinal-vs-string.adoc[Ordinal vs String]

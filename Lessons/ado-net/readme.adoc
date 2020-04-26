@@ -15,4 +15,4 @@ link:dataset.adoc[Datasets]
 
 link:datareader.adoc[Data Readers]
 
-link:providers.adoc[Talking to Any Database]
+link:providers.adoc[Database Providers]

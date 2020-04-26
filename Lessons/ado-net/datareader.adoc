@@ -45,6 +45,10 @@ The reader acts as both the enumerable object and as the current row.
 
 Once the reader has acquired a row the data can be read using a variety of approaches.
 
+NOTE: Refer to the section link:ordinal-vs-string.adoc[Ordinal vs String] for information on using ordinals vs strings when reading data.
+
+### Get Method
+
 The first approach is to use the `Get...` methods that return primitives. For example the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.getint32[GetInt32] method returns an integreal value while the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.getstring[GetString] returns a string.
 
 .Read Using Get Methods
@@ -55,6 +59,8 @@ var name = reader.GetString(1);
 ----
 
 The methods accept a zero-based ordinal and returns the typed value. If the value cannot be converted then it will throw an exception.
+
+### GetFieldValue Method
 
 Alternatively the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.getfieldvalue[GetFieldValue] method can be used. This is the generic version of the `Get...` methods and is generally the preferred approach.
 
@@ -67,6 +73,8 @@ var name = reader.GetFieldValue<string>(1);
 
 While the method is generic, attempting to use anything beyond a primitive, string or byte array will generally result in an exception.
 
+### Array Syntax
+
 Yet another approach is to use array syntax on the reader.
 
 .Reading using Array Syntax
@@ -77,22 +85,6 @@ var name = reader[1]?.ToString();
 ----
 
 The advantage of this approach is that value is returned as an `object` which makes it easier to handle unknown data. Calling code must convert to a more specific type if needed. Another advantage of this approach is that column names can be used in addition to ordinals.
-
-[sidebar]
-.Ordinals vs Strings
---
-In some cases either a zero-based ordinal or a string name can be used to identify a column. Which approach to use can vary depending upon requirements.
-
-Ordinals have the following advantages
-
-- Names are often related to column names in tables and can change. Ordinals eliminate any dependency on the actual name.
-- Ordinals can be used to directly access the row value without any lookup.
-
-Strings have the following advantages
-
-- Eliminates the dependency on the column ordering.
-- Makes code easier to read.
---
 
 ## Handling Null
 
@@ -186,4 +178,5 @@ You should not use a data reader if you need any of the following behavior.
 
 link:dataset.adoc[Datasets] +
 https://docs.microsoft.com/en-us/dotnet/api/system.dbnull[DBNull Class] +
+link:ordinal-vs-string.adoc[Ordinal vs String] +
 https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader[SqlDataReader Class]
