@@ -1,0 +1,20 @@
+= Introduction to C# Programming (ITSE 1430)
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+This is the documentation site for this course.
+
+== Set Up
+
+Refer to the link:setup/readme.adoc[Setup] section for important information on how to properly set up your computer for this course.
+
+== Getting Started
+
+Refer to the link:gettingstarted/readme.doc[Getting Started] guide for help on using the tools in this class.
+
+== Book
+
+The book for this course is available electronically link:book/readme.adoc[here].
+
+The source code referenced in the book is available link:src/readme.md[here].

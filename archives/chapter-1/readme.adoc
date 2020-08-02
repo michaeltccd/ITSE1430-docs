@@ -1,0 +1,16 @@
+= Chapter 1: Introduction to C#
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+This chapter provides an introduction to C#, Visual Studio and the development process.
+
+NOTE: Before you begin be sure to follow the link:gettingstarted/readme.adoc[Getting Started] guide.
+
+# Introduction to C#
+
+
+- link:introduction-to-csharp.adoc[Introduction to C#]
+- link:../../documentation/visualstudio/gettingstarted/readme.md[Getting Started with Visual Studio]
+- link:../../documentation/visualstudio/gettingstarted/debugging.md[Introduction to Debugging]
+- link:../../documentation/github/readme.md[Introduction to Github]

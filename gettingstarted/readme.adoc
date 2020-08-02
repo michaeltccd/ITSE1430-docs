@@ -1,0 +1,13 @@
+= Getting Started for ITSE 1430
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+Use the Getting Started guides to help prepare you for using the tools in this class.
+
+link:visualstudio/readme.adoc[Getting Started with Visual Studio] +
+link:github/readme.adoc[Getting Started with GitHub]
+
+== See Also
+
+link:../setup/readme.adoc[Setting Up]

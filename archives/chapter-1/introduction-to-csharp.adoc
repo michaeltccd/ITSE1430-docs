@@ -1,0 +1,12 @@
+= Introduction to C#
+
+== Hello World
+
+Creating a "hello world" program is standard practice when learning a new language. It creates the (generally) simplest possible program for the language and also introduces the basic structure. Let's create this in C#.
+
+*NOTE: Refer to the link:../../documentation/visualstudio/gettingstarted/readme.md[Getting Started] guide for detailed steps on working with Visual Studio.*
+
+1. Start Visual Studio. 
+1. In the `Start Window` click the option to `Create a new project`.
+1. In the `Create a new project` window search for `Console App` and then click the project template `Console App (.NET Framework)` and ensure the language tag says `C#`. Click `Next` to continue. *(WARNING: Failing to select the correct template will require starting over.)*
+1. In the `Configure your new project` dialog.
