@@ -49,16 +49,7 @@ When debugging stops VS will switch back to the design layout.
 The editor (or document) window is where you will be writing code. 
 The editor window consists of one or more tabs representing the open files.
 
-Some useful information about this window.
-
-* Each tab represents a different document. 
-* The path to a file can be determined by mousing over the file tab.
-* The files may or may not be part of your project so pay careful attention to the files you are editing. 
-* You can quickly go to the directory containing the current document by right clicking the tab and selecting `Open Containing Folder`. 
-* If the contents of a document have been changed but not saved then the tab puts an indicator in the title.
-* All documents in the project are automatically saved when you build.
-* Commonly needed tabs can be pinned to the top of the editor window.
-* Tabs can be undocked from the main editor window and moved to another screen. Pin status transitions with this.
+Refer to the section link:editor-window.adoc[Editor Window] for more information.
 
 === Output Window
 
@@ -73,12 +64,9 @@ More importantly, errors are shown in the order they are generated so focus on r
 === Solution Explorer
 
 The `Solution Explorer` window provides a hierarchial view of the solution and all open projects contained in it. If this window is empty then no solution is open.
-Refer to the section on link:solutions.adoc[solutions] for more information.
+Refer to the section on link:solutions.adoc[solutions] for more information about solutions.
 
-There is an alternative view in this window called `Folder View`. 
-In this mode `Solution Explorer` is showing the underlying file system layout instead of the solution. 
-The layout is determined by the currently active repository.
-When in this mode the window title will contain `Folder View`.
+Refer to the section link:solution-explorer.adoc[Solution Explorer] for more information about `Solution Explorer`.
 
 == Design Windows
 

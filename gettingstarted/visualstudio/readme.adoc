@@ -11,7 +11,10 @@ It is based upon Visual Studio 2017 but the suggestions should be useful in othe
 NOTE: A related product is Visual Studio Code. This newer iteration of Visual Studio is designed for cross-platform development. 
 While the products have similar names, they are completely different.
 
+== Contents
+
 link:ide.adoc[Navigating the IDE] +
+link:creating-solution.adoc[Creating a Solution] +
 link:solutions.adoc[Solutions and Projects] +
 link:builds.adoc[Building Projects] +
 link:debugg.adoc[Debugging Basics]

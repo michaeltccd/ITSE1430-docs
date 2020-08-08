@@ -1,0 +1,12 @@
+= Chapter 1: Introduction to C#
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+This chapter provides an introduction to C# and the .NET runtime.
+
+include::hello-world.adoc[]
+include::parts-of-csharp.adoc[]
+* [C# History]
+* [.NET Runtime]
+

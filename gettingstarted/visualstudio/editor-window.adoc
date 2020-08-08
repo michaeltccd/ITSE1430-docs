@@ -1,0 +1,32 @@
+= Editor Window
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+
+The editor window is where the document windows (or tabs) reside. A document window generally represents a single open file but in some cases no file is needed. The editor window provides a consistent set of features for the documents contained in it.
+
+The editor window, as a collection of documents, provides document level support. You can do the following with the documents in the editor.
+
+* View the path to the document by hovering over the document tab.
+* Go to the file in Windows Explorer by right clicking on the tab.
+* Determine if the document has been modified by looking for an indicator in the tab window.
+* Pin documents to the top of the window to keep them together.
+
+One useful feature of the editor window is that you can have multiple instances. Technically there is only one editor window but multiple frames. Each frame is undocked from the main IDE and can contain any number of document windows. TO create a frame drag a document tab from the editor window. Multiple frames can be created or documents can be dragged between frames as needed. Only one frame can be docked in the IDE.
+
+== Document Window
+
+The document window is where all the code is written. Each supported language provides its own set of language features but most languages share some common functionality.
+
+* Syntax highlighting of code.
+* Background compilation to detect errors earlier.
+* Intellisense to help provide recommendations as code is written.
+* Quick actions to help quickly perform tasks or fix issues.
+* Determine what changes have been made to the code.
+
+== Open Files vs Documents
+
+Be very careful about docoument windows. A document in a window is not necessarily in the project. The document path will often help clarify this but Visual Studio does not indicate whether a document window contains a file from the project or not. 
+
+When a document window contains a random file and not one in the project then the document features are limited. For example compilation errors are not shown. Be sure that all document windows contain only documents in the project to avoid confusion.
+
+Documents in the project are automatically saved when the solution is built. Documents can have breakpoints set and participate in background compilation.

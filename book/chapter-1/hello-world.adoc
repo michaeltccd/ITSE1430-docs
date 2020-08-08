@@ -1,0 +1,98 @@
+= Hello World
+:toc:
+
+Creating a program to print "hello world" is standard practice when learning a new language. It creates the (generally) simplest possible program for the language and also introduces the basic structure. Let's create this in C#.
+
+NOTE: Refer to the link:../../gettingstarted/readme.adoc[Getting Started] guide for detailed steps on working with Visual Studio.
+
+== Create the Project
+
+NOTE: Refer to the link:../../gettingstarted/creating-solution.adoc[Creating a Solution] section for detailed steps on creating a new project.
+
+. Start Visual Studio. 
+. In the `Start Window` click the option to `Create a new project`.
+. In the `Create a new project` window search for `Console App` in the search field or scroll through the project templates and find `Console App (.NET Core)` for C# and then click the project template.
++
+WARNING: Be sure that the project template has `C#` has the language. There are multiple templates with the same name but differ by language.
++
+WARNING: Selecting the wrong project type will generally result in having to create a new project after removing the original project.
+. In the `Configure Project` window set the following
+.. Set `Project name` to `HelloWorld`.
+.. Set `Location` is set to the Github repository (e.g. `c:\users\<user>\source\repos\itse1430\classwork`).
+.. Set `Solution` to the simplified name to `HelloWorld`.
+.. Click `Create` to create the project.
+
+== Navigating the IDE
+
+Once the project is created the editor window should appear with the sample code for a "Hello world" program written in C#. 
+
+.program.cs
+[source,csharp]
+----
+using System;
+
+namespace HelloWorld
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello World!");
+        }
+    }
+}
+----
+
+The editor window is where the code will be written. Refer to the link:../../gettingstarted/visualstudio/editor-window.adoc[Editor Window] section of the Getting Started guide for more information about the editor window.
+
+`Solution Explorer` should also be open. From here you can see the `HelloWorld` solution at the root. Under the solution is a separate node for each project. Since this example contains a single project called `HelloWorld` you should see only one node. Under the project are the files contained in the solution. Refer to the link:../../gettingstarted/visualstudio/solution-explorer.adoc[Solution Explorer] section of the Getting Started guide for more information about `Solution Explorer`.
+
+== Build the Code
+
+You can build and run the code as one step but early on it is better to do it in two to avoid issues.
+
+. Build the solution using one of the following options.
+.. In the menu select `Build \ Build Solution`.
+.. Use the hotkey (default is `F6`).
+.. If using the custom settings then use the toolbar button labeled `Build Solution`
+. If the build is successful the `Output` window should show 0 failures and 1 project successful (or possibly unchanged).
+. If there are build errors then the `Error` window appears so the errors can be fixed.
+
+== Debug the Code
+
+Debugging the code allows you to verify the behavior of the code. Go ahead and run the debugger.
+
+To run the debugger do one of the following.
+. In the menu select `Debug \ Start Debugging`.
+. Use the hotkey (default is `F5`).
+. If using the custom settings then use the toolbar button that looks like a play button.
+
+CAUTION: There is never a reason to run the code inside the IDE without using debugging. Therefore never use the `Run without Debugging` option.
+
+When running the debugger the debugger attempts to run the program from start to end as quickly as possible. In this first example you should see `Hello World!` displayed along with some information about the console. The program has terminated but the console window remains open so you can see any output. You can close the console window if you want.
+
+Sometimes it is necessary to step through the code to debug an issue. Let's do that now. In the document window set a breakpoint on the first line of `Main` (line 8). 
+
+To set a breakpoint do one of the following.
+. Click in the left (gray) margin of the document window.
+. Right click the line and select the menu item `Breakpoint \ Insert Breakpoint`.
+. Click anywhere on the line so the caret is positioned there and then
+.. Use the main menu `Debug \ Toggle Breakpoint`.
+.. Use the hotkey (default is `F9`).
+.. If using the custom settings then use the toolbar button.
+
+You have successfully set a breakpoint when a red symbol should appear in the left margin of the line. You can remove the breakpoint by reversing the process.
+
+Setting a breakpoint tells the debugger to pause the execution and show you current state at that line. Breakpoints are how you debug code in a modern world. You can have any number of breakpoints in your code. Breakpoints on work when the debugger is running.
+
+WARNING: "printf"-style debugging is not allowed in this course.
+
+Now that the breakpoint is set run the debugger again. This time it should stop on the line with the breakpoint. New windows will appear that allow you to debug your program including adjusting what line runs next, view and change variable values and optionally stepping through the code. Press `F10` to execute the current line and move to the next. The line to be executed is highlighted in the debugger.
+
+NOTE: The current line does not execute until the debugger resumes. 
+
+Press `F5` to continue running the program. Since there are no more breakpoints the debugger runs to completion. Had there been more breakpoints it would have stopped when it got to the next one.
+
+Refer to the section on link:../../gettingstarted/visualstudio/debugging.adoc[Debugging] for more information on debugging.
+
+Now that we've created our first C# program it is time to move on and discuss the code. Refer to the link:parts-of-csharp.adoc[Parts of C#] to continue.
