@@ -7,6 +7,17 @@ https://github.com[Github] is the most popular source control system in use toda
 
 NOTE: Git and Github will be used interchangeably here. In most cases the differences are not important. When they are they will be pointed out.
 
+When demonstrating how to perform a task in Github several different options may be shown. You may use the option you are most comfortable with.
+
+Visual Studio's `Team Explorer`::
+The default option in current versions of Visual Studio. This is accessible via the `View` menu and is broken up into separate views.
+Visual Studio's `Git`::
+This is the new option in current versions of Visual Studio. It is still in preview and has some missing features but is focused on Git and easier to work with.
++
+NOTE: To use this option you must enable it using `Tools \ Options` and then `Environment \ Preview Features \ New Git user experience`.
+Console::
+This is useful for quick commands like cloning repositories or updating a branch. It requires using the console window, having Git installed into a location in the path and generally being in the appropriate repository folder.
+
 = Repositories
 
 A `repository` is a collection of files. The repository acts as a container in which operations can be performed on all the files within it. Repositories are generally created to group related files together such as a product for a company or work for a class.
@@ -48,18 +59,58 @@ A consequence of this behavior is that Git does not support empty folders. If th
 
 = Repository Operations
 
+== Authentication
+
+When you connect to Git you must have permissions to perform the action you are requesting. Reads are almost always available to everyone and will work but making changes requires write access. The first time you attempt an operation requiring authentication you should be prompted to log in. Depending upon the credential provider being used the UI will vary. 
+
+=== From Visual Studio
+
+. The `Sign In` UI will be shown. 
+. Enter the credentials you created for Github. 
+. Click `Sign In`
+
+Visual Studio will then attempt the operation with the provided credentials. If authentication fails then the operation will fail. Use the `Output` window to look for authentication failures. Try the operation again and enter the correct credentials.
+
+=== From Console
+
+. The UI for the configured credential provider will be shown. This may either be directly in the console window or through a Windows UI.
+. Enter the credentials you created for Github.
+. Depending on the UI either press ENTER or click `Sign In`
+
+If the authentication fails then an error will be shown in the console.
+
+If you receive an access denied or 403 error then this means your user account is incorrect. To correct this sign out of Github and try again.
+
 == Cloning a Repository
 
 Note: Cloning a repository is only necessary the first time a new repository is used on a machine or if the local repository folder is deleted. Thereafter cloning is not necessary.
 
 In order to work with a repository locally you need to clone it. Cloning a repository will set up the structure needed by git and will download the repository to your machine. This will generally only need to be done once per repository per machine. If you ever wipe out the directory structure you will need to repeat this process.
 
+=== From Visual Studio (Git)
+
+. If no solution is curently open then click the `Clone Repository` button in the `Git` window.
+. If a solution is open then use the menu option `Git \ Clone Repository`.
+. In the `Clone a repository` window do one of the following.
+.. Manual
+... Enter the URL to the Github repository.
+... Verify the local path to be used. It should be named after the repository.
+... Click `Clone` to clone.
+.. Browse
+... Click `Github` to browse the repositories.
+... Select the repository to clone.
+... Verify the local path to be used. It should be named after the repository.
+... Click `Clone` to clone.
+. The repository will be cloned but no solution will be opened.
+image:git-clonerepository.png[Clone Repository]
+
+=== From Visual Studio (Team Explorer)
+
 . Click on the `Manage Connections` button in the `Team Explorer` toolbar. It is the "plug" icon.
 . You should see a `Local Git Repositories` list with options to `New` \ `Add` \ `Clone` repositories.
 
-image:manage-connection.png[Manage Connection]
+image:teamexplorer-manage-connection.png[Manage Connection]
 
-. At this point you may be prompted to sign into Git.
 . If the repository appears under `Local Git Repositories` then it is already cloned and you do not need to do it again.
 . If the repository appears under `GitHub` then you can select it and then click `Clone` to clone it locally.
 . Otherwise click the `Clone` option under `Local Git Repositories`.
@@ -68,11 +119,24 @@ image:manage-connection.png[Manage Connection]
 .. If the local path does not match the repository name then it likely already exists and does not need to be cloned again.
 .. Click `Clone` to clone the repository.
 
-image:clone-repo.png[Clone Repository]
+image:teamexplorer-clone-repo.png[Clone Repository]
+
+=== From Console
+
+. Using the console go to a folder that does not have any repository.
+. Enter the command `git clone` and the URL to the repository.
+[source,shell]
+----
+git clone https://github.com/myuser/myrepo
+----
 
 == Opening a Repository
 
 When opening Visual Studio back up you will need to open the repository containing your code.
+
+NOTE: This is only necessary if you don't use the `Recent` list to open an existing solution. When opening a solution it will automatically connect back to the repository.
+
+=== From Visual Studio (Team Explorer)
 
 . Click on `Manage Connections`. 
 . You should see a `Local Git Repositories` list with options to `New \ Add \ Clone` repositories.
@@ -87,15 +151,33 @@ NOTE: It is critical that you keep all changes in your repository within the fol
 
 == Pull a Repository
 
+After opening a repository you should pull down any changes. Pulling a repository will download any changes from Git to your local copy. Since Git tracks changes only those differences need to be downloaded. It is important that you do this before making any other changes otherwise you may run into merge issues with pushing changes later.
+
 NOTE: Always pull your repository before starting any work to ensure you do not run into issues pushing your changes later.
 
-Pulling a repository will download any changes from Git to your local copy. Since Git tracks changes only those differences need to be downloaded. It is important that you do this before making any other changes otherwise you may run into merge issues with pushing changes later.
+CAUTION: You cannot pull a repository if you have any local changes uncommitted.
+
+=== From Visual Studio (Git)
+
+. In `Git` select the `Pull` command in the top right of the window.
++
+image:git-pullrepository.png[Pull Repository]
+
+=== From Visual Studio (Team Explorer)
 
 . From the home tab of Team Explorer click the `Sync` option.
 +
 image:teamexplorer-home.png[Team Explorer]
 . On the `Synchronization` tab click the `Pull` link to pull down any changes. It doesn't matter which `Pull` link you use.
 . Git will report any changes that were downloaded.
+
+=== From Console
+
+Go to the folder containing the repository and run the following command.
+[source,shell]
+----
+git pull
+----
 
 You can now make changes to your repository knowing you have the latest version locally. Any changes made by others (or yourself on another machine) will now be available locally.
 
@@ -105,6 +187,18 @@ When you have made the changes are want to make them permanent you need to commi
 
 NOTE: This two step process always occurs but since you will often commit and push at the same time Visual Studio provides a shortcut command to do both at once.
 
+=== From Visual Studio (Git)
+
+. Go to the `Git` window.
++
+image:git-commitrepository.png[Commit Repository]
+. Git will analyze the differences between the files since your last commit. Any differences will be listed. At this point you can undo changes you've made or commit your changes.
+. To commit the changes you must enter a comment about what changes you've made. This information will be available later to explain why the changes were made.
+. Since you will often be committing and pushing the changes together click the drop down arrow next to the `Commit All` button and select ```Commit All and Push```. This will commit and then push the changes at once.
+. Assuming everything is successful then Git will be updated with your changes. 
+
+=== From Visual Studio (Team Explorer)
+
 . From the home tab of Team Explorer click the `Changes` option.
 +
 image:teamexplorer-home.png[Team Explorer Home]
@@ -113,28 +207,47 @@ image:teamexplorer-home.png[Team Explorer Home]
 . Since you will often be committing and pushing the changes together click the drop down arrow next to the `Commit All` button and select ```Commit All and Push```. This will commit and then push the changes at once.
 . Assuming everything is successful then Git will be updated with your changes. 
 
-image:push-success.png[Push Success]
+image:teamexplorer-push-success.png[Push Success]
 
-=== Authentication
+=== From Console
 
-When you connect to Git you must have permissions to perform the action you are requesting. Reads are almost always available to everyone and will work but pushing changes requires write access. If you receive an access denied or 403 error then this means your user account is incorrect. To correct this, log back in.
+Go to the folder containing the repository and run the following command.
 
-. Go to the `Manage Connections` tab of `Team Explorer`.
-. Under `GitHub` is a `Sign In/Out` link. 
-. Sign out, if necessary, and then sign back in.
-. Try pushing again.
+[source,shell]
+----
+git add .
+git commit -m "message"
+git push
+----
 
 === Pushing Changes after Commit
 
 On occassion the commit and push may fail because of a merge conflict or for other issues. In this case the files have been committed locally and therefore no longer appear under the `Changes` tab. In this case you will need to resolve the issue and try to push again. To push an existing committed change do the following.
+
+=== From Visual Studio (Git)
+
+. From the `Git` window click the `Push` button in the top right corner.
++
+image:git-pushrepository.png[Push Repository]
+
+=== From Visual Studio (Team Explorer)
 
 . From the home tab of Team Explorer click the `Sync` option.
 +
 image:teamexplorer-home.png[Team Explorer Home]
 . Under the `Outgoing Commits` section you will see one or more commits that have not successfully been pushed yet.
 +
-image:outgoing-changes.png[Pending Commits]
+image:teamexplorer-outgoing-changes.png[Pending Commits]
 . To push all the outgoing commits click the `Push` link. This will attempt to push the commits again.
+
+=== From Console
+
+Go to the folder containing the repository and run the following command.
+
+[source,shell]
+----
+git push
+----
 
 === Merge Conflicts
 
@@ -154,6 +267,19 @@ The first step in diagnosing the issue is looking in the `Team Explorer` window 
 == Undoing Changes
 
 Sometimes you make changes that you want to revert. It is important to note that you need to undo changes before you have committed them. Once changes are committed (or pushed) it becomes more difficult to undo them.
+
+=== From Visual Studio (Git)
+
+. To undo several changes.
+.. Go to the `Git` window.
+.. For each change you want to undo select the file (or the entire folder) and select `Undo`.
+... If the change was an addition then select `Delete`. Alternatively you can also go to the file system and simply remove the file/folder that you added.
+... Some times you have to undo changes and then delete them.
+. To undo changes to a single file (modifications only). 
+.. Right click the file in `Solution Explorer`.
+.. Select the `Undo` option to undo the changes.
+
+=== From Visual Studio (Team Explorer)
 
 . To undo several changes.
 .. Go to the `Changes` tab in `Team Explorer`.

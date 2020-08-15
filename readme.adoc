@@ -11,7 +11,7 @@ Refer to the link:setup/readme.adoc[Setup] section for important information on 
 
 == Getting Started
 
-Refer to the link:gettingstarted/readme.doc[Getting Started] guide for help on using the tools in this class.
+Refer to the link:gettingstarted/readme.adoc[Getting Started] guide for help on using the tools in this class.
 
 == Book
 
