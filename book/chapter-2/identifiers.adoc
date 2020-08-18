@@ -1,0 +1,30 @@
+= Identifiers
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+TBD
+
+=== Naming Conventions
+
+Good identifiers explain the purpose of something and should be understand based solely on the name. Even with an IDE like Visual Studio it is still important to be able to quickly find identifiers so use descriptive words and avoid slang, acronyms and abbreviations. The exception is for well known abbreviations or acronyms that would be understood by anyone reading the code.
+
+[source,csharp]
+----
+//Good identifiers
+payRate
+firstName
+okButton
+
+//Bad identifiers
+temp
+x
+nbrStudents
+----
+
+Identifiers in C# can be any length but the longer an identifier the harder it can be to type. Good identifiers are between 3 and 10 characters long. Good identifiers describe what the identifier is for. In general connector words like `the`, `of` and `for` are removed.
+
+One common convention in programming is using link:https://en.wikipedia.org/wiki/Hungarian_notation[Hungarian notation]. Hungarian notation is generally frowned upon in modern code. The benefits this style was designed to solve do not make sense in a modern IDE.
+
+* DO use descriptive identifiers.
+* AVOID using abbreviations unless they are well known. 

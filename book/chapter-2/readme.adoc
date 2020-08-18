@@ -1,0 +1,24 @@
+= Chapter 2: C# Programming 101
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+This chapter provides information on using C# for the equivalent of a programming 101 course. Topics include:
+
+* Identifiers
+* Types
+* Expressions
+* Statements
+
+:leveloffset: +1
+include::identifiers.adoc[]
+* [Types]
+* [Variables]
+* [Console IO]
+* [Expressions]
+* [Scoping Rules]
+* [Control Flow]
+* [Strings]
+* [Enumerations]
+:leveloffset: -1
+

@@ -1,0 +1,32 @@
+= C# History
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+C# was developed by Microsoft back in 2002 as a replacement for the most popular languages of the time.
+
+* C++
+** Most popular language.
+** Heavily used in all areas of programming.
+** Learning curve was high.
+** Infinitely powerful but very easy to write bad code.
+** Not generally safe making it a security risk.
+** Required a new compiler and runtime for each platform it was to run on.
+* Java
+** Most popular language in the web world
+** Similar syntax to C++ so the learning curve was high.
+** Not as powerful as C++ because it tried to make it harder to write bad code.
+** Interpreted language resulting in slower code than C++.
+** Ran on a virtual machine allowing it to be easily ported to other platforms.
+* Visual Basic
+** Very popular in IT shops that did not have formal developers.
+** Easily readable code resulting in lower learning curve.
+** Designed to be safe making some code impossible to write.
+** Interpreted (initiallly) resulting in slower code.
+** Only supported on Windows
+
+At the time Microsoft was working on a brand new framework called .NET Framework that would become the new runtime for all Windows-based code going forward. Microsoft needed a language that could demonstrate the power of .NET but could easily learned by current developers. Given the popularity of C\++ and Java it was easy to see that a C-style language would be easy to transition to. Visual Basic concepts were used to fill in any gaps in functionality.
+
+When .NET was released it became hugely popular in a few short years. While C\++ could be made to run on .NET (using a subset known as C\++/CLI) and Java was ported (called J#) neither really became as popular as C#. Today almost all code written for .NET uses C# even though there are hundreds of other languages available.
+
+Syntactically C# is most similar to C\++ with some Java syntax thrown in where C\++ (at the time) didn't have an equivalent syntax. On the surface it can be hard to tell C++ from C#. However under the hood these are dramatically different languages. They do share some similarities but they are more different than the same.

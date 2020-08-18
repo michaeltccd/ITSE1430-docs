@@ -1,5 +1,211 @@
 = Parts of C#
 Michael Taylor <michael.taylor@tccd.edu>
 v1.0
+:toc:
 
-??
+Programming languages tend to use the same constructs but change up the syntax. C# is no different. In language design there is some agreed upon terminology that can be used to discuss parts of a language. 
+
+== Language Terminology
+
+NOTE: A `token` in language design is anything in the code, generally separated by whitespace. Examples might include `+`, `if` and `payRate`.
+
+Comment::
+A textual comment about the code. Generally treated as whitespace in code but does not impact compilation.
+Identifier::
+A non-symbol token that is not a keyword (e.g. `payRate`). Identifiers are generally provided by the programmer but are often provided by additional libraries.
+Keyword::
+An identifier that has special meaning to the language (e.g. `for` or `true`). Keywords cannot generally be used where identifiers are normally allowed.
+Literal::
+An expression whose value can be determined at compilatio time. Examples would include `10` or `Hello`.
+Operator::
+A mathematical operator such as `+` (addition), `-` (subtraction) and `*` (multiplication).
+Punctuator::
+Any symbol that is not an operator.
+
+== Breaking Apart the Program
+
+Let's take apart the `Hello World` program from earlier.
+
+The keywords are: `using`, `namespace`, `class`, `static` and `void`.
+
+The identifiers are: `System`, `HelloWorld`, `Program`, `Main`, `args`, `Console` and `WriteLine`.
+
+The operators are: `[]`.
+
+The punctuators are: `{`, '}', '(', ')' and ';'.
+
+The literals are: `"Hello World"`.
+
+NOTE: Visual Studio color codes keyword and punctuators amongst other things. In general the color coding is useful for ensuring that you and the compiler are agreeing to what something is. 
+
+CAUTION: Identifiers may be the default color (generally black) or colored differently, depending upon settings. However coloring is consistent so once you determine the coloring for your settings they should remain the same.
+
+== General C# Syntax
+
+Every language has its own syntax so once you learn the syntax of the language it tends to get easier. C# syntax derives from C\++ with a little Java and Visual Basic mixed in. If you already know C\++ syntax then C# syntax is easy to pick up. The following general syntactical rules apply to C#.
+
+=== Case Sensitivity
+
+C# is case sensitive so `If` is an identifier but `if` is a keyword. When using identifiers it is critical to use the correct casing. Failure to do so will result in compilation errors.
+
+When discussing casing there are several possible choices.
+
+Camel Casing::
+Camel casing capitalizes on word boundaries except the first word. Camel casing does not use underscores. Examples include `payRate`, `firstName` and `rateOfPay`.
+Pascal Casing::
+Pascal casing capitalizes on word boundaries including the first word. Pascal casing does not use underscores. Examples include `Program`, `MyData` and `DateTime`.
+Snake Casing::
+Snake casing is camel casing but instead of capitalizing on word boundaries a dash is used as for a space yet. This casing is not used in C#. Eaxmples include `pay-rate`, `first-name` and `date-time`.
+
+* DO use lower case for keywords.
+* DO use the correct casing for identifiers based upon the standard styling rules of C#.
+* DO NOT use casing to differentiate identifiers in the same scope.
+* DO NOT use keywords as identifiers except when the keyword is context sensitive.
+
+One difference between C# and most other languages is that C# is context sensitive. That means that some identifiers are keywords in some contexts but keywords in others.
+
+CAUTION: It is possible to use keywords as identifiers if prepended with an at (`@`) sign. This is only needed when the identifier is a keyword in the given context. However this is never a good idea and should not be used in code. 
+
+Another difference between C# and other C-based languages is that C# follows different scoping rules even on the same line. Therefore it is possible to use the same identifier but with different means. The rules for this will be discussed later.
+
+=== Comments
+
+Comments are used to describe what code is doing. Unfortunately this is only useful if someone is reading the code. In introductory courses you were probably taught to comment everything. This was a useful technique to help you learn programming but this is not useful to experienced programmers.
+
+In C# the best code is code that does not need comments. If code needs comment then it probably needs to be rewritten. But there are cases where comments are useful. In general comments should describe why the code is doing what it is doing, not what it is doing. Any programmer can read the code so comments describing the code is not useful.
+
+C# supports both single and multi-line comments. All comments are replaced with a single whitespace by the compiler. 
+
+Single line comments extend from the start of the comment to the end of the current line. Single line comments are useful for describing a line of code.
+
+[source,csharp]
+----
+//This is a single line comment. It goes until the end of the line.
+----
+
+Multi line comments extend from the start of the comment until the end. Multi line comments can extend across multiple lines. Multi line comments are seldom used in C# outside file headers.
+
+[source,csharp]
+----
+/* 
+ * This is a multi-line comment.
+ * It continues until the closing comment is specified.
+ * The asterisk at the beginning is not required but helps to line up the lines.
+ */
+----
+
+=== Statements
+
+Statements in a language perform an action that does not return a value. Statements include the `if` statement and a function declaration. Within a code block all statements end with a semicolon. 
+
+NOTE: The semicolon is a `sequence point`. A sequence point is used by the compiler to help reset after a syntactical error occurs. Appropriate use of semicolons help the compiler recover faster resulting in easier to diagnose and more accurate errors.
+
+Statements often consist of expressions and child statements. Good indenting helps make more complex statements easier to read.
+
+=== Expressions
+
+An expression calculates a value that can be used in larger expressions or statements. Examples of expressions would include arithmetic expressions and literals. 
+
+NOTE: In most cases an expression can be converted to a statement by ending it with a semicolon. However C# will report unused expressions as a warning because this is generally wrong.
+
+=== Literals
+
+Literals are a special kind of expression. Unlike most other expressions a literal is calculated at compile time and generally its value is baked into source code. Literals have the same characteristics as a constant variable except they have no name. Literals can only be primitive types.
+
+[source,csharp]
+----
+//An integral literal
+10
+
+//A string literal
+"Hello world"
+
+//An integral literal consisting of multiple literals
+4 + 6 * 5
+----
+
+== Basic Styling Guidelines
+
+=== Spacing 
+
+Like other languages spaces have no impact on the generated code. Therefore use spacing to make code more readable. In general use a single space between different types of tokens. For example the following is the preferred styling.
+
+[source,csharp]
+----
+//This is hard to read
+(10+4*6)
+
+//This is easier and generates the same code
+(10 + 4 * 6)
+----
+
+Use a single blank line between blocks of code. Blocks of code are like paragraphs in written text. Using a blank line makes it easier to see the blocks of related code.
+
+CAUTION: Do not use multiple blank lines between code. There is no benefit other than making code harder to fit on a screen.
+
+* DO use a single space between tokens including operators. There are a few exceptions such as in function calls and at the end of lines.
+* DO use a single blank line between blocks of code.
+* DO NOT use multiple blank lines between blocks of code.
+
+=== Indentation
+
+When starting new blocks (such as inside `if` statements) indent one more than the parent block. Indentation makes it easier to understand blocks that have child blocks. As with spacing it has no impact on the generated code.
+
+[source,csharp]
+----
+//This is hard to read
+if (someCondition)
+DoSomework();
+else
+{
+DoSomeOtherwWork();
+DoSomeMoreWork();
+};
+
+//This is easier to read
+if (someCondition)
+   DoSomework();
+else
+{
+   DoSomeOtherwWork();
+   DoSomeMoreWork();
+};
+----
+
+CAUTION: Visual Studio uses indentation automatically. Failure to follow standard indentation rules will result in unformatted code and/or extra work.
+
+* DO use one indent when entering a new block.
+* DO NOT mix indentation in the same block.
+
+=== File Headers
+
+A special case exists for file headers. A file header is a comment at the top of a source file that generally contains information such as the company name, copyright notice and any licensing terms. All source files you generate should have a file header. 
+
+NOTE: Do not include the name of the file in the header.
+
+WARNING: For this course all source files you create must have a file header. The first lab assignment will discuss the file header.
+
+* DO NOT use comments to describe what code does. Any programmer can understand the code.
+* DO use a comment to describe why the code behaves the way it does.
+* DO put a blank line before a comment to indicate the new block that the comment is describing.
+* DO prefer single line comments even when they take up multiple lines.
+* DO put a file header at the top of any source files you create.
+
+=== Styling Rules
+
+While there is no required styling rules in C# it is a highly formalized language in terms of styling. Failure to follow the standard styling rules will cause more work on your part and may cause issues integrating with other code. 
+
+CAUTION: In this course you will be required to follow the standard styling rules for C# to enforce consistency. As part of the core settings available for the course is a styling file that will help you follow the correct styling rules.
+
+* DO use the provided `.editorconfig` to help enforce standard C# styling rules.
+* DO fix any styling warnings in code once the code is working properly.
+
+=== File Contents
+
+For simple programs it may be OK to put multiple things into a single file. As a program grows in complexity this becomes less useful. When writing C# code put all types into their own files. Since a project may have hundreds of files ensure that each file matches the type it contains.
+
+.Product.cs
+[source,csharp]
+----
+//Code for the Program type
+----

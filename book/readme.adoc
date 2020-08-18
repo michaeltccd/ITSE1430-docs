@@ -1,6 +1,6 @@
 = Introduction to C# Programming (ITSE 1430)
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v0.1
 
 This is the electronic version of the book for this course.
 
