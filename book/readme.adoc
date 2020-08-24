@@ -7,15 +7,7 @@ This is the electronic version of the book for this course.
 The source code is available link:../src/readme.md[here].
 
 * link:chapter-1/readme.adoc[Chapter 1 - Introduction to C#]  
-* [Chapter 2 - C# Basics]
-  ** [C# Types]
-  ** [Variables and Scope]
-  ** [Console IO]
-  ** [Expressions]
-  ** [Statements]
-  ** [Functions]
-  ** [Strings]  
-  ** [Enums]
+* link:chapter-2/readme.ado[Chapter 2 - C# Basics]
 * [Chapter 3 - Object Oriented Programming]
   ** [Namespaces]
   ** [Classes]

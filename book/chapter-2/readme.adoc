@@ -12,13 +12,16 @@ This chapter provides information on using C# for the equivalent of a programmin
 
 :leveloffset: +1
 include::identifiers.adoc[]
-* [Types]
-* [Variables]
-* [Console IO]
-* [Expressions]
-* [Scoping Rules]
-* [Control Flow]
-* [Strings]
-* [Enumerations]
+include::literals.adoc[]
+include::type-aliasing.adoc[]
+include::primitive-types.adoc[]
+include::other-types.adoc[]
+include::variables.adoc[]
+[Console IO]
+[Expressions]
+[Scoping Rules]
+[Control Flow]
+[Strings]
+[Enumerations]
 :leveloffset: -1
 

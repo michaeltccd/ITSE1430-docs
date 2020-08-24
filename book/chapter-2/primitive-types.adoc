@@ -1,0 +1,248 @@
+= Primitive Types
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+As a refresher, a type defines the kinds of values can be stored in something such as an expression or variable. Types also impact the operations that can be performed on its values. For example numeric types allow standard math operations like addition and subtraction. Most types define a range of values but some allow any value. 
+
+Types can either be primitives or user defined types. A primitive type is a type that is understood by the language. Primitive typeS in most languages generally include integrals, floating point and boolean types. Primitive types are defined to allow the compiler to generate optimized code for the common types. User defined types will come later.
+
+NOTE: A third category of types might include those defined in a runtime library or third party library. For purposes of discussion all these are classified as user defined types even if the programmer did not define them directly.
+
+== Integral Types
+
+C# defines the following integral types. The types are listed from smallest to largest in terms of range.
+
+.Integral Data Types
+|===
+| Type | Category | Formal Type | Byte Size | Range
+| `sbyte` | Signed | https://docs.microsoft.com/en-us/dotnet/api/system.sbyte[SByte] | 1 | -128 to 127
+| `byte` | Unsigned | https://docs.microsoft.com/en-us/dotnet/api/system.byte[Byte] | 1 | 0 to 255
+| `short` | Signed | https://docs.microsoft.com/en-us/dotnet/api/system.int16[Int16] | 2 | -32,768 to 32,767
+| `ushort` | Unsigned | https://docs.microsoft.com/en-us/dotnet/api/system.uint16[UInt16] | 2 | 0 to 65,535
+| `int` | Signed | https://docs.microsoft.com/en-us/dotnet/api/system.int32[Int32] | 4 | -2,147,483,648 to 2,147,483,647
+| `uint` | Unsigned | https://docs.microsoft.com/en-us/dotnet/api/system.uint32[UInt32] | 4 | 0 to 4,294,967,295
+| `long` | Signed | https://docs.microsoft.com/en-us/dotnet/api/system.int64[Int64] | 8 | -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807
+| `ulong` | Unsigned | https://docs.microsoft.com/en-us/dotnet/api/system.uint64[UInt64] | 8 | 0 to 18,446,744,073,709,551,615
+|===
+
+CAUTION: In C\++ the `int` and `long` types are both 32-bit integers. This is for compatibility reasons. In C# they are 32 and 64-bits respectively. When interoping with C\++ code ensure you are using the correct type.
+
+For all the integral types you can get the minimum and maximum value for the type using https://docs.microsoft.com/en-us/dotnet/api/system.int32.minvalue[Int32.MinValue] and https://docs.microsoft.com/en-us/dotnet/api/system.int32.maxvalue[Int32.MaxValue] where `Int32` represents the formal type.
+
+[source,csharp]
+----
+int maxValue = Int32.MaxValue;
+
+short minValue = Int16.MinValue;
+----
+
+=== Usage
+
+Integral types should be used when a whole number needs to be stored. Examples of good usages of integral types include:
+
+* Hours worked in a day
+* Count of items in a cart
+* Age of a person in years
+
+Integral types have a default value of 0. In most cases use the `int` type for integral values. If the value being stored exceeds the limits of a traditional 4-byte integer then use `long` instead. 
+
+The other integral types are designed for specialized use cases and are rarely needed. There is no benefit in trying to use a smaller integral type in lieu of `int`. Only use a smaller type when it conveys useful information and even then only rarely. Smaller types tend to produce code that is harder to read.
+
+=== Literals
+
+Integral literals allow for the following formats.
+
+* `[+-][0-9]+`
+* `0[xX][a-zA-Z0-9]+`
+* `0[bB][0-1]+`
+
+In other words a literal may be a decimal, hexadecimal or binary value. An underscore may be used anywhere within the digit sequence to help with readability.
+
+[source,csharp]
+---
+// 1,234
+1234
+1_234
+0x4D2
+0X4d2
+0b010011010010
+0B0100_1101_0010
+---
+
+By default integral literals are of type `int`. If the value is too large to fit into an `int` then the compiler will treat the literal as one of the larger integral types.
+
+If the literal ends with a `u` or `U` then the literal is treated as unsigned instead. As with signed integers the compiler will treat the literal as a larger unsigned type if it will not fit.
+
+If the literal ends with a `L` then the literal is treated as a `long`. 
+
+WARNING: Using a lowercase `l` is technically allowed but generates a compiler warning because it can be misleading as it is similar to the digit `1`.
+
+If the literal ends with a `ul` (in any case combination) then the literal is treated as a `ulong`. The order of the letters is not relevant so `ul` and `lu` are equivalent.
+
+CAUTION: To avoid confusion always use the appropriate literal suffix or type cast to explicitly specify the literal type if it is other than `int`.
+
+== Floating Point Types
+
+C# defines the following floating point types. The types are listed from smallest to largest in terms of range.
+
+.Floating Point Data Types
+|===
+| Type | Formal Type | Byte Size | Range (approximate) | Precision
+| `float` | https://docs.microsoft.com/en-us/dotnet/api/system.single[Single] | 4 | 10^-45^ to 10^38^ | 6-9 digits
+| `double` | https://docs.microsoft.com/en-us/dotnet/api/system.double[Double] | 8 | 10^-324^ to 10^308^ | 15-17 digits
+| `decimal` | https://docs.microsoft.com/en-us/dotnet/api/system.decimal[Decimal] | 16 | 10^-28^ to 10^28^ | 28-29 digits
+|===
+
+=== Usage
+
+Floating point types should be used when a numeric value with a possible decimal or really small or large range is needed. Examples of good usages of floating point types include:
+
+* Pay rate
+* Bank balance
+* Distance between two objects in the galaxy
+
+Floating point types have a default value of 0. In most cases use the `double` type for floating point values. The exception is for monetary values. In this case use the `decimal` type instead. `decimal` is specifically designed to have the precision needed to avoid rounding errors in calculations.
+
+=== Precision
+
+Like the integral types you can use the https://docs.microsoft.com/en-us/dotnet/api/system.decimal.minvalue[Double.MinValue] and https://docs.microsoft.com/en-us/dotnet/api/system.decimal.maxvalue[Double.MaxValue] fields to get the minimum and maximum values for the floating point types, replacing the types respectively. But precision tends to be the more important value. The precision of a number is how many digits of accuracy are guaranteed before the number may have rounding errors. Since a floating point value can have any number digits after the decimal it is not possible to store the entire range of values in the given byte size. This is where precision comes into play. 
+
+The precious of a `double` is 15 to 17 digits. That means that at most 17 digits can be stored (on both sides of the decimal). Any values outside that range are lost. The actual precision is determined by the number being stored so precision can be less than 17. In general the more digits on the right side of the decimal the more likely precision will be lost. 
+
+[source,csharp]
+----
+double left = 10;
+double right = 3;
+
+//Precision has been lost after 15 to 17 digits
+double result = left / right;
+----
+
+In the above example after between 15 and 17 digits the remainder of the value is lost. The only way to make this value more precise is to move to a larger floating point value (`decimal` in this case). 
+
+Even without a very large (or small) number precision comes into play. Not all possible values can be stored in the floating point range. Floating point values are stored in increments a fixed value known as epsilon. Epsilon is the smallest representable value greater than zero.
+
+=== Literals
+
+Floating point literals consist of an integral literal (plus or minus) followed by an optional exponent. An underscore may be used anywhere within the digit sequence to help with readability.
+
+The whole part follows the same format as integral literals but must be in decimal notation. The exponent supports either fixed point (`.4576`) or scientific (`E-5`) notation. 
+
+[source,csharp]
+---
+12.34
+12E2
+12.34E-2
+---
+
+By default floating point literals are of type `double`.
+
+If the literal ends with a `f` or `F` then the literal is of type `float`.
+
+If the literal ends with a `m` or `M` then the literal is of type `decimal`.
+
+If the literal ends with a `d` or `D` then the literal is of type `double` but since this is the default it is not necessary to use the suffix.
+
+== Boolean Type
+
+There is a single boolean type.
+
+.Boolean Data Type
+|===
+| Type | Formal Type | Byte Size | Values 
+| `bool` | https://docs.microsoft.com/en-us/dotnet/api/system.boolean[Boolean] | 1 | `true` or `false`
+|===
+
+=== Usage
+
+The `bool` type should be used to represent true or false conditions. Examples of when it should be used include:
+
+* Pass status of a student
+* Enable status of an item
+* Discount status of a product
+
+WARNING: Never use an integral type to represent boolean values. This is a legacy practice used in C that has no place in any modern language. Using this in code will result in lose of points on lab assignments, no exceptions.
+
+[source,csharp]
+----
+//Good
+bool isPassing;
+if (isPassing) ...;
+
+//Bad
+int x;
+if (x == 0) ...;
+----
+
+=== Literals
+
+`bool` has only two valid values `true` and `false`. 
+
+[source,csharp]
+----
+bool isPassing = true;
+
+bool isDiscounted = false;
+----
+
+=== Meaning of True
+
+Unlike other languages it is a compiler error to attempt to treat a numeric value as true or false. `bool` is a distinct type and not a numeric value. 
+
+[source,csharp]
+----
+bool isPassing;
+
+//Compiler error
+if (isPassing == 1) ;
+----
+
+In the rare cases where a numeric value needs to be treated as a boolean then prefer to use a relational operator to do the conversion. 
+
+NOTE: In the rare cases where the compiler does allow conversion to boolean from a numeric value `false` is `0` and all other values are `true`.
+
+== Character Type
+
+C# has a single character type.
+
+.Boolean Data Type
+|===
+| Type | Formal Type | Byte Size | Range
+| `char` | https://docs.microsoft.com/en-us/dotnet/api/system.char[Char] | 2 | U+0000 to U+FFFF
+|===
+
+Characters in .NET are always Unicode. They take up 2 bytes.
+
+=== Usage
+
+The `char` type should be used when a single character is neededd. Examples of good usages of the type include:
+
+* Letter grade
+* First initial of a name
+
+The `char` type defaults to `\0`. 
+
+CUATION: while `char` is not a numeric type it can be used in some numeric operations. However the type is not interchangeable with `int` and should never be used in that way.
+
+=== Literals
+
+Character literals are enclosed in single quotes and can contain one character in any supported format.
+
+* Single ASCII character such as `x` or `1`
+* Hexadecimal format such as `\x0065`
+* Unicode format such as `\u0065`
+
+[source,csharp]
+---
+//Letter A
+'A'
+'\x65'
+'\u65'
+---
+
+CAUTION: Do not manipulate the bytes of a character. Characters are defined by the 2 byte values. Attempting to manipulate the individual bytes can result in corrupted characters.
+
+== String Type
+
+Strings are the most complex primitive in C# and will be covered in their own link:strings.adoc[section].

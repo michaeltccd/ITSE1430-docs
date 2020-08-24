@@ -8,6 +8,7 @@ C# the language was written to demonstrate the abilities of .NET the framework. 
 == .NET Architecture
 
 Architecturally .NET looks like this.
+
 image:dotnet-architecture.png[.NET Architecture]
 
 At the center is the operating system (OS). The operating system is responsible for managing overall system security, memory allocation, process and threading control and providing access to other devices such as the file system.
@@ -25,30 +26,6 @@ One of the big benefits of managed applications is that they are compiled but ru
 A very big benefit of .NET is that it is also language agnostic. The runtime does not care what programming language is used to write code. Provided the language supports .NET it can work with any other .NET code. 
 
 This was unheard of back in the beginning days of .NET. At the time if you had written code in a library you needed to expose a "C" style function so it could be called by other code or by the operating system. That was because each language had its own runtime, calling convention and rules for how data was stored. With .NET all this goes away. All languages use the same conventions, follow the same memory models and overall behave following the same rules. This means you can write your code in the language most appropriate for the problem you are trying to solve rather than the language that is supported by all parts of your solution.
-
-A consequence of this is that .NET is language agnostic. As a compromise the runtime may use terminology that differs from your language of choice. It is up to each language to handle the conversion. But this becomes noticeable when calling into the runtime for certain things. For example here is how you might convert a string to a 4-byte floating point value.
-
-[source,csharp]
-----
-float rate = Single.Parse("1234.567");
-
-int hours = Int32.Parse("55");
-----
-
-The C# type for 4-byte floating point is `float` but for the runtime it is `Single` which comes from Visual Basic. A 4-byte signed integral in C# is called an `int` but it is called `Integer` in Visual Basic. However the runtime uses the bit-size equivalent which is `Int32`. 
-
-All languages use the underlying primitive types of the runtime. So the above code could also be written as this.
-
-[source,csharp]
-----
-Single rate = Single.Parse("1234.567");
-
-Int32 hours = Int32.Parse("55");
-----
-
-Languages like C# use type aliasing to convert from a language-friendly name, `int` to the runtime equivalent `Int32`. This happens at compilation and has no impact on the generated code. `int` is the C# type and `Int32` is the formal type.
-
-Unless otherwise stated always use the language-specific type alias for primitives. The only time the formal names are used is in languages that do not have equivalent types and when referring to the type in a formal manner (such as when calling `Parse`).
 
 == Just In Time Compilation
 

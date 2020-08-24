@@ -1,0 +1,104 @@
+= Type Aliasing
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+As discussed earlier C# runs on the .NET platform. .NET provides the implementation of all the functionality in the language including the primitive types. This is different then most every other language in use today. While C# understands the primitive types it does not actually implement them.
+
+== Language Specific Types
+
+There are several benefits to this approach but the biggest advantage is that all .NET languages follow the same format and implementation for the primitives. This is what allows .NET languages to interop with each other irrelevant of the underlying language that was used.
+
+Let's look at string as an example. In C/C++ a C string has the following characteristics.
+
+* Character array with a special `NULL` at the end.
+* A character is a single byte.
+* In most cases the single byte ASCII character set is used.
+* To determine the length of the string count characters until `NULL` is found. The longer the string the slower it is.
+* Strings can be arbitrarily long (up to available memory).
+* When manipulating strings the caller is responsible for ensuring the `NULL` is properly handled.
+* Failure to find a `NULL` can result in reading (or writing) into memory that is not part of the string.
+
+Contrast this with Visual Basic 6.
+
+* Character array with the length prefixed in fron of the array.
+* A character is two bytes.
+* Strings use the two byte Unicode character set.
+* To determine the length of the string use the length prefix in the front.
+* The maximum length is approximately 2 GB.
+* When manipulating strings the length must be adjusted to account for any additions or subtractions to the string.
+
+When writing code in C++ to interop with VB 6 programmers had to handle the differences. This problem does not exist in C# (or .NET) because all languages use the same implementation. This completely eliminates the issue.
+
+== Language Agnostic Types
+
+Since .NET is the platform that all languages run on it provides all the primitive types of a language. All other types created by a language will ultimately also be defined in terms of the .NET platform. 
+
+In .NET the integral types follow the naming convention of `Int` followed by the bit count for the integer. So, for example, a 32-bit integer is implemented as `Int32`. For floating point values more formal names are used. For example `Double` is the 8 byte floating point value. Other primitive types have their own mappings as well.
+
+All languages must compile down to these types for interop purposes. When you use a "C" `int` in your code it maps to the formal type `Int32`. A VB `string` maps to the formal .NET type `String`.
+
+== Type Aliasing
+
+This introduces an issue because each language may use a different word for its primitive type. For example a 32-bit signed integer value in C# is called an `int` but in VB it is called an `Integer`. To allow each language to continue to use the terminology they are most comfortable with type aliasing is used. Type aliasing means that a type may be aliased (or named) as a different type. For example the `int` type in C# is aliased to the formal type `Int32`. 
+
+The aliasing happens at the compiler level so code never needs to use the formal type directly. With type aliasing there is no difference between using the language type or the .NET type. They are completely interchangeable. At compilation the language type is silently treated as the formal type. This never results in data loss and is always safe.
+
+[source,csharp]
+----
+//C# primitive type 
+int hours = 40;
+
+//.NET formal type
+Int32 daysWorked = 5;
+
+//They are completely interchangeable and have no impact on the runtime behavior
+Int32 totalHours = hours * daysWorked;
+int totalHours2 = hours * daysWorked;
+----
+
+CAUTION: Always use the language provided alias when specifying types. It is non-standard to use the formal type.
+
+In most cases you can ignore that type aliasing is happening because it does not impact your code but there are 2 cases where you need to be aware.
+
+=== Formal Type References
+
+In a few cases you will need to reference the formal type in order to access functionality defined for that type. In this case you should use the formal type instead of the alias.
+
+[source,csharp]
+----
+//Preferred
+int hours = Int32.Parse("40");
+
+//Allowed but not recommended
+int daysWorked = int.Parse("5");
+----
+
+The compiler will successfully compile the above code but using the alias when accessing the "formal" type's functionality is frowned upon. It is a styling guideline and not a strict rule as either approach works.
+
+=== Type Specific Names
+
+In some cases it is necessary to include the type name in a public identifier to avoid ambiguity. For example if a type allows reading different types of data then it is common to expose a separate function for each type. 
+
+In these situations always use the formal .NET type. This is especially important when the functions are accessible to other code. For example `ReadFloat` may make sense to a C# programmer but has no meaning to a VB programmer beacuse `float` is not a VB type.
+
+[source,csharp]
+----
+//Use formal type for names that are usable in other languages
+int ReadInt32 () { ... } 
+
+//Not descriptive to non-C# programmers
+int ReadInt () { ... }
+----
+
+Notice that only the function name uses the formal type. The return type (and any parameters) should continue to use the alias because they are automatically converted to the .NET formal type at compilation.
+
+NOTE: This only applies to publicly exposed types and members. 
+
+=== Guidelines
+
+The following guidelines exist in C# for type aliases.
+
+* USE the C# alias for primitive types when referring to the type itself in declarations (e.g. `int x` not `Int32 x`).
+* USE the formal .NET type when calling global functions provided by a type (e.g. `Int32.Parse` not `int.Parse`).
+* USE the formal .NET type when writing functions that must include the type name in the function name (e.g. 'ReadInt32' not `ReadInt`).

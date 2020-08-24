@@ -1,0 +1,67 @@
+= Other Types
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+In addition to the primitive types there are some other types that may commonly appear in C# code. None of these types are primitives and so C# treats them like any other user-defined types. 
+
+NOTE: Other than lack of literal support all these types behave the same as the primitive types.
+
+== DateTime Type
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.datetime[DateTime] type is provided by .NET to represent date/time values. This type is used to represent date/time values such as:
+
+* Enrollment date for a student
+* Order date for an order
+* Completion date for a project
+
+.Using DateTime
+[source,csharp]
+----
+DateTime orderDate = new DateTime(2020, 8, 16);
+
+DateTime now = DateTime.Now;
+----
+
+The value https://docs.microsoft.com/en-us/dotnet/api/system.datetime.now[DateTime.Now] returns the current date and time and is useful when this information is needed. 
+
+`DateTime` values can be from `January 1, 0001` to `December 31, 9999`. However `DateTime` values are almost always tied to a particular calendar and therefore must follow the calendar rules for how dates work and their range.
+
+An additional complication with `DateTime` is that time is not the same everywhere in the world. `DateTime` can represent either a local time or UTC (universal time) but it is up to code to determine how this is interpreted.
+
+NOTE: There is no `Date` type in .NET. If only the date is needed then code must use the `DateTime` type and ignore the time portion.
+
+== DateTimeOffset Type
+
+There is also a https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset[DateTimeOffset] type. This type was added to make working with time zones around the world easier. It provides the same functionality as `DateTime` and adds offset information so code can more easily convert between time zones.
+
+== TimeSpan Type
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.timespan[TimeSpan] type is provided for working with time durations. It can also be used for tracking the time of day. This type is most useful when measuring durations. It is often used in conjunction with `DateTime` for determining time differences.
+
+.Getting Difference Between Two Dates
+[source,csharp]
+----
+DateTime now = DateTime.Now;
+DateTime beginningOfYear = new DateTime(now.Year, 1, 1);
+
+TimeSpan timeSinceBeginningOfYear = now - beginningOfYear;
+----
+
+`TimeSpan` has an accuracy of 100 nanoseconds which is generally accurate enough to measure performance of things. 
+
+`TimeSpan` can return duration in up to day intervals. Since the number of days in a month vary days is the highest resolution.
+
+== Guid Type
+
+A GUID is a globally unique identifier that is often used to guarantee mathematical uniqueness across all possible values. GUIDs are heavily used in many places including networking, security and databases. They are best used when uniqueness is needed across machines or even entire networks. The https://docs.microsoft.com/en-us/dotnet/api/system.guid[Guid] type is provided for .NET applications.
+
+.Creating a GUID
+[source,csharp]
+----
+Guid guid = Guid.NewGuid();
+----
+
+GUIDs should never be created manually. They must be unique in most cases. The `NewGuid` function generates a unique GUID each time it is called that is guaranteed to be unique in the vast majority of cases. 
+
+WARNING: GUIDs are 16 bytes in size and are always generated using an algorithm so they are mathematically unlikely to match. However it is possible that they may not be unique if a custom algorithm is being used or the algorithm relies on something that is not unique.

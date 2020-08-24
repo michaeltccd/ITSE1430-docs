@@ -46,27 +46,27 @@ Every language has its own syntax so once you learn the syntax of the language i
 
 === Case Sensitivity
 
-C# is case sensitive so `If` is an identifier but `if` is a keyword. When using identifiers it is critical to use the correct casing. Failure to do so will result in compilation errors.
+C# is case sensitive so `If` is an identifier but `if` is a keyword. C# does not enforce any casing rules but C# code almost always follow standard casing guidelines that will be covered later.
 
-When discussing casing there are several possible choices.
+In general it is strongly recommended that you do not rely on case to distinguish identifiers in the same scope. This is error prone. However it is OK to use case to distinguish identifiers in different scopes, following standard C# guidelines.
 
-Camel Casing::
-Camel casing capitalizes on word boundaries except the first word. Camel casing does not use underscores. Examples include `payRate`, `firstName` and `rateOfPay`.
-Pascal Casing::
-Pascal casing capitalizes on word boundaries including the first word. Pascal casing does not use underscores. Examples include `Program`, `MyData` and `DateTime`.
-Snake Casing::
-Snake casing is camel casing but instead of capitalizing on word boundaries a dash is used as for a space yet. This casing is not used in C#. Eaxmples include `pay-rate`, `first-name` and `date-time`.
+[source,csharp]
+----
+void Foo ( int value )
+{
+   //OK - identifiers are in different scopes
+   Value = value;
+}
 
-* DO use lower case for keywords.
-* DO use the correct casing for identifiers based upon the standard styling rules of C#.
-* DO NOT use casing to differentiate identifiers in the same scope.
-* DO NOT use keywords as identifiers except when the keyword is context sensitive.
+void Bar ()
+{
+   //BAD - identifiers are in scame scope
+   int Value = 10;
+   int value = 20;
+}
+----
 
-One difference between C# and most other languages is that C# is context sensitive. That means that some identifiers are keywords in some contexts but keywords in others.
-
-CAUTION: It is possible to use keywords as identifiers if prepended with an at (`@`) sign. This is only needed when the identifier is a keyword in the given context. However this is never a good idea and should not be used in code. 
-
-Another difference between C# and other C-based languages is that C# follows different scoping rules even on the same line. Therefore it is possible to use the same identifier but with different means. The rules for this will be discussed later.
+NOTE | All keywords are lowercase in C#.
 
 === Comments
 
