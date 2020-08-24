@@ -1,0 +1,50 @@
+= Expressions
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+== Operator Associativity and Precedence
+
+Operator precedence determines when an operator is evaluated as part of a larger expressions. Operators will higher precedence are evaluated earlier than lower precedence operators. If two operators are at the same level then they evaluate left to right. Given the following expression `A + B * C`. The multiplication has higher precedence than addition and is performed first. The addition is perfomed on the left side and the results of evaluating the multiplication.
+
+If the operator precedence is not clear or two operators evaluate the same and you want to control which gets evaluated first. For example if the expression was `(A + B) * C` then the parenthesis causes the addition to occur first then the multiplication.
+
+Operator associativity determines how the operands in an operator are evaluated. Left associative evaluates the left side of the operator and then the right side. Right associative evaluates the right side of the operator and then the left. Most operators are left associative including all the unary operators but some are right associative.
+
+The following table provides the C# operator precedence and associativity rules.
+
+??
+
+== Assignment
+
+The expression on the right must be type compatible with the variable on th left. Only variables can be assigned
+
+The assignment statement is right to left associative and evaluates late in the operator precedence rules.
+
+The assignment operator (`=`) is right associative so it evaluates the expression on the right and then assigns the value to the left. This allows multiple additions to be chained together if needed.
+
+.Multiple Assignment
+[source,csharp]
+----
+
+----
+??
+
+lvalue vs rvalue
+
+== Arithmetic
+
+== Logical
+
+== Relational
+
+real comparison
+boolean comparison
+
+== Conditional
+
+== Combination Operators
+
+== Calling Functions
+
+inline variable declarations

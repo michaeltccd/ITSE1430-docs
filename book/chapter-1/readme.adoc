@@ -6,9 +6,10 @@ v1.0
 This chapter provides an introduction to C# and the .NET runtime.
 
 :leveloffset: +1
-include::hello-world.adoc[]
-include::parts-of-csharp.adoc[]
-include::csharp-history.adoc[]
-include::dotnet-runtime.adoc[]
+include::hello-world.adoc[] +
+include::terminology.adoc[] +
+include::parts-of-csharp.adoc[] +
+include::csharp-history.adoc[] +
+include::dotnet-runtime.adoc[] +
 :leveloffset: -1
 

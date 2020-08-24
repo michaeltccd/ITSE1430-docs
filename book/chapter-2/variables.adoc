@@ -3,4 +3,201 @@ Michael Taylor <michael.taylor@tccd.edu>
 v1.0
 :toc:
 
+A variable is a named memory location used to store data. A programmer generally defines the variables needed by the code but the compiler can create its own variables as well. All variables in C# have a name, value and type. Variable lifetime, scope, is determine by where the variable is defined.
 
+== Declaring a Variable
+
+The simplest form of a variable declaration consists of the type and name.
+
+.Simple Variable Declaration
+[source,csharp]
+----
+T id;
+----
+
+Declaring a variable tells the compiler the name and type of the variable. The identifier can be used for the remainder of the scope to access the variable's value. 
+
+NOTE: All variables in C# must be declared before they are first used.
+
+If multiple variables of the same type are needed then they can be declared as one statement using the multiple variable syntax.
+
+.Multipel Variable Declaration
+[source,csharp]
+----
+T id1 {, id2}*;
+----
+
+For this syntax to work all the variables must be the same type. The following is an example of the above syntax.
+
+.Declaring Variables
+[source,csharp]
+----
+//Declare an int representing hours
+int hours;
+
+//Declare an x and y coordinate as doubles
+double x, y;
+----
+
+== Definitely Assigned Rule
+
+C# requires that each variable be explicitly defined a value before it is read. This helps avoid a common coding practice of forgetting to initialize a variable. The following example would produce a compilation error.
+
+.Definitely Assigned
+[source,csharp]
+----
+int x;
+
+if (x == 0)  ;//Compiler error - x not initialized
+----
+
+To definitely assign a variable ensure it is assigned a value before it is read. The following fixes the earlier error.
+
+.Definitely Assigned Correct
+[source,csharp]
+----
+int x;
+
+x = 0;
+if (x == 0)  ;//Allowed
+----
+
+NOTE: All possible code paths must ensure a variable is iniitalized before it is used.
+
+It is considered best practice to ensure a variable is initialized at the point it is declared. Variable declarations may include the initial value.
+
+.Initializer Expression
+[source,csharp]
+----
+T id [= E];
+T id [= E] {, id [ = E] }*;
+----
+
+`E` must be type compatible with `T`. This is the preferred syntax to declaring a variable. When using multiple variable declaration each variable can be initialized to a different value.
+
+.Declare and Initialize
+[source,csharp]
+----
+int x = 0;
+----
+
+== Assignment Statement
+
+To assign a value to a variable use the assignment `=` operator.
+
+.Assignment Statement
+[source,csharp]
+----
+hours = 40;
+----
+
+Multiple variables can be assigned the same value by chaining them together.
+
+.Multiple Assignment
+[source,csharp]
+----
+currentHours = nextWeekHours = 40;
+----
+
+== Variables vs Literals
+
+Variables, constants and literals are similar but have important differences.
+
+=== Literals
+
+Literals are readonly values. They have a type and value but no name. They can be read but not written. The value of a literal is set at the point of compilation and is baked into the code. Literals are best used for constant values that will never change and the value itself has meaning such as the offset within an array.
+
+.Literal Examples
+[source,csharp]
+----
+10    //Integral
+4.56  //Floating point
+true  //Boolean
+"Hello"  //String
+----
+
+Only the primitive types support literals in C#.
+
+=== Named Constants
+
+A (named) constant is a readonly value as well. It has a name, type and value. It can be read but not written. The value is set at the time of compilation and cannot be changed. Name constants are best used for constant values that will never change like the hourse in a day or feet in a mile for which the value itself does not mean anything.
+
+Named constants have the same syntax as variable declarations except they must include an initializer expression and must be preceded with the keyword `const`.
+
+.Named Constant Examples
+[source,csharp]
+----
+const int HoursInDay = 24;
+const int FeetInMile = 5280;
+----
+
+=== Variables
+
+A variable can be read or written. It has a name, type and value. The value can be set at runtime and read at any time.
+
+.Variable Examples
+[source,csharp]
+----
+int hoursWorked;
+double payRate;
+----
+
+== Declaring Variables at the Top vs First Use
+
+There are 2 different styles to declaring variables in a block of code: at the top of the block or on first use. 
+
+=== Declaring at Top
+
+This is sometimes referred to as block declarations. All variables used by a block are declared together at the top of the block.
+
+.Declaring at Top
+[source,csharp]
+----
+int hours;
+double payRate;
+
+//More code
+hours = 40;
+payRate = 12.50;
+----
+
+This style of coding makes it clear what variables are used in the block. It also makes it easy to find the declaration if needed later. 
+
+The downside to this style is that it becomes harder to determine where in the block, if any, a variable is used. It also makes it harder to know if a variable is ready to be used inside the block as the block gets longer.
+
+NOTE: This style of declarations was required in the early days of programming with C because of limitations on how compiler had to store data. This is no longer an issue in any language.
+
+=== Declaring at First Use
+
+This style of coding makes it clear when a variable is being used by declaring the variable at the point it is first needed. This almost always involves assigning a value to the variable.
+
+.Declaring at First use
+[source, csharp]
+----
+//Code to use hours
+int hours = 40;
+
+//Code to use pay rate
+double payRate = 12.50;
+----
+
+The advantage of this style is that variables are tied to when they are used making it easier to see why a variable is being used and for what. If the code using the variable is not needed anymore then the variable can be removed as well. Another advantage of this style is type inferencing which will be discussed later.
+
+The disadvantage of this approach is that it is harder to tell what variables are used in a block. This can be an issue if a type of the variable is unclear. It can also result in multiple variables of the same name being used if multiple blocks need the same variables.
+
+=== Preferred Style
+
+In C#, as with most languages, the preferred style is to declare the variable at first use. Historically the disadvantage of not being able to easily find variable declarations does not exist in modern IDEs as they provide either variable information directly in the editor or can quickly jump to declarations.
+
+One argument for declaring at the top is that it somehow speeds up compilation or runtime behavior. This is and has never been true. Even in languages, like C#, that allow you to split up variable declarations within a block of code all variables are still grouped together at compilation to form the stack frame. There is no performance difference between either approach to declaring variables.
+
+== Naming Guidelines
+
+The following guidelines apply to naming variables.
+
+* USE descriptive names to describe what is being stored in a variable.
+* USE a singular noun for the identifier such as `firstName` or `payRate` unless the value has a plural context such as `hours`.
+* USE camel casing for variable names unless otherwise specified later.
+* DO declare the variable as close to the point it is needed as possible.
+* DO use an initializer expression to initialize the variable.
+* DO prefer declaring variables at the point they are used.

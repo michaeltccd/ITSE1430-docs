@@ -3,27 +3,6 @@ Michael Taylor <michael.taylor@tccd.edu>
 v1.0
 :toc:
 
-Programming languages tend to use the same constructs but change up the syntax. C# is no different. In language design there is some agreed upon terminology that can be used to discuss parts of a language. 
-
-== Language Terminology
-
-NOTE: A `token` in language design is anything in the code, generally separated by whitespace. Examples might include `+`, `if` and `payRate`.
-
-Comment::
-A textual comment about the code. Generally treated as whitespace in code but does not impact compilation.
-Identifier::
-A non-symbol token that is not a keyword (e.g. `payRate`). Identifiers are generally provided by the programmer but are often provided by additional libraries.
-Keyword::
-An identifier that has special meaning to the language (e.g. `for` or `true`). Keywords cannot generally be used where identifiers are normally allowed.
-Literal::
-An expression whose value can be determined at compilatio time. Examples would include `10` or `Hello`.
-Operator::
-A mathematical operator such as `+` (addition), `-` (subtraction) and `*` (multiplication).
-Punctuator::
-Any symbol that is not an operator.
-
-== Breaking Apart the Program
-
 Let's take apart the `Hello World` program from earlier.
 
 The keywords are: `using`, `namespace`, `class`, `static` and `void`.
@@ -92,36 +71,6 @@ Multi line comments extend from the start of the comment until the end. Multi li
  * It continues until the closing comment is specified.
  * The asterisk at the beginning is not required but helps to line up the lines.
  */
-----
-
-=== Statements
-
-Statements in a language perform an action that does not return a value. Statements include the `if` statement and a function declaration. Within a code block all statements end with a semicolon. 
-
-NOTE: The semicolon is a `sequence point`. A sequence point is used by the compiler to help reset after a syntactical error occurs. Appropriate use of semicolons help the compiler recover faster resulting in easier to diagnose and more accurate errors.
-
-Statements often consist of expressions and child statements. Good indenting helps make more complex statements easier to read.
-
-=== Expressions
-
-An expression calculates a value that can be used in larger expressions or statements. Examples of expressions would include arithmetic expressions and literals. 
-
-NOTE: In most cases an expression can be converted to a statement by ending it with a semicolon. However C# will report unused expressions as a warning because this is generally wrong.
-
-=== Literals
-
-Literals are a special kind of expression. Unlike most other expressions a literal is calculated at compile time and generally its value is baked into source code. Literals have the same characteristics as a constant variable except they have no name. Literals can only be primitive types.
-
-[source,csharp]
-----
-//An integral literal
-10
-
-//A string literal
-"Hello world"
-
-//An integral literal consisting of multiple literals
-4 + 6 * 5
 ----
 
 == Basic Styling Guidelines

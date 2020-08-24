@@ -1,0 +1,96 @@
+= String Parsing
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+Parsing strings to other formats is one of the most common and complex tasks in programming. Fortunately .NET has dramatically simplified it. Parsing is the process of taking a string apart and determining what it actually consists of. Parsing allows a program to convert a string `123` to its integral equivalent.
+
+== Parsing Types
+
+All the primitive types have two parsing functions `Parse` and `TryParse`. Many other types also have similar functions but refer to the documentation for each type to be sure.
+
+NOTE: For this discussion we will parse to an int but the approach works with all the primitive types except `string`.
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.int32.parse[Parse] function takes a string and converts it to an `int`. 
+
+.Parsing an Int
+[source,csharp]
+----
+Console.Write("Enter an integer: ");
+string input = Console.ReadLine();
+
+//Notice the use of the formal type here
+int value = Int32.Parse(input);
+----
+
+The function handles the conversion following the rules of the current locale. There are overloads to handle more complex cases such as handling base conversion (e.g. octal or hex), handling digit group separators and other number styles. In most cases the simple overload shown earlier is sufficient.
+
+Unfortunately if the value is not an integer then the function will fail. Unlike C\++ it does not return a partial value (e.g. in C\++ the string ``"123abc"`` would return `123` and ``"abc"`` would return `0`). Therefore when using `Parse` code must ensure that the string value is valid.
+
+== Safe Parsing
+
+The preferred approach to parsing a string is to use https://docs.microsoft.com/en-us/dotnet/api/system.int32.tryparse[TryParse] instead. `TryParse` works identical to `Parse` except it returns a value indicating whether the parsing was successful or not.
+
+.Safe Parsing
+[source,csharp]
+----
+Console.Write("Enter an integer: ");
+string input = Console.ReadLine();
+
+int value;
+if (Int32.TryParse(input, out value))
+   ; //Value was parsed successful
+----
+
+Notice that the return value is a `bool` indicating true or false. The parsed value is return as an output parameter from the function. Like `Parse` there are multiple overloads to control parsing.
+
+CAUTION: Always use `TryParse` in lieu of `Parse` for parsing values unless you are absolutely certain the value is convertible.
+
+== Input Validation
+
+Now that parsing is available input validation becomes a lot easier. Programs can read input from a user as a string and then attempt to parse the value. If the value fails to parse to the expected type then the user can be displayed an error.
+
+The following example attempts to get an integer from the user in a console application. There are multiple overloads allowing the value to be limited to a particular range.
+
+.Read an Int32
+[source,csharp]
+----
+//Allows any integral value
+static int ReadInt32 ( )
+{
+   return ReadInt32(Int32.MinValue, Int32.MaxValue);
+}
+
+//Requires the integral value to have a minimum value
+static int ReadInt32 ( int minimumValue )
+{   
+   return ReadInt32(minimumValue, Int32MaxValue);
+}
+
+//Requires the integral to be in a given range
+static int ReadInt32 ( int minimumValue, int maximumValue )
+{   
+   do 
+   {
+      string input = Console.ReadLine();
+
+      int value;
+      if (Int32.TryParse(input, out value))
+      {
+         //Validate the range
+         if (value >= minimumValue && value <= maximumValue)            
+            return value;
+
+         //Display an appropriate error
+         if (minimumValue != Int32.MinValue)
+            if (maximumValue != Int32.MaxValue) 
+               Console.WriteLine("Value must be between {0} and {1}", minimumValue, maximumValue);
+            else 
+               Console.WriteLine("Value must be at least {0}", minimumValue);
+         else
+            Console.WriteLine("Value must be less than or equal to {0}", maximumValue);
+      } else
+         Console.WriteLine("Integer value is required.");
+   } while (true);
+}
+----

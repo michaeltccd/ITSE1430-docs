@@ -1,0 +1,195 @@
+= Console IO
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+Building a console application often involves getting input from the user and writing output to the user. The console window is a terminal that supports basic textual reading and writing. 
+
+In .NET the https://docs.microsoft.com/en-us/dotnet/api/system.console[Console] class is used to get input from the console and write output to the console.
+
+== Output
+
+=== Unformatted Output
+
+Use the https://docs.microsoft.com/en-us/dotnet/api/system.console.writeline[WriteLine] method to write a line of text to the output.
+
+.Write Line of Text
+[source,csharp]
+----
+Console.WriteLine("Enter the number of hours worked today: ");
+----
+
+The given string message is displayed to the user and a newline is placed on the end. 
+
+CAUTION: Notice that the function name must be preceded by `Console.` This is required by the language and will be discussed later in the section on static methods.
+
+In cases where you do not want a newline on the end then use https://docs.microsoft.com/en-us/dotnet/api/system.console.write[Write] instead.
+
+.Write Text
+[source,csharp]
+----
+Console.Write("Enter the number of hours worked today: ");
+----
+
+To write a blank line use `WriteLine` with no arguments or specify an empty string.
+
+.Write Blank Line
+[source,csharp]
+----
+Console.WriteLine();
+----
+
+There are multiple overloads for `Write` and `WriteLine` for writing all the primitive types. These overloads convert the value to its string equivalent and then displays it to the user.
+
+.Write Primitive Types
+[source,csharp]
+----
+int hoursWorked = 40;
+Console.Write("Hours worked: ");
+Console.Write(hoursWorked);
+----
+
+=== Formatted Output
+
+`WriteLine` supports formatted output using string format as discussed in the link:string-formatting.adoc[String Formatting] section.
+
+.Formatted Output
+[source,csharp]
+----
+int hoursWorked = 40;
+double payRate = 12.50;
+double totalPay = hoursWorked * payRate;
+Console.WriteLine("Total Pay = {0} * {1} = ${2}", hoursWorked, payRate, totalPay);
+----
+
+Format specifiers are also supported as discussed in the earlier section.
+
+== Input
+
+=== String Input
+
+To read input from the user use the https://docs.microsoft.com/en-us/dotnet/api/system.console.readline[ReadLine] function. The `ReadLine` function will wait for the user to enter some text and press newline (ENTER). The function returns the value entered by the user up to but excluding the newline.
+
+.Reading A Line
+[source,csharp]
+----
+Console.WriteLine("Enter a message");
+string input = Console.ReadLine();
+
+//Example run
+// Enter a message
+// Hello my name is Bob
+//
+// `input` will have the value "Hello my name is Bob"
+----
+
+`ReadLine` always returns a string. If the user does not enter any data but just presses the ENTER key then the string will be empty.
+
+NOTE: The current implementation allows up to 256 characters.
+
+CAUTION: If you are used to C/C++ then this function most closely matches `scanf` however no type conversion is supported and the entire line is always returned.
+
+=== Formatted Input
+
+In many cases it is common to need to read in typed values such as integers or doubles. `Console` does not support this. To read typed values you must first read the value as a string and then do the conversion manually. This approach makes it very easy to do input validation as well. 
+
+Refer to the section on link:string-parsing.adoc[String Parsing] for more information.
+
+=== Reading a Character
+
+In some cases using `ReadLine` may not be appropriate. One scenario may be reading a single character value such as `Y` or `N`. In these cases having the user press ENTER may be too much. The https://docs.microsoft.com/en-us/dotnet/api/system.console.readkey#System_Console_ReadKey[ReadKey] function can be used to read a single character. 
+
+.Read a Character
+[source,csharp]
+----
+bool ConfirmYesNo ( )
+{
+   //Wait until the user presses either Y or N
+   do
+   {
+      ConsoleKeyInfo key = Console.ReadKey();
+      switch (key.Key)
+      {
+         case ConsoleKey.Y: return true;
+         case ConsoleKey.N: return false:         
+      };
+   } while (true);
+}
+----
+
+This is a low level function and the caller is responsible for translating the character, including newlines. An added complexity is that the returned value is https://docs.microsoft.com/en-us/dotnet/api/system.consolekeyinfo[ConsoleKeyInfo] and not just a character. The `ConsoleKeyInfo` has the console key pressed along with the state of the keyboard modifiers (e.g. `shift` and `control`). 
+
+The caller is responsible for checking the keyboard modifiers if needed. This function is useful if the user has to press modifiers other than the `Shift` key. 
+
+NOTE: The `KeyChar` property has the `char` that was pressed. This can also be used but code should take into account case sensitivity when using it. The `Key` property normalizes the casing away.
+
+=== Reading Sensitive Data
+
+Another use for `ReadKey` is in reading sensitive data like passwords. By default the key is displayed as it is typed. An overload allows the caller to not display the key making it more secure to enter invalid data.
+
+.Read a Password
+[source,csharp]
+----
+string ReadPassword ()
+{
+   string password = "";
+
+   do
+   {
+      ConsoleKeyInfo key = Console.ReadKey(true);
+      if (key.Key == ConsoleKey.Enter)
+         break;
+      else //Should probably filter out unprintable characters
+         password += key.KeyChar;
+   } while (true);
+   return password;
+}
+----
+
+== Advanced Features
+
+=== Displaying Tables
+
+Displaying tables in a console application is hard if centering is desired. But a basic table structure can be created by using a combination of fixed width columns and string creation functions.
+
+.Display a Table
+[source,csharp]
+----
+//Column widths
+const int column1Width = 40;
+const int column2Width = 10;
+const int column3Width = 20;
+
+//Table header
+Console.WriteLine("{0}{1}{2}", "Name".PadRight(column1Width), "Hours".PadRight(column2Width), "Pay".PadRight(column3Width));
+Console.WriteLine("".PadRight(column1Width + column2Width + column3Width, '-'));
+
+//Rows
+Console.WriteLine("{0}{1}{2}", "Bob".PadRight(column1Width), "38".PadRight(column2Width), "475.50".PadRight(column3Width));
+Console.WriteLine("{0}{1}{2}", "Sue".PadRight(column1Width), "40".PadRight(column2Width), "508.75".PadRight(column3Width));
+----
+
+=== Colorizing Output
+
+Sometimes it is useful to display output in a different color. The https://docs.microsoft.com/en-us/dotnet/api/system.console.backgroundcolor[BackgroundColor] property can be set to the color of the background while the https://docs.microsoft.com/en-us/dotnet/api/system.console.foregroundcolor[ForegroundColor] property can be set to the color of the text. The console is limited to the colors defined by https://docs.microsoft.com/en-us/dotnet/api/system.consolecolor[ConsoleColor]. 
+
+.Display an Error
+[soruce,csharp]
+----
+void DisplayError ( string message )
+{
+   //Set background red and foreground white
+   Console.BackgroundColor = ConsoleColor.Red;
+   Console.ForegroundColor = ConsoleColor.White;
+
+   Console.WriteLine(message);
+
+   //Restore the colors
+   Console.ResetColors();
+}
+----
+
+To reset the colors back to their defaults use the https://docs.microsoft.com/en-us/dotnet/api/system.console.resetcolor[ResetColor] function.
+
+CAUTION: The console is shared by the entire program and can only have a single color set for foreground and background. Ensure the color is restored when you change it.
+

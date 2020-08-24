@@ -1,4 +1,4 @@
-= Chapter 2: C# Programming 101
+= Chapter 2: C# Basics
 Michael Taylor <michael.taylor@tccd.edu>
 v1.0
 :toc:
@@ -11,17 +11,18 @@ This chapter provides information on using C# for the equivalent of a programmin
 * Statements
 
 :leveloffset: +1
-include::identifiers.adoc[]
-include::literals.adoc[]
-include::type-aliasing.adoc[]
-include::primitive-types.adoc[]
-include::other-types.adoc[]
-include::variables.adoc[]
-[Console IO]
-[Expressions]
-[Scoping Rules]
-[Control Flow]
-[Strings]
-[Enumerations]
+include::identifiers.adoc[] +
+include::type-aliasing.adoc[] +
+include::primitive-types.adoc[] +
+include::other-types.adoc[] +
+include::variables.adoc[] +
+include::console.adoc[] +
+include::expressions.adoc[] +
+[Scoping Rules] +
+[Control Flow] +
+[Strings] +
+[String Formatting] +
+include::string-parsing.adoc[] +
+[Enumerations] +
 :leveloffset: -1
 
