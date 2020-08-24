@@ -5,6 +5,23 @@ v1.0
 
 Let's take apart the `Hello World` program from earlier.
 
+.program.cs
+[source,csharp]
+----
+using System;
+
+namespace HelloWorld
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello World!");
+        }
+    }
+}
+----
+
 The keywords are: `using`, `namespace`, `class`, `static` and `void`.
 
 The identifiers are: `System`, `HelloWorld`, `Program`, `Main`, `args`, `Console` and `WriteLine`.

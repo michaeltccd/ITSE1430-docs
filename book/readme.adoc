@@ -6,8 +6,10 @@ This is the electronic version of the book for this course.
 
 The source code is available link:../src/readme.md[here].
 
+== Table of Contents
+
 * link:chapter-1/readme.adoc[Chapter 1 - Introduction to C#]  
-* link:chapter-2/readme.ado[Chapter 2 - C# Basics]
+* link:chapter-2/readme.adoc[Chapter 2 - C# Basics]
 * [Chapter 3 - Object Oriented Programming]
   ** [Namespaces]
   ** [Classes]
