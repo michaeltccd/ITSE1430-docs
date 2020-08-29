@@ -3,16 +3,7 @@ Michael Taylor <michael.taylor@tccd.edu>
 v1.0
 :toc:
 
-The assignment operator is used to assign a value to a variable.
-
-.Simple Assignment
-[source,csharp]
-----
-x = 10;
-y = 20;
-----
-
-The assignment operator has the followin syntax.
+The assignment operator is used to assign a value to a variable. The assignment operator has the following syntax.
 
 .Assignment Operator Syntax
 ----
@@ -27,6 +18,17 @@ rvalue::
 An expression that can appear on the right side of an assignment.
 
 All expressions are rvalues and can be read, ignoring semantic rules. Only variables are lvalues and can be assigned a value.
+
+== Variable Assignment
+
+To assign a value to a variable use the assignment operator.
+
+.Simple Assignment
+[source,csharp]
+----
+x = 10;
+y = 20;
+----
 
 The assignment operator is right associative so it evaluates the expression on the right and then assigns the value to the left. This allows multiple additions to be chained together if needed.
 
@@ -74,40 +76,6 @@ All the operators are equivalent to using the longer form of the operator `V = V
 x += 10;  // Equivalent to x = x + 10;
 x &= 2;   // Equivalent to x = x & 2;
 ----
-
-== Prefix / Postfix Operators
-
-The prefix/postfix operators are designed for the common case of adding 1 (increment) or subtraction one (decrement) from a variable. 
-
-- `x++` postfix increment
-- 'x--' postfix decrement
-- '++x' prefix increment
-- '--'  prefix decrement
-
-Increment and decrement work identical except increment adds 1 and decrement subtracts 1. In both cases the variable is incremented/decremented by 1 as a side effect. The prefix/postfix operators only differ in what the result of the expression is.
-
-Prefix::
-The variable is incremented/decremented and the result of the expression is the new value.
-Postfix::
-The variable is incremented/decreemented and the result of the expression is the original (unmodified) value.
-
-.Prefix and Postfix
-[source,csharp]
-----
-x = 10;
-y = x++;   // X = 11, Y = 10
-
-x = 10;
-y = ++x;   // X = 11, Y = 11
-
-x = 10;
-y = x--;   // X = 9, Y = 10
-
-x = 10;
-y = --x;   // X = 9, Y = 9
-----
-
-NOTE: The operators only work with integral types.
 
 == See Also
 

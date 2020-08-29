@@ -94,6 +94,40 @@ int x = -10;
 -x    // Result is 10
 ----
 
+== Prefix / Postfix Operators
+
+The prefix/postfix operators are designed for the common case of adding 1 (increment) or subtraction one (decrement) from a variable. 
+
+- `x++` postfix increment
+- 'x--' postfix decrement
+- '++x' prefix increment
+- '--'  prefix decrement
+
+Increment and decrement work identical except increment adds 1 and decrement subtracts 1. In both cases the variable is incremented/decremented by 1 as a side effect. The prefix/postfix operators only differ in what the result of the expression is.
+
+Prefix::
+The variable is incremented/decremented and the result of the expression is the new value.
+Postfix::
+The variable is incremented/decreemented and the result of the expression is the original (unmodified) value.
+
+.Prefix and Postfix
+[source,csharp]
+----
+x = 10;
+y = x++;   // X = 11, Y = 10
+
+x = 10;
+y = ++x;   // X = 11, Y = 11
+
+x = 10;
+y = x--;   // X = 9, Y = 10
+
+x = 10;
+y = --x;   // X = 9, Y = 9
+----
+
+NOTE: The operators only work with integral types.
+
 == See Also
 
 link:expressions.adoc[Expressions] +

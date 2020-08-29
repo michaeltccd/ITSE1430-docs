@@ -7,12 +7,20 @@ A variable is a named memory location used to store data. A programmer generally
 
 == Declaring a Variable
 
+Declaring a variable has several different syntactical options.
+
+.Variable Declaration Syntax
+----
+variable-declaration => T identifier [ = E] [variable-declaration-list];
+variable-declaration-list => { , identifier [= E] }*
+----
+
 The simplest form of a variable declaration consists of the type and name.
 
 .Simple Variable Declaration
 [source,csharp]
 ----
-T id;
+int hours;
 ----
 
 Declaring a variable tells the compiler the name and type of the variable. The identifier can be used for the remainder of the scope to access the variable's value. 
@@ -24,20 +32,10 @@ If multiple variables of the same type are needed then they can be declared as o
 .Multipel Variable Declaration
 [source,csharp]
 ----
-T id1 {, id2}*;
+double payRate, hoursWorked;
 ----
 
-For this syntax to work all the variables must be the same type. The following is an example of the above syntax.
-
-.Declaring Variables
-[source,csharp]
-----
-//Declare an int representing hours
-int hours;
-
-//Declare an x and y coordinate as doubles
-double x, y;
-----
+NOTE: For this syntax to work all the variables must be the same type.
 
 == Definitely Assigned Rule
 
@@ -64,39 +62,24 @@ if (x == 0)  ;//Allowed
 
 NOTE: All possible code paths must ensure a variable is iniitalized before it is used.
 
-It is considered best practice to ensure a variable is initialized at the point it is declared. Variable declarations may include the initial value.
+== Initializing Variables
 
-.Initializer Expression
+It is considered best practice to ensure a variable is initialized at the point it is declared. The preferred approach to this is to initialize the variable when it is declared.
+
+.Variable Initialization
 [source,csharp]
 ----
-T id [= E];
-T id [= E] {, id [ = E] }*;
+double payRate = 12.50;
 ----
 
-`E` must be type compatible with `T`. This is the preferred syntax to declaring a variable. When using multiple variable declaration each variable can be initialized to a different value.
+The expression on the right side of the equals must be type compatible with the variable's type.
 
-.Declare and Initialize
+When using multiple variable declaration each variable can be initialized to a different value.
+
+.Multiple Variable Initialization
 [source,csharp]
 ----
-int x = 0;
-----
-
-== Assignment Statement
-
-To assign a value to a variable use the assignment `=` operator.
-
-.Assignment Statement
-[source,csharp]
-----
-hours = 40;
-----
-
-Multiple variables can be assigned the same value by chaining them together.
-
-.Multiple Assignment
-[source,csharp]
-----
-currentHours = nextWeekHours = 40;
+double payRate = 12.50, hours = 40;
 ----
 
 == Variables vs Literals
