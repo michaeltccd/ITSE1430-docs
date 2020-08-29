@@ -3,7 +3,7 @@ Michael Taylor <michael.taylor@tccd.edu>
 v1.0
 :toc:
 
-Parsing strings to other formats is one of the most common and complex tasks in programming. Fortunately .NET has dramatically simplified it. Parsing is the process of taking a string apart and determining what it actually consists of. Parsing allows a program to convert a string `123` to its integral equivalent.
+Parsing strings to other formats is one of the most common and complex tasks in programming. Fortunately .NET has dramatically simplified it. Parsing is the process of taking a string apart and determining what it actually consists of. Parsing allows a program, for example, to convert a string `123` to its integral equivalent.
 
 == Parsing Types
 
@@ -48,7 +48,7 @@ CAUTION: Always use `TryParse` in lieu of `Parse` for parsing values unless you 
 
 == Input Validation
 
-Now that parsing is available input validation becomes a lot easier. Programs can read input from a user as a string and then attempt to parse the value. If the value fails to parse to the expected type then the user can be displayed an error.
+Input validation becomes easier to implement with the parsing methods. Programs can read input from a user as a string and then attempt to parse the value. If the value fails to parse to the expected type then the user can be displayed an error.
 
 The following example attempts to get an integer from the user in a console application. There are multiple overloads allowing the value to be limited to a particular range.
 
@@ -94,3 +94,31 @@ static int ReadInt32 ( int minimumValue, int maximumValue )
    } while (true);
 }
 ----
+
+== DateTime Parsing
+
+Some types, like `DateTime` are harder to parse because of the various formats that can be used. 
+
+.Parse a DateTime
+[source,csharp]
+----
+//Try to parse using any supported format
+if (DateTime.TryParse("01/02/2020", out var value))
+   ; //DateTime is valid
+----
+
+The above code will work if the user is following the formatting rules configured by the operating system but will fail otherwise. In some cases it is necessary to specific the exact format desired. The https://docs.microsoft.com/en-us/dotnet/api/system.datetime.tryparseexact[TryParseExact] method can be used for that.
+
+.Parse Using an Exact Format
+[source, csharp]
+----
+//Date must be formatted as YYYY-MM-DD
+if (DateTime.TryParseExact("2020-01-02", "yyyy-MM-dd", Culture.CurrentCulture, DateTimeStyles.None, out var value))
+   ; //Date was in correct format
+----
+
+The second argument uses https://docs.microsoft.com/en-us/dotnet/standard/base-types/formatting-types[format specifiers] defined by .NET to indicate the desired format. If the string does not match that format exactly then the method fails.
+
+== See Also
+
+link:strings.adoc[Strings] +

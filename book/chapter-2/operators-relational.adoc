@@ -1,0 +1,101 @@
+= Relational Operators
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+All the relational operators are binary operators returning a `bool` value. They have the following syntax. 
+
+.Relational Operator Syntax
+----
+E => E relational-op E
+relational-op => <
+                 >
+                 <=
+                 >=
+                 ==
+                 !=
+----
+
+The relational operators are used for comparing values. The following operators are defined.
+
+.Relational Operators
+|===
+| Operator | Description
+| `<` | Less than
+| '<=' | Less than or equal to
+| '>' | Greater than
+| '>=' | Greater than or equal to
+| '==' | Equality
+| '!=' | Inequality
+|===
+
+All the primitive types support the relational operators.
+
+.Relational Examples
+[source,csharp]
+----
+int x = 10;
+int y = 20;
+
+bool isLess = x < y;                // true
+bool isLessThanOrEqualTo = x <= y;  // false
+
+bool isGreater = x > y;                // false
+bool isGreaterThanOrEqualTo = x >= y;  // true
+
+bool xEqualY = x == y;     // false
+bool xEqualX = x == x;     // true
+bool xNotEqualY = x != y;  // true
+bool xNotEqualX = x != x;  // false
+----
+
+== Comparing Floating Point Types
+
+Be very careful when comparing floating point values. Because of potential round off or precision errors it is possible for two otherwise equal values to fail comparison. This problem generally occurs with equality and inequality of floating point values.
+
+.Float Comparison
+[source,csharp]
+----
+float x = 1234.3756378215F * 3.1F;
+
+float y = (1234.3756378215F * 9.61F) / 3.1F;
+
+//Prints: 3826.564equal 3826.564: False
+Console.WriteLine($"{x} equal {y}: {x == y}");   
+----
+
+It is generally safe to compare relational operators to integral values but similar problems can occur. In general prefer `<=` over '<' and '>=' over '>'. Consider adding an error correction to account for minor differences.
+
+WARNING: Avoid using equality and inequality with floating point values except when comparing to integral values.
+
+== Comparing Booleans
+
+Boolean values never make sense in comparisons. Do not use them with the relational operators.
+
+.Boolean Comparison
+[source,csharp]
+----
+bool isOK = false;
+
+//BAD: if (isOK == false)
+//BAD: if (isOK != true)
+if (!isOK) ;
+
+//BAD: if (isOK == true)
+//BAD: if (isOK != false)
+if (isOK) ;
+----
+
+== Comparing Strings
+
+Strings can be compared using the relational operators but it is generally wrong except for when comparing to `null`. Refer to the link:string-comparison.adoc[String Comparison] for more information.
+
+== Comparing Other Types
+
+Other types can work with the relational operators if they implement the https://docs.microsoft.com/en-us/dotnet/api/system.icomparable-1[IComparable<T>] interface. Refer to the documentation for more information on how to implement this.
+
+== See Also
+
+link:expressions.adoc[Expressions] +
+https://docs.microsoft.com/en-us/dotnet/api/system.icomparable-1[IComparable<T> Interface] +
+link:string-comparison.adoc[String Comparison] 

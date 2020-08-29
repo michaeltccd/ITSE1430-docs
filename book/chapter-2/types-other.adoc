@@ -65,3 +65,7 @@ Guid guid = Guid.NewGuid();
 GUIDs should never be created manually. They must be unique in most cases. The `NewGuid` function generates a unique GUID each time it is called that is guaranteed to be unique in the vast majority of cases. 
 
 WARNING: GUIDs are 16 bytes in size and are always generated using an algorithm so they are mathematically unlikely to match. However it is possible that they may not be unique if a custom algorithm is being used or the algorithm relies on something that is not unique.
+
+== See Also
+
+link:types-primitive.adoc[Primitive Types] +

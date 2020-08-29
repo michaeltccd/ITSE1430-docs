@@ -3,48 +3,174 @@ Michael Taylor <michael.taylor@tccd.edu>
 v1.0
 :toc:
 
-== Operator Associativity and Precedence
+An expression is a series of tokens that produce a value such as an addition operation, variable reference or function call. Expressions can be one of the following categories.
 
-Operator precedence determines when an operator is evaluated as part of a larger expressions. Operators will higher precedence are evaluated earlier than lower precedence operators. If two operators are at the same level then they evaluate left to right. Given the following expression `A + B * C`. The multiplication has higher precedence than addition and is performed first. The addition is perfomed on the left side and the results of evaluating the multiplication.
+Unary::
+An expression with one argument such as unary plus or minus.
+Binary::
+An expression with two arguments such as addition or multiplication.
+Ternary::
+An expression with three arguments such as the conditional operator.
 
-If the operator precedence is not clear or two operators evaluate the same and you want to control which gets evaluated first. For example if the expression was `(A + B) * C` then the parenthesis causes the addition to occur first then the multiplication.
+All expressions have a type and a value. By looking at the types involved it is possible to determine the type of the expression. For purposes of this discussion the actual expression values are not relevant, just the types.
 
-Operator associativity determines how the operands in an operator are evaluated. Left associative evaluates the left side of the operator and then the right side. Right associative evaluates the right side of the operator and then the left. Most operators are left associative including all the unary operators but some are right associative.
+- Literals are typed based upon their value
+- Variables are whatever type the variable declaration uses
+- Function calls use the return type of the function
 
-The following table provides the C# operator precedence and associativity rules.
-
-??
-
-== Assignment
-
-The expression on the right must be type compatible with the variable on th left. Only variables can be assigned
-
-The assignment statement is right to left associative and evaluates late in the operator precedence rules.
-
-The assignment operator (`=`) is right associative so it evaluates the expression on the right and then assigns the value to the left. This allows multiple additions to be chained together if needed.
-
-.Multiple Assignment
+.Determining Expression Type
 [source,csharp]
 ----
+//Type is int
+int + int
 
+//Type is string, assuming function declaration is: string ToString()
+instance.ToString()
+
+//Type is boolean
+bool && bool
 ----
-??
 
-lvalue vs rvalue
+In C# all operands must be the same time. If they are not then it is a compiler error.
 
-== Arithmetic
+NOTE: Like other languages an expression may be evaluated at compile or runtime. The type of the expression is a compile type calculation and does not result in any code generation.
 
-== Logical
+== Type Coercion
 
-== Relational
+Since C# requires that all operand types be the same this can introduce an issue because even simple expressions like `4.5 + 10` would fail. The language allows for `type coercion`
 
-real comparison
-boolean comparison
+Type Coercion::
+The implicit type conversion from a smaller to a larger type performed by the compiler.
 
-== Conditional
+When evaluating the numeric types in an expression the compiler is allowed to, for the purposes of the expression, type cast a smaller type to a larger type. This never results in data loss and is therefore always safe. In general the conversion follows this hierarchy from smallest to largest.
 
-== Combination Operators
+- int
+- float
+- double
 
-== Calling Functions
+Given two types the compiler coerces the smaller type to the larger type when determining the final type of the expression.
 
-inline variable declarations
+.Type Coercion
+[source,csharp]
+----
+int + float     // Expression is a float
+double + float  // Expression is a double
+int + doublue   // Expression is a double
+
+short + int     // Expression is a short
+char + short    // Expression is an int but can be stored in a short
+----
+
+Types smaller than an `int` are coerced to an `int` for purposes of type calculation. However C# allows a larger type to be stored in a smaller type if the compiler can ensure it will not overflow.
+
+Refer to the link:primitive-types.adoc[primitive types] section for the full list of numeric primitives. Type coercion does not apply to non-numeric primitive types.
+
+CAUTION: Type coercion only applies when the types vary. If they are the same then the expression is of the same type.
+
+== Operator Precedence
+
+You learned the operator precedence rules in grade school most likely, at least to a small degree. Multiplication is performed before addition, for example. Understanding operator precedence is critical for properly writing expressions.
+
+Operator Precedence::
+The order in which operators are performed when part of a larger expression.
+
+.Operator Precedence
+[source,csharp]
+----
+4 + 5 * 6   // Equivalent to 4 + (5 * 6)
+4 * 5 - 6   // Equivalent to (4 * 5) - 6
+4 + 5 - 6   // Equivalent to (4 + 5) - 6
+----
+
+Operators will higher precedence are evaluated earlier than lower precedence operators. If two operators are at the same level then they evaluate left to right. Given the following expression `A + B * C`. The multiplication has higher precedence than addition and is performed first. The addition is perfomed on the left side and the results of evaluating the multiplication.
+
+NOTE: Use parenthesis when the precedence is not clear or to alter the precedence rules. Parenthesis take priority over almost all other operators.
+
+The following table provides some of the C# operator precedence and associativity rules from highest to lowest.
+
+.Operator Precedence
+|===
+| `x.y`, `f()`, `a[i]`, `x?.y`, `x?[i]`, `x++` (postfix), `x--` (postfix), `x!`, `new`, `typeof`, `default`, `nameof`
+| `+x` (unary), `-x` (unary), `!x` (not), `~x` (negate), `++x` (prefix), `--x` (prefix), `(T)` (typecast), `await`, `true`, `false`
+| `x * y` (multiplication), `x / y` (division), `x % y` (modulus)
+| `x + y` (addition), `x - y` (subtraction)
+| `x << y` (left shift), `x >> y` (right shift)
+| `x < y`, `x > y`, `x <= y`, `x >= y`, `is`, `as`
+| `x == y`, `x != y`
+| `x & y` (bitwise and)
+| `x ^ y` (bitwise xor)
+| `x \| y` (bitwise or)
+| `x && y` (logical and)
+| `x \|\| y` (logical or)
+| `x ?? y` (null coalescingl)
+| `x ? y : z` (conditional)
+| `x = y` (assignment), `x op= y` (combination operators)
+|===
+
+NOTE: Refer to the full table https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/[here].
+
+== Operator Associativity
+
+Another factor in evaluating expressions is operator associativity.
+
+Operator Associativity::
+Determines whether a binary (or ternary) operator evaluates the left operand (left associative)  or right operand (right associative) first.
+
+Operator associativity determines how the operands in an operator are evaluated. This is generally not important outside of computers because general math expressions do not have side effects. But in computers operands may have side effects so it is important to understand which operand is evaluated first.
+
+Left associative evaluates the left side of the operator and then the right side. This is the most common and generally makes sense. 
+
+.Left Associative
+[source,csharp]
+----
+x = 10;
+y = x++ - ++x;  // x = 12, y = -2 (refer to prefix/postfix later)
+
+x = 10;
+z = ++x - x++;  // x = 12, y = 0
+----
+
+Right associative evaluates the right side of the operator and then the left. All the unary operators are right associative because they have a single operand. The assignment operator is also right associative. 
+
+.Right Associative
+[source,csharp]
+----
+int x = 10;
+
+//Right associative evaluates 30, assigns to c and then assigns c to y
+//If assignment was left associative then c would be assigned to y (garbage) and then 30 to c
+int y = c = 30;   
+----
+
+All operators except the following are left associative.
+
+- Assignment operator
+- Null coalescing operator
+- Conditional operator
+- Unary operators
+
+== Complex Expressions
+
+Whenever an expression is mentioned it can be either a simple or complex expression. Simple expressions are the types mentioned earlier such as literals, variables and function calls. Complex expressions are expressions that have other expressions as their operands. This allows arbitrarily complex expressions to be built.
+
+.Complex Expressions
+[source,csharp]
+----
+//Simple expressions: y, x, 5
+//Complex expressions: x + 5, y = E
+int y = x + 5;  
+
+//Simple expressions: 5, 6, 9
+//Complex expressions: 6 * 9, 5 + E
+5 + 6 * 9;      
+----
+
+== See Also
+
+link:operators-arithmetic.adoc[Arithmetic Operators] +
+link:operators-assignment.adoc[Assignment Operator] +
+link:operators-bitwise.adoc[Bitwise Operators] +
+link:operators-conditional.adoc[Conditional Operator] +
+link:calling-functions.adoc[Calling Functions] +
+link:operators-logical.adoc[Logical Operators] +
+link:operators-relational.adoc[Relational Operators] +

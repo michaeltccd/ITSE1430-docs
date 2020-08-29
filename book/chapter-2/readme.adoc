@@ -13,17 +13,26 @@ This chapter provides information on using C# for the equivalent of a programmin
 
 :leveloffset: +1
 * link:identifiers.adoc[Identifiers]
-* link:type-aliasing.adoc[Type Aliasing]
-* link:primitive-types.adoc[Primitive Types]
-* link:other-types.adoc[Other Types]
+* Types
+** link:type-aliasing.adoc[Type Aliasing]
+** link:types-primitive.adoc[Primitive Types]
+** link:types-other.adoc[Other Types]
 * link:variables.adoc[Variables]
 * link:console.adoc[Console]
 * link:expressions.adoc[Expressions]
+** link:operators-assignment.adoc[Assignment Operators]
+** link:calling-functions.adoc[Calling Functions]
+** link:operators-arithmetic.adoc[Arithmetic Operators]
+** link:operators-relational.adoc[Relational Operators]
+** link:operators-logical.adoc[Logical Operators]
+** link:operators-bitwise.adoc[Bitwise Operators]
+** link:operators-conditional.adoc[Conditional Operator]
 * [Scoping Rules]
 * [Control Flow]
-* [Strings]
-* [String Formatting]
-* link:string-parsing.adoc[String Parsing]
+* link:strings.adoc[Strings]
+** link:string-comparison.adoc[String Comparison]
+** link:string-formatting.adoc[String Formatting]
+** link:string-parsing.adoc[String Parsing]
 * [Enumerations]
 :leveloffset: -1
 

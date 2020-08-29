@@ -1,0 +1,99 @@
+= Arithmetic Operators
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+C# has the following binary arithmetic operators.
+
+- Addition (`+`)
+- Subtraction ('-')
+- Multiplication ('*')
+- Division ('/')
+- Modulus ('%')
+
+The formal syntax of the arithmetic operators is defined here.
+
+.Arithmetic Operator Syntax 
+----
+E => E arith-op E
+arith-op => +
+            - 
+            * 
+            /
+            %
+----
+
+All the operators follow type coercion rules. Unless otherwise stated only the numeric primitives support the arithmetic operators. Some types may implement them if desired.
+
+.Arithmetic Operators
+[source,csharp]
+----
+4 + 5   // Result is 9
+10 - 4  // Result is 6
+3 * 7   // Result is 21
+10 / 2  // Result is 5
+9 % 4   // Result is 1
+----
+
+== Integer Division
+
+Pay careful attention to integer division. If both operands are integrals then the result is an integral. If the actual value was a floating point value then it is truncated. To handle the "integer division" problem ensure at least one of the operands is a `double`.
+
+.Integer Division
+[source,csharp]
+----
+5 / 4    // Result is an int = 1
+5 / 4.0  // Result is a double = 1.25
+----
+
+== Modulus
+
+Modulus returns the remainder of integer division. It only works with integral values.
+
+.Modulus
+[source,csharp]
+----
+5 % 4    // 1
+7 % 4    // 3
+8 % 4    // 0
+----
+
+== String Concatenation
+
+`string` supports concatenation through the `+` operator for convenience.
+
+.String Concatenation
+[source,csharp]
+----
+"Hello" + " " + "World"   //Result is "Hello World"
+----
+
+== Unary Operators
+
+In addition the following unary operators are supported.
+
+- Positive (`+`)
+- Negate ('-')
+
+The unary operators have the following syntax.
+
+.Unary Operator Syntax
+----
+E => unary-op E
+unary-op => +
+            -
+----
+
+The positive operator is the default and almost never needed. The negate operator takes the expression and negates it.
+
+.Negate Operator
+[source,csharp]
+----
+int x = -10;
+
+-x    // Result is 10
+----
+
+== See Also
+
+link:expressions.adoc[Expressions] +

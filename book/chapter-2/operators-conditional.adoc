@@ -1,0 +1,114 @@
+= Conditional Operator
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+As language design has evolved it has become clear that expressions are far more powerful than statements in what they can do. Many operators are being added to languages to replace existing statements with expressions for common cases. It has the following syntax.
+
+.Conditional Operator Syntax
+----
+E => C ? T : F
+C => E
+T => E
+F => E
+----
+
+`C` is a boolean expression to be evaluated and `T` and `F` are expressions representing the result. The conditional operator is used to eliminate the need for an `if` statement. When executed `C` is evaluated. If `C` is true then the expression has the value `T` otherwise it has the value of `F`. 
+
+.Conditional Operator
+[source,csharp]
+----
+string status = (grade >= 60) ? "Passing" : "Failing";
+----
+
+The equivalent `if` statement looks like this.
+
+.If Statement Equivalent
+[source,csharp]
+----
+string status;
+if (grade >= 60)
+   status = "Passing";
+else
+   status = "Not Passing";
+----
+
+There are several advantages of this code.
+
+- The result of the expression does not need to be stored in a variable.
+- The condition can be performed as part of a larger expression.
+- Requires less typing than an `if` statement.
+- Keeps the code focused on determining a value.
+
+When used in a larger expression the advantages become more clear. Compare the following usage between the conditional operator and a traditional `if` statement.
+
+.Conditional Operator vs If Statement
+[source,csharp]
+----
+//Traditional if statement
+string isPassing;
+if (grade >= 60)
+   isPassing = "Passing";
+else
+   isPassing = "Not Passing";
+Console.WriteLine("Pass Status: " + isPassing);
+
+//Conditioanl operator
+Console.WriteLine("Pass Status: " + (grade >= 60) ? "Passing" : "Not Passing");
+----
+
+The problem with the `if` statement becomes clear in this example.
+- The expression value has to be stored temporarily so it can be used later.
+- Maintenance becomes harder because the variable declaration and the `if` statement need to stay together otherwise it is possible the variable may be used elsewhere without having been set.
+- Code after the output statement may try to use the temporary variable for something else resulting in variable reuse which is generally a bad idea.
+- Code that has a lot of these kinds of statements tend to use meaningless temporary identifier names to avoid name collisions.
+
+NOTE: Like the `if` statement, never use the conditional operator to return a simple `bool` value. If you need a `bool` valuse use the condition expression directly.
+
+== Expression Type
+
+As with the other operators the type of the expression must be known at compile time. Since the conditional operator will not know which expression to use until runtime the expressions must be type compatible. The compiler will use type inferencing to determine this. If it cannot then it is a compiler error.
+
+There are several cases when type inferencing will not work, especially when dealing with non-primitives. In some cases it might be necessary to explicitly cast one of the expressions to the other.
+
+.Type Cast with Conditional Operator
+[source,csharp]
+----
+//Compiler error, unclear which type should be used
+condition ? 4.5M : 10.5;
+
+//Fix with cast
+condition ? 4.5M : (decimal)10.5;
+----
+
+CAUTION: When used in an assignment statement the type of the left side variable never has an impact on the type of the expression on the right.
+
+== Parenthesis Requirements
+
+The conditional operator is a ternary operator (3 operands) and can cause issues when parsing the code. In simple cases the operator will work correctly but as the operator is used in more complex expressions the compiler may get confused as to what parts of the expression belong to the operator.
+
+In these cases wrapping the condition expression in parenthesis often resolve the issue. If necessary wrap the entire conditional operator in parenthesis instead.
+
+.Fixing Compiler Errors
+[source,csharp]
+----
+int examGrade = 90;
+int examCurve = 10;
+int labGrade = 60;
+int finalGrade = 80;
+
+//Produces wrong result
+double score = labGrade * 0.70
+            + examGrade < 70 ? examGrade + examCurve : examGrade * 0.20
+            + finalGrade * 0.10;
+Console.WriteLine(score);
+
+//Add parenthesis to clarify operator boundaries
+double score = labGrade * 0.70
+            + (examGrade < 70 ? examGrade + examCurve : examGrade) * 0.20
+            + finalGrade * 0.10;
+----
+
+== See Also
+
+link:expressions.adoc[Expressions] +

@@ -246,3 +246,8 @@ CAUTION: Do not manipulate the bytes of a character. Characters are defined by t
 == String Type
 
 Strings are the most complex primitive in C# and will be covered in their own link:strings.adoc[section].
+
+== See Also
+
+link:types-other.adoc[Other Types] +
+link:strings.adoc[Strings] +

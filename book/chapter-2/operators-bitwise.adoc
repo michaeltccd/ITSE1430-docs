@@ -1,0 +1,14 @@
+= Bitwise Operators
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+NOTE: TBD
+
+and or xor
+
+left/right shift
+
+== See Also
+
+link:expressions.adoc[Expressions] +

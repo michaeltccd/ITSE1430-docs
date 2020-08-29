@@ -1,0 +1,18 @@
+= Strings
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+literals
+escape chars
+interpolation
+verbose
+
+Formatting
+
+== See Also
+
+link:types-primitives.adoc[Primitive Types] +
+link:string-comparison.adoc[String Comparison] +
+link:string-formatting.adoc[String Formatting] +
+link:string-parsing.adoc[String Parsing]

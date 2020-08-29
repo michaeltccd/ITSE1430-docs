@@ -1,0 +1,83 @@
+= Logical Operators
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The logical operators allow for combining expressions together using AND and OR conditions. They have the following syntax.
+
+.Logical Operator Syntax
+----
+E => !E
+E => E logical-op E
+logical-op => &&
+              ||
+----
+
+The following operators are defined.
+
+.Logical Operators
+|===
+| Operator | Meaning
+| && | Logical AND
+| \|\| | Logical OR
+| ! | NOT
+|===
+
+In all cases `E` must be of type `bool`. The `!` operator negates the value. The other operators can be evaluated using the standard truth table.
+
+.Truth Table
+|===
+| A | B | A && B | A \|\| B 
+| False | False | False | False 
+| False | True | False | True
+| True | False | False | True
+| True | True | True | True
+|===
+
+The logical operators are used to combining other expressions together. Because they have low precedence they generally do not require parenthesis.
+
+.Using Logical Operators
+[source,csharp]
+----
+if (isPassing && grade > classAverage)
+   Console.WriteLine("You are better than average");
+----
+
+CAUTION: Logical OR has lower precendence then logical AND so be careful when combining them together.
+
+.Operator Precedence with Logical Operators
+[source,csharp]
+----
+// true: true || (false) || false => (true) || false => true
+var cond = true || false && false || false;
+
+// false: (true) && false || false => (false) || false => false
+var cond = (true || false) && false || false;
+----
+
+== Short Circuit Evaluation
+
+When using logical operators short circuit evaluation always applies.
+
+Short Circuit Evaluation::
+Stops the evaluation of an expression as soon as the answer is known even if the remainder of the expression has not been evaluated yet.
+
+Short circuit evaluation has two benefits.
+
+. Runtime performance since the remaining expressions do not need to be executed.
+. Allows for writing more concise code.
+
+The most common usage for short circuit evaluation is to avoid the need for conditional checks when evaluating an expression.
+
+.Short Circuit Evaluation
+[source,csharp]
+----
+//If Check1 returns true then the expression must be true so skip Check2 and Check3
+//If Check1 is false but Check2 is true then the expression must be true so skip Check3
+//Check3 only runs if Check1 and Check2 return false
+var cond = Check1() || Check2() || Check3();
+----
+
+== See Also
+
+link:expressions.adoc[Expressions] +

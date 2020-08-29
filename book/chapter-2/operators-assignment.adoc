@@ -1,0 +1,114 @@
+= Assignment Operators
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The assignment operator is used to assign a value to a variable.
+
+.Simple Assignment
+[source,csharp]
+----
+x = 10;
+y = 20;
+----
+
+The assignment operator has the followin syntax.
+
+.Assignment Operator Syntax
+----
+E => variable = E
+----
+
+When talking about assignment the terms `lvalue` and `rvalue` will come up.
+
+lvalue::
+An expression that can appear on the left side of assignment.
+rvalue::
+An expression that can appear on the right side of an assignment.
+
+All expressions are rvalues and can be read, ignoring semantic rules. Only variables are lvalues and can be assigned a value.
+
+The assignment operator is right associative so it evaluates the expression on the right and then assigns the value to the left. This allows multiple additions to be chained together if needed.
+
+.Multiple Assignment
+[source,csharp]
+----
+x = y = 10;
+----
+
+Assignment has the lowest precedence of all the operators, along with the combination operators, and is evaluated last.
+
+NOTE: An important point to remember is that assignment is right associative. The expression to the right of the assignment is performed first and then the operator is applied. Therefore the type of the variable being assigned to never has an impact on the actual type of the right side of the assignment.
+
+.Type Coercion and Assignment
+[source,csharp]
+----
+//The right side of the assignment is an int, the fact it is being assigned to a double does not matter
+double average = 120 / 15;
+----
+
+== Combination Operators
+
+Some operators support the combination of the operator and assignment. They have the following syntax.
+
+.Combination Operator Syntax
+----
+E => variable combination-op E
+combination-op => +=
+                  -=
+                  *=
+                  /=
+                  %=
+                  &=
+                  |=
+                  ^=
+                  <<=
+                  >>=
+----
+
+All the operators are equivalent to using the longer form of the operator `V = V op E`.
+
+.Combination Operators
+[source,csharp]
+----
+x += 10;  // Equivalent to x = x + 10;
+x &= 2;   // Equivalent to x = x & 2;
+----
+
+== Prefix / Postfix Operators
+
+The prefix/postfix operators are designed for the common case of adding 1 (increment) or subtraction one (decrement) from a variable. 
+
+- `x++` postfix increment
+- 'x--' postfix decrement
+- '++x' prefix increment
+- '--'  prefix decrement
+
+Increment and decrement work identical except increment adds 1 and decrement subtracts 1. In both cases the variable is incremented/decremented by 1 as a side effect. The prefix/postfix operators only differ in what the result of the expression is.
+
+Prefix::
+The variable is incremented/decremented and the result of the expression is the new value.
+Postfix::
+The variable is incremented/decreemented and the result of the expression is the original (unmodified) value.
+
+.Prefix and Postfix
+[source,csharp]
+----
+x = 10;
+y = x++;   // X = 11, Y = 10
+
+x = 10;
+y = ++x;   // X = 11, Y = 11
+
+x = 10;
+y = x--;   // X = 9, Y = 10
+
+x = 10;
+y = --x;   // X = 9, Y = 9
+----
+
+NOTE: The operators only work with integral types.
+
+== See Also
+
+link:expressions.adoc[Expressions] +
