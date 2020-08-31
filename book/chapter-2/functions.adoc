@@ -1,0 +1,125 @@
+= Functions
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+A function is an isolated block of code that can be used in other parts of a program, or even across programs. Functions have numerous benefits including the following.
+
+- Reuse common code in several different places.
+- Reduce the overall size of a program by collecting similar code into a single block.
+- Reduce the complexity of code by moving blocks of code into separate, reusable functions thus reducing the calling code size.
+- Isolating the caller of some code from its implementation making it easier to change later.
+- Simplifying maintenance by reducing the scope and complexity of the code.
+
+The term commonly used to describe code written using functions is modular programming. 
+A module in this case represents a function or set of related functions. 
+Modular programming provides many benefits but there are a few disadvantages as well.
+
+- Harder to diagnose issues if a problem exists in a separate function.
+- More dependency on documentation when trying to understand how a function works.
+- Function calls introduce a slight overhead at runtime.
+
+*Warning: Do not confuse modular programming with functional programming. They are completely different paradigms.*
+
+The general recommendation is to write code inline without functions to begin with. When a piece of code meets any of the following qualifications then refactor it into a function.
+
+. Same (or similar) code is needed in several places.
+. Code is complex enough to warrant breaking up.
+. Necessary to hide the implementation details of the code.
+
+== Parameters
+
+Since functions run in isolation the only information they have access to is the information provided by or too the caller. This is generally handled through parameters.
+
+Parameter::
+A variable defined as part of the function allowing the caller to send or receive data to the function.
+Argument::
+An expression whose value is passed to the function at runtime in order to set the value of a parameter.
+
+There are three kinds of parameters in programming.
+
+Input::
+Also referred to as "pass by value". The caller passes a copy of the value to the function. The function cannot modify the parameter value.
+Output::
+The function returns a value for the parameter. The caller does not provide anything to the function in most cases other than perhaps a place to store the returned value.
+Input/Output::
+Also referred to as "pass by reference". The caller passes a value to the function. The function may modify the value and pass it back to the caller.
+
+C# supports all three parameter kinds plus the return type. 
+
+=== Input Parameters
+
+This is the most common type of parameter and should be used in the vast majority of cases. 
+The caller will provide the value for a parameter. 
+The function has a copy of the value and, in C#, can read or write it. 
+However since this is a copy, changing the parameter value does not impact the original argument. The following are examples of input parameters.
+
+.Input Parameter Example
+[source,csharp]
+----
+CalculateArea(length, width);
+Print("Hello World");
+----
+
+Any expression that is type compatible can be used with an input parameter.
+
+=== Output Parameters
+
+Output parameters are rarely needed except in very specific cases such as parsing or validation. 
+Output parameters allow a function to return a value to the caller. 
+In almost all cases the return type should be used instead.
+
+.Output Parameter Example
+[source,csharp]
+----
+int result;
+if (Int32.TryParse("123", out result))
+   ; //Do something
+----
+
+In C# no value is passed to the function for output parameters. 
+This is the only case where an uninitialized variable is allowed to be used without first assigning it a value. 
+Output parameters are guaranteed to be set before the function call returns.
+Therefore after the function call returns the variable is considered to be definitely assigned.
+
+Only an `rvalue` can be used as an argument to an output parameter.
+
+=== Input/Output Parameters
+
+Input/output parameters are seldom needed but can be useful in certain situations.
+The caller provides the initial value of the parameter.
+The function may optionally update the value of the parameter.
+If the function updates the value then the caller will receive the new value before the function call returns.
+
+.Input/Output Parameter Example
+[source,csharp]
+----
+int pos = 0;
+int offset = 1;
+if (Employess.FindNext(pos, ref offset))
+   ;  //Do something
+----
+
+In C# the caller must provide an initialized variable for the argument. 
+If the function modifies the value then the language guarantees that the argument will be updated some time before the function call returns but it is undefined when.
+
+Only an `rvalue` can be used as an argument to an input/output parameter.
+
+== Returning a Value
+
+To return a value from a function use the return type. The return type can be a simple primitive, an array or a complex type. There are no restrictions in C#.
+
+.Return Type Example
+[source,csharp]
+----
+double area = CalculateArea(10, 20);
+
+Employee employee = GetEmployee(10);
+----
+
+C++ CAUTION: Any type can be returned from a function in C#.
+
+== See Also
+
+link:functions-calling.adoc[Calling Functions] +
+link:functions-declaring.adoc[Declaring Functions] +

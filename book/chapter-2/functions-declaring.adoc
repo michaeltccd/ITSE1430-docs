@@ -1,0 +1,20 @@
+= Declaring Functions
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+limit parameters
+name is part of declaration
+
+output
+  last
+  must set
+  cannot read
+
+default args - last, compile time, default
+use return type
+
+== See Also
+
+link:functions.adoc[Functions] +
+

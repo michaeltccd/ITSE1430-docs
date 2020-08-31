@@ -171,6 +171,5 @@ link:operators-arithmetic.adoc[Arithmetic Operators] +
 link:operators-assignment.adoc[Assignment Operator] +
 link:operators-bitwise.adoc[Bitwise Operators] +
 link:operators-conditional.adoc[Conditional Operator] +
-link:calling-functions.adoc[Calling Functions] +
 link:operators-logical.adoc[Logical Operators] +
 link:operators-relational.adoc[Relational Operators] +

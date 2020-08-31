@@ -1,0 +1,200 @@
+= Calling Functions
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+Function calls are one of the most common statements in code. The syntax for calling a function is given below.
+
+.Function Call Syntax
+----
+function-call => func ( [argument-list] )
+argument-list => [argument-modifier] argument { , [argument-modifier] argument }*
+argument => E
+argument-modifier => ref
+                     out
+----
+
+A function call consists of the function name with a set of parenthesis. Inside the parenthesis is zero or more arguments. The function parameters determine how many arguments are required.
+
+C++ CAUTION: `void` is not valid in an argument list.
+
+For each argument any valid expression can be used (including other function calls) provided the expression is type compatible with the parameter. Arguments must appear in the same order as the parameters.
+
+If the compiler cannot uniquely match a function call to the exact function definition then it is a compiler error.
+
+.Calling a Function
+[source,csharp]
+----
+//Call a function to print 2 integers
+Print(10, 20);
+
+//Call a function to print 3 doubles
+PrintDouble(10, 12.5, 20);
+----
+
+CAUTION: Passing a variable to a function as an argument requires that it be definitely assigned first. A compiler error results if this is not true.
+
+== Argument Passing
+
+To pass arguments to a function insert the expressions in between the parenthesis. 
+Use a comma to separate multiple arguments.
+Unless otherwise specified arguments are mapped to the corresponding parameters in order. 
+All parameters must be assigned a value.
+
+CAUTION: Comma is an operator in C#. It returns the last value of a series of expressions. When inside a function call the comma operator is not used.
+
+=== Input Arguments
+
+In the common case of an input parameter just use any expression. 
+The compiler will generate the code to copy the value of the expression to the function's parameter.
+
+.Function with Input Argument
+[source,csharp]
+----
+int argument2 = 20;
+
+//Passing a literal for the first argument, variable for the second and expression for the third
+DoWork(10, argument2, 47 * 10);
+----
+
+=== Input/Output Arguments
+
+Input/output parameters require an `lvalue`. The caller provides the current value for the parameter. 
+The function may update it and therefore needs to be able to write the new value back to the argument.
+To help make it clear that an input/output parameter is required the argument must be preceded by the keyword `ref`. 
+This helps the programmer identify the input/output parameter.
+
+.Function with Input/Output Argument
+[source,csharp]
+----
+int grade = 50;
+
+//Pass the grade to the function, the function may modify the value
+ApplyCurve(ref grade);
+----
+
+C\++ CAUTION: Input/output parameters are similar to C++ reference parameters but they are not the same thing.
+
+=== Output Arguments
+
+Output parameters require an `lvalue`. The caller will simply provide a place to store the output value.
+The function is responsible for setting the output parameter before the function call returns.
+Once the function call returns the variable is considered definitely assigned.
+
+.Function with Output Argument
+[source,csharp]
+----
+int result;
+if (TryGetInt32(out result))
+   Console.WriteLine(result);
+----
+
+C\++ CAUTION: There is no equivalent of output parameters in C++.
+
+=== Inline Variable Declarations
+
+When working with output parameters the requirement for a variable as an argument prevents easy use of the function in an expression.
+In the best case the variable has to be declared just before the function call. 
+
+.Function with Declared Input Parameter
+[source,csharp]
+----
+int count;
+double result = TotalGrades(out count) + CurveGrades();
+----
+
+The downside to this approach is that the variable is now disconnected from where it is used.
+Additionally if an expression calls several functions with output parameters then the declarations start to blur.
+
+In C# inline variable declarations can be used with output parameters to combine the declaration and usage of the variable into one.
+
+.Inline Variable Declaration
+[source, csharp]
+----
+double result = TotalGrades(out int count) + CurveGrades();
+----
+
+The compiler rewrites the code to be equivalent to the earlier example.
+Even though the compiler rewrites the code the language does put some restrictions on the scope of the variable.
+In current versions of the compiler the variable is purposefully limited to the block or control flow statement it is contained in. 
+This may be changed later.
+
+NOTE: Inline variable declarations can be combined with link:variables.adoc[type inferencing].
+
+== Advanced Argument Passing
+
+The following information pertains to more advanced situations that are sometimes useful when calling functions.
+
+=== Named Based Ordering
+
+By default the order in which arguments appear must match the parameter list. 
+For very long parameter lists or parameter lists that have many parameters of the same type it can become unclear what the arguments are related to.
+
+.Confusing Argument List
+[source,csharp]
+----
+CalculateResult(10, 45, false, true);
+----
+
+To help alleviate this issue C# allows a function call to specify the parameter names as well. 
+This is formally known as name-based ordering vs the traditional ordinal-based ordering.
+
+To use name-based ordering prefix the argument with the parameter name and a colon.
+
+.Confusing Argument List
+[source,csharp]
+----
+CalculateResult(10, rate: 45, discount: false, includeTaxes: true);
+----
+
+NOTE: Once used the remaining arguments must include the name as well. It is not necessary to use named-based ordering on any arguments prior to the first one that uses this ordering.
+
+CAUTION: The name used in the argument must exactly match the parameter name. This more tightly couples the caller with the implementation and should be used only when necessary.
+
+=== Default Arguments
+
+Some functions specify default values for parameters. 
+This is commonly done in more complex functions that have a lot of parameters or to cut down on function overloading. 
+
+If a function defines an argument with a default then the caller does not need to specify the value. To use the default simply leave the argument out.
+
+.Function with Default Argument
+[source,csharp]
+----
+//Assume function declaration: double CalculateGrade ( int sum, int count, double rounding = 0 )
+double grade = CalculateGrade(450, 5);  //rounding is 0
+----
+
+CAUTION: Default arguments are determined at compilation time. Changing the default value of a parameter requires recompilation of all calling code.
+
+Once a default argument is used all subsequent arguments must either be left as their optional value or named-based ordering must be used.
+
+.Function With Multiple Default Arguments
+[source,csharp]
+----
+//Assume function declaration: string FindId ( string input, int maxRecursion = 5, bool skipEmpty = false )
+string result = FindId(input, skipEmpty: true);  //maxRecursion is 5
+----
+
+== Using Function In an Expression
+
+If a function returns a value then it can be used in an expression.
+
+.Calling a Function in an Expression
+[source,csharp]
+----
+//Call a function to calculate area
+double area = CalculateArea(10, 20);
+
+//Call a function to calculate volume and add and adjustment
+double volume = CalculateVolume(10, 12.5, 20) + 50;
+----
+
+NOTE: When calling a function as part of an expression leave the semicolon off the function call.
+
+When calling a function in an expression the return type of the function determines the type of the function call expression.
+
+== See Also
+
+link:functions.adoc[Functions] +
+link:variables.adoc[Variables] +

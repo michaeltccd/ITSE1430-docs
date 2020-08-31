@@ -12,7 +12,8 @@ Declaring a variable has several different syntactical options.
 .Variable Declaration Syntax
 ----
 variable-declaration => T identifier [ = E] [variable-declaration-list];
-variable-declaration-list => { , identifier [= E] }*
+                        var identifier = E
+variable-declaration-list => { , identifier [= E] }*                 
 ----
 
 The simplest form of a variable declaration consists of the type and name.
@@ -81,6 +82,46 @@ When using multiple variable declaration each variable can be initialized to a d
 ----
 double payRate = 12.50, hours = 40;
 ----
+
+== Type Inferencing
+
+One benefit of initializing a variable when it is first declared is type inferencing. 
+
+Type Inferencing::
+The compiler infers a type based upon the context.
+
+In the following example it is obvious what the type of the variables should be.
+
+.Type Declaration from Expression
+[source,csharp]
+----
+string firstName = "Bob";
+int hours = 10;
+double payRate = 12.50;
+----
+
+In these special cases the type may be inferred by the compiler. In the place of the type use the `var` keyword.
+
+.Type Inferencing
+[source,csharp]
+----
+var firstName = "Bob";
+var hours = 10;
+var payRate = 12.50;
+----
+
+Type inferencing is not the same as weakly typed (or variant) programming. 
+The generated code in both examples are identical.
+The compiler simply infers the type rather than a programming having to provide it directly.
+
+Type inferencing usually saves a little typing but is never required. 
+It is strictly an option for common cases.
+There are cases where inferencing either cannot be used or it is not clear what the type might be.
+In these cases it is recommended that the formal type be used instead. Some of the common scenarios where type inferencing cannot be used.
+
+- Declaring anything other than a local variable (parameters do not work).
+- The initializer expression is not provided.
+- The type of the expression cannot be determined by the compiler.
 
 == Variables vs Literals
 
