@@ -1,0 +1,102 @@
+= For Statement
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The `for` statement is a looping statement. It is used to execute a statement a fixed number of times. The `for` statement is a pre-test loop so the statement may never run. The `for` statement has the following syntax.
+
+.For Syntax
+----
+for-statement ::= for ([initializer-expression] ; [conditional-expression] ; [update-expression] ; ) S;
+initializer-expression ::= assignment-statement
+                           increment-expression
+                           decrement-expression
+                           function-call
+                           new-statement
+                           T identifier = initializer-expression
+conditional-expression ::= E
+update-expression ::= E
+----
+
+The `for` loop executes the `initializer-expression` first before the loop starts. Then the loop begins by evaluating the `conditional-expression`. If `true` then `S` is executed. After `S` executes the `update-expression` is executed. Then the loop repeats again until `conditional-expression` is `false`.
+
+.For Statement
+[source,csharp]
+----
+int index = 0;
+for (index = 0; index < count; ++index)
+{
+   Console.WriteLine(index);
+};
+----
+
+The `initializer-expression` is always guaranteed to execute. The `update-expression` executes each time the statement is executed.
+
+The for loop is best used when the number of iterations can be counted from one point to another, such as when enumerating an array or counting up or down. The `update-expression` can be any expression but is almost always either incrementing or decrementing the loop variant.
+
+To exit the loop early use the link:break-statement.adoc[break] statement. 
+To stop the current iteration and check the condition use the link:continue-statement.adoc[continue] statement.
+
+== Loop Variant Scope
+
+In most cases the `initializer-expression` is a loop variant created for the loop (e.g. `index`). Since the loop variant does not make sense outside the `for` statement it should be declared as part of the loop.
+
+.Declare Loop Variant
+[source,csharp]
+----
+for (int index = 0; index < count; ++index)
+{   
+};
+----
+
+Because the loop variant is declared as part of the `for` statement it is scoped to just that statement.
+Attempting to use the variable elsewhere is a compiler error.
+Declaring the loop variant inside the statement allows the same variable to be used in multiple `for` statements in the same scope. This avoids having counter variables like `index1`, `index2` and `index3` in code and makes it harder to misuse them.
+
+== Multiple Expressions
+
+The `initializer-expression` and `update-expression` support multiple expressions although this is rare. By using the comma operator multiple expressions may be used.
+
+.Multiple Expressions
+[source,csharp]
+----
+for (int x = 0, y = 10; x < 100; ++x, ++y)
+{   
+};
+----
+
+This works because the comma operator is an expression that returns the last expression in the list. Because neither of these expressions are actually used for anything directly having multiple expressions is harmless.
+
+However you cannot have multiple expressions for the `conditional-expression`. This must be a boolean expression and the comma operator is not allowed. To use multiple expressions you will need to use the link:operators-logical.adoc[logical] operators.
+
+== Optional Expressions
+
+All the expressions are optional. If they are left off then the expression simply does nothing. 
+
+.Optional Expressions
+[source,csharp]
+----
+//Infinite loop
+for (;;)
+{   
+};
+----
+
+If the `conditional-expression` is empty then it is treated as `true`.
+
+== When to Use the For Statement
+
+Use the `for` loop under the following conditions.
+
+- The loop has a definite starting and ending point.
+- The number of iterations can be calculated before the loop starts. 
+
+== See Also
+
+link:control-flow-statements.adoc[Control Fliow Statements] +
+link:break-statement.adoc[Break Statement] +
+link:continue-statement.adoc[Continue Statement] +
+link:do-statement.adoc[Do While Statement] +
+link:for-statement.adoc[For Statement] +
+link:while-statement.adoc[While Statement] +
+

@@ -1,0 +1,113 @@
+= Scope
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+Understanding and managing scope is critical to properly building programs.
+
+Scope::
+The lifetime of an identifier, generally a variable.
+
+When talking about scope it is important to distinguish between compile time scope and runtime scope.
+The compile time scope is the list of identifiers that are visible to the current code. 
+The run time scope determines when a variable "exists" and when it destroyed.
+
+== Compile Time Scope
+
+When the compiler sees an identifier it must uniquely match it to an already declared identifier in scope.
+If the compiler cannot find an identifier it is a compiler error with a message about an undeclared identifier.
+
+In C# there is a nested hierarchy of scopes starting with the root scope.
+It is easiest to think of this as an additive process.
+Each time a new scope is entered, for example entering a block statement, additional identifiers can be added.
+When a scope is exited, for example exiting a block statement, then all the identifiers that were defined in the scope are gone.
+When the compiler is looking for an identifier it always starts with the current scope.
+If it does not find an identifier in the scope then it looks in the parent scope. 
+It continues this process until it gets to the root scope.
+
+.Compile Time Scope Search
+[source, csharp]
+----
+void Foo ()
+{
+   int local1;  //A
+
+   {
+      //local1 is A
+      int local2 = local1;  //B
+
+      {
+         //New scope, hides A
+         double local1;  //C
+
+         //Uses C because A is hidden
+         double local3 = local1;  //D
+      }
+   }
+}
+----
+
+It is legal in C# to define an identifier with the same name more than once provided each identifier resides in its own scope.
+The compiler always uses the scope closest to the top.
+
+NOTE: It is considered good styling to indent once for each new scope to help clarify that a new scope has been entered.
+
+== Run Time Scope
+
+The runtime scope applies only to variables and indicates the lifetime of the variable.
+Variables in C# enter scope at the point of declaration.
+Variables exit scope, and are inaccessible, when the scope they were declared in ends.
+
+.Simple Run Time Scope
+[source,csharp]
+----
+void Foo ()
+{
+   //Enter scope: length
+   int length = 10;
+
+   //Some code
+
+   //Enter scope: width
+   int width = 20;
+}  //Exit scope: length, width
+----
+
+NOTE: While a local variable is part of the stack frame and technically is available at the point the function begins executing the language prohibits referencing it until the declaration to avoid expensive compile time lookups.
+
+Like the compile time scope, block statements start a new runtime scope. Again, like local variables the variables are not actually destroyed when they leave scope but rather they are reset to their default value when reentering the scope again.
+
+.Nested Scope
+[source, csharp]
+----
+void Foo ()
+{
+   //Enter scope: message
+   string message = "Hello";
+
+   if (condition)
+   {
+      //Enter scope: result
+      double result = 0;
+
+      while (truE)
+      {
+         //Enter scope: value
+         int value;
+      };  //Exit scope: value
+   }; //Exit scope: result
+} //Exit scope: message
+----
+
+== Function Scope
+
+All functions execute in isolation.
+Each function definition has its own run time scope.
+Functions do not share compile time scopes and therefore cannot refer to identifiers declared in each other's scopes.
+
+NOTE: C# now supports local functions which allow a workaround to this. We will not discuss local functions here.
+
+== See Also
+
+link:functions.adoc[Functions] +
+link:variables.ado[Variables] +

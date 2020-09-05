@@ -1,0 +1,53 @@
+= While Statement
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The `while` statement is a looping statement. 
+It is used to execute a statement zero or more times. 
+It is a pre-test looop in that it checks the condition each time before executing the statement.
+It has the following syntax.
+
+.While Syntax
+----
+while-statement => while (E) S;
+----
+
+The expression must evaluated to a boolean. The `while` continually executes `S` until `E` is `false`. If `E` is initially `false` then `S` will never execute.
+
+The following example loop untils the user presses `Y`.
+
+.While Example
+[source,csharp]
+----
+string input;
+while (input != "Y")
+{
+   Console.WriteLine("Press Y to exit");
+   input = Console.ReadLine();
+};
+----
+
+Notice the loop expression is scoped at the same level as the statement. 
+If a variable is needed inside the loop body and as part of the expression then it must be declared outside the loop.
+
+Because the `while` statement is a pre-test loop care must be taken to ensure that it is `true` the first time through the loop.
+
+To exit the loop early use the link:break-statement.adoc[break] statement. 
+To stop the current iteration and check the condition use the link:continue-statement.adoc[continue] statement.
+
+== When To Use the While Loop
+
+Use the `while` loop under the following conditions.
+
+- The loop may iterate an undefined number of times, for example user input.
+- The statement may not need to execute at all.
+ 
+== See Also
+
+link:control-flow-statements.adoc[Control Fliow Statements] +
+link:break-statement.adoc[Break Statement] +
+link:continue-statement.adoc[Continue Statement] +
+link:do-statement.adoc[Do While Statement] +
+link:for-statement.adoc[For Statement] +
+link:while-statement.adoc[While Statement] +

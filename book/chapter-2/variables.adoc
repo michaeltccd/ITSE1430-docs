@@ -225,3 +225,7 @@ The following guidelines apply to naming variables.
 * DO declare the variable as close to the point it is needed as possible.
 * DO use an initializer expression to initialize the variable.
 * DO prefer declaring variables at the point they are used.
+
+== See Also
+
+link:scope.adoc[Scope] +

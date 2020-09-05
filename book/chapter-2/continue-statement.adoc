@@ -1,0 +1,30 @@
+= Continue Statement
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The `continue` statement is used in looping statements to unconditionally stop the current iteration and start the next one. It has the following syntax.
+
+.Continue Statement Syntax
+----
+continue => continue ;
+----
+
+The `continue` statement is used to unconditionally stop the current iteration and begin the next iteration. It does not terminate the loop. It would be equivalent to jumping to the bottom of the loop.
+
+.Continue Statement
+[source,csharp]
+----
+for (int index = 0; index < 10; ++index)
+{   
+   //If a condition is met then skip this iteration
+   if (condition)
+      continue;
+};
+----
+
+link:control-flow-statements.adoc[Control Fliow Statements] +
+link:break-statement.adoc[Continue Statement] +
+link:for-statement.adoc[For Statement] +
+link:do-statement.adoc[Do While Statement] +
+link:while-statement.adoc[While Statement] +

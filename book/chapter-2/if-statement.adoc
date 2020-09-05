@@ -1,0 +1,118 @@
+= If Statement
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The `if` statement is a decision statement. It is used to conditionally execute a statement given a condition. It is perhaps the most commonly used statement in C#. It has the following syntax.
+
+.If Syntax
+----
+if-statement ::= if (E) S [else-statement];
+else-statement ::= else S
+----
+
+The expression must be a boolean expression. If `E` is `true` then `S` is executed otherwise execution resumes with the statement after the `if` statement.
+
+.Simple If Statement
+[source,csharp]
+----
+if (Confirm("Are you sure you want to delete this item?"))
+   DeleteItem();
+----
+
+In the above example if `Confirm` returns `true` then `DeleteItem` is called otherwise it is not.
+
+== If-Else Statement
+
+In many cases either statement A or statement B needs to execute, but not both.
+In this case use the `if-else` statement to specify the statement to execute if the condition is `false`.
+
+.If-Else Statement
+[source,csharp]
+----
+if (IsThisAGift())
+   DisplayGiftOptions();
+else
+   AddToPreferences();
+----
+
+In the above code if `IsThisAGift` returns `true` then the `DisplayGiftOptions` is called otherwise the `AddToPreferences` is called. Only one of the statements will execute. 
+
+NOTE: The `else` statement is normally used for error handling.
+
+== If-Else-If Statement
+
+The statement in the `else` statement can be another `if` statement if desired.
+This results in a what is commonly referred to as an `if-else-if` statement.
+Note that there is no syntax for an `if-else-if` because it is simply an `else` followed by a new `if` statement.
+
+.Else-If Statement
+[source,csharp]
+----
+if (grade >= 90) 
+   letter = 'A'
+else if (grade >= 80)
+   letter = 'B'
+else if (grade >= 70)
+   letter = 'C'
+else if (grade >= 60)
+   letter = 'D'
+else
+   letter = 'F';
+----
+
+In the above example there is a series of `if-else` statements with child `if-else` statements. Each `if` condition is evaluated in turn until either a `true` is found or the code runs out of `if` statements.
+In the worst case it will take four comparisons before determining that a grade of `F` is needed.
+
+The final `else` is not required but will often be included to handle the cases that are not already handled elsewhere.
+
+Refer to the link:switch-statement.adoc[switch] statement for an alternative approach for special types of `if-else-if` statements.
+
+== Nested If Statements
+
+In some cases it might be necessary to put an `if` statement inside the statement for the `if` statement. This results in a nested if statement.
+
+.Nested If Statement
+[source,csharp]
+----
+if (greade >= 60)
+   if (grade >= 70)
+      if (grade >= 80)
+         if (grade >= 90)
+            letter = 'A';
+         else 
+            letter = 'B';
+      else
+         letter = 'C';
+   else
+      letter = 'D';
+else
+   letter = 'F';
+----
+
+The previous example is equivalent to the earlier example but it is harder to read.
+In some cases a nested `if` statement is necessary but it is often better to rewrite the code such that it is not needed or use a function to handle the inner `if` logic.
+
+WARNING: The `else` statement always matches with the immediately preceding `if` statement. Indentation does not matter to the language so be very careful when using nested `if` statements.
+
+== Affirmative Statements
+
+It is almost always easier to read positive conditions than negative ones. 
+When writing conditions prefer to use positive conditions.
+
+.Positive vs Negative Statements
+[source,csharp]
+----
+//Negative
+if (!IsFailing)
+   Console.WriteLine("You are passing");
+
+//Positive
+if (IsPassing)
+   Console.WriteLine("You are passing");
+----
+
+== See Also
+
+link:control-flow-statements.adoc[Control Fliow Statements] +
+link:switch-statement.adoc[Switch Statement] +

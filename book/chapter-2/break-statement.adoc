@@ -1,0 +1,44 @@
+= Break Statement
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The `break` statement is used in looping statements to execute the loop early. It has the following syntax.
+
+.Break Statement Syntax
+----
+break => break ;
+----
+
+The `break` statement is used to unconditionally terminate the current loop. The loop condition is not evaluated and therefore may or may not be met.
+
+.Break Statement
+[source,csharp]
+----
+while (true)
+{
+   //Do some work
+
+   //If a condition is met break out of the loop
+   if (condition)
+      break;
+};
+----
+
+Execution continues with the statement immediately after the loop.
+
+The `break` statement only exits the innermost loop it is contained in. Outer loops continue to execute normally.
+
+CAUTION: Be careful about making assumptions about why a loop exited when the loop contains a `break` statement. 
+
+== Break Statement in a Switch Statement
+
+The `break` statement may also appear in the link:switch-statement.adoc[switch] statement. Refer to the documentation for how it is used there.
+
+== See Also
+
+link:control-flow-statements.adoc[Control Fliow Statements] +
+link:continue-statement.adoc[Continue Statement] +
+link:for-statement.adoc[For Statement] +
+link:do-statement.adoc[Do While Statement] +
+link:while-statement.adoc[While Statement] +

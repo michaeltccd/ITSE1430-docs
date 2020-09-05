@@ -1,0 +1,137 @@
+= Switch Statement
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The `switch` statement is a decision statement. It is used to conditionally execute one of many statements depending on a condition. It is a specialized statement used to replace link:if-statement.adoc[if-else-if] statements in a very specific scenario. It has the following syntax.
+
+.Switch Syntax
+----
+switch-statement ::= switch (E) { case-statements };
+case-statements ::= case-statement* [default-statement]
+case-statement ::= case L : [S] ;
+default-statement ::= default : S ;
+----
+
+The expression is evaluated. A jump is then performed to the first case label whose `L` matches the expression value. If no match can be found and a `default` statement exists then it is executed otherwise execution continues on after the `switch` statement.
+
+NOTE: Newer versions of C# support several additions to the `switch` statement including pattern matching, range specifiers and the switch expression. They are beyond the scope of this class.
+
+== If-Else-If Replacement
+
+Take the following as a starting example.
+
+.If-Else-If Statement
+[source,csharp]
+----
+if (operation == '+')
+   Add();
+else if (operation == '-')
+   Subtract();
+else if (operation == '*')
+   Multiply();
+else if (operation == '/')
+   Divide();
+else
+   Console.WriteLine("Unknown operation");
+----
+
+Besides the difficulty with reading this code it is also inefficient the further down the statement it goes. The equivalent `switch` statement looks like this.
+
+.Switch Statement Equivalent
+[source,csharp]
+----
+switch (operation)
+{
+   case '+': Add(); break;
+   case '-': Subtract(); break;
+   case '*': Multiply(); break;
+   case '/': Divide(); break;
+   default: Console.WriteLine("Unknown operation"); break;
+};
+----
+
+These two blocks of code behave the same way. The `if-else-if` statement takes up to four comparisons to determine a bad operation was specified. The `switch` statement is a constant O(1) lookup. It evaluates `operation` and jumps to the exact case statement with a label matching the value.
+
+In terms of efficiency a `switch` statement is almost always faster than the corresponding `if-else-if`. 
+In terms of readability it requires less attention to understand then the equivalent `if-else-if`.
+
+== Switch Requirements
+
+Unfortunately the `switch` statement is not a drop in replacement for an `if-else-if`. 
+To use the `switch` statement the following conditions must be met.
+
+- The expression must be a primitive type that supports constant expressions (e.g. int, string, char).
+- The condition must be equality.
+- Each case statement must be a constant expression (e.g. a literal).
+- Each case statement must be unique.
+
+If the above conditions are met then a `switch` statement can be used.
+
+NOTE: Newer versions of C# support pattern matching as well. This is beyond the scope for this course.
+
+C\++ CAUTION: Unlike C\++ non-integral types can be used including strings.
+
+== Fallthrough
+
+The `switch` statement will only execute a single `case` statement.
+This prevents some unexpected behavior.
+To indicate the end of the `case` statement use the `break` statement.
+
+C# requires that all `case` statements, including `default` end with the `break` statemet. It is a compiler error to do otherwise.
+
+.Case Without Break
+[source,csharp]
+----
+switch (operation)
+{
+   case '+': Add();  //Compiler error, fallthrough not allowed
+   case '-': Subtract(); break;
+};
+----
+
+C\++ CAUTION: This is in contrast to C\++ that allows fallthrough and often results in unexpected behavior.
+
+The one exception to this rule is when a `case` statement has no statement. 
+In this very special case fallthrough is allowed. 
+This permits several cases to perform the same action.
+
+.Empty Case Statement
+[source,csharp]
+----
+switch (operation)
+{
+   case '+':         //Fallthrough allowed, empty case
+   case 'A': Add();  //Both cases perform the same action
+};
+----
+
+== Case Statement Scope
+
+Because of how `case` statements are compiled multiple statements can be used inside the `case` statement without a block statement.
+
+.Multiple Statements in Case
+[source,csharp]
+----
+switch (operation)
+{
+   case '+': 
+      GetInputs();
+      PerformAdd();
+      DisplayResults();
+      break;
+};
+----
+
+The one issue with doing this is variable declarations.
+If a variable is declared inside the `case` statement then it should be scoped to that statement but without the block statement the compiler gets confused.
+To avoid issues the general guideline for multiple statements in C# are:
+
+- USE a block statement if a `case` statement contains more than one statement.
+- DO NOT USE a block statement if the `case` statement contains a single statement plus a `break` statement.
+
+== See Also
+
+link:control-flow-statements.adoc[Control Fliow Statements] +
+link:break-statement.adoc[Break Statement] +
+link:if-statement.adoc[If Statement] +

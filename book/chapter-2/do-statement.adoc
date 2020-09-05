@@ -1,0 +1,50 @@
+= Do While Statement
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The `do-while` statement is a looping statement. 
+It is used to execute a statement one or more times. 
+It is a post-test looop in that it is guaranteed to execute the statement at least once.
+It has the following syntax.
+
+.Do While Syntax
+----
+do-while-statement => do S while (E) ;
+----
+
+The expression must evaluated to a boolean. The `do-while` continually executes `S` until `E` is `false`. It is guaranteed to execute at least once.
+
+The following example loop untils the user presses `Y`.
+
+.Do While Example
+[source,csharp]
+----
+string input;
+do
+{
+   Console.WriteLine("Press Y to exit");
+   input = Console.ReadLine();
+} while (input != "Y");
+----
+
+Notice the loop expression is scoped at the same level as the statement. 
+If a variable is needed inside the loop body and as part of the expression then it must be declared outside the loop.
+
+To exit the loop early use the link:break-statement.adoc[break] statement. 
+To stop the current iteration and check the condition use the link:continue-statement.adoc[continue] statement.
+
+== When To Use the Do While Loop
+
+Use the `do-while` loop under the following conditions.
+
+- The loop may iterate an undefined number of times, for example user input.
+- The statement needs to execute at least once.
+
+== See Also
+
+link:control-flow-statements.adoc[Control Fliow Statements] +
+link:break-statement.adoc[Break Statement] +
+link:continue-statement.adoc[Continue Statement] +
+link:for-statement.adoc[For Statement] +
+link:while-statement.adoc[While Statement] +
