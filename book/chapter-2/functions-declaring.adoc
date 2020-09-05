@@ -3,18 +3,286 @@ Michael Taylor <michael.taylor@tccd.edu>
 v1.0
 :toc:
 
-limit parameters
-name is part of declaration
+Before a function can be called it must be declared and implemented. The formal syntax for defining a function is below.
 
-output
-  last
-  must set
-  cannot read
+.Function Definition Syntax
+----
+function-decl => [access] {function-modifier}* return-type id ( [parameter-list] ) { S* }
+access => public | protected | internal | private | protected internal | private protected
+function-modifier => static | virtual | override | new | extern
+return-type => T | void
+parameter-list => parameter { , parameter }*
+parameter => [parameter-modifier] T id [ = E ]
+parameter-modifier => ref | out
+----
 
-default args - last, compile time, default
-use return type
+A function consists of the following parts, in order.
+
+- Optional access modifier. Access modifiers control who has access to the function. This will be discussed in the object oriented programming chapter.
+- Zero or more function modifiers. Function modifiers control compilation options. These will be discussed in later chapters.
+- Return type. Any type is allowed or `void` if the function does not return a value.
+- Function name.
+- Parameter list wrapped in parenthesis.
+- Body of function consisting of any number of statements wrapped in curly braces.
+
+The following are a few examples of function definitions.
+
+.Function Definition Examples
+[source,csharp]
+----
+//Function with no parameters, no return value
+void Print ( ) {}
+
+//Function with no parameters, returns a string
+string GetMessage () {}
+
+//Function with one parameter, no return value
+void Print ( int value ) {}
+
+//Function with two parameters, returns a double
+double GetArea ( double length, double width ) {}
+----
+
+C++ CAUTION: C# does not need or support function prototypes (sometimes called forward references).
+
+Within a function any statement can appear except for declaring new types.
+All (local) variables defined within a function are removed when the function call ends.
+Each function should be dedicated to a single logical task. 
+
+.Factorial Function
+[source,csharp]
+----
+long Factorial ( int value )
+{
+  if (value <= 1)
+    return 1;
+
+  return value * Factorial(value - 1);
+}
+----
+
+Recursive calls are allowed in C#. Care must be taken to ensure that the call stack does not overflow. Ensure that at least one code path does not use recursion. 
+In many cases a non-recursive version can be created using a looping statement.
+
+.Factorial Function without Recursion
+[source,csharp]
+----
+long Factorial ( int value )
+{
+  long result = 1;
+
+  while (value > 1)
+    result *= value--;
+
+  return result;
+}
+----
+
+NOTE: The order in which function definitions appear in code is not relevant. 
+Provided the function is in scope it will be found by the compiler. 
+Use whatever sorting approach you would like for defining functions.
+
+== Naming Guidelines
+
+- DO follow standard identifier naming guidelines unless otherwise stated below.
+- DO name functions using verbs. Functions represent actions and should always be named with verbs such as `GetArea`, `CalculatePrice` or `DetermineSuccess`. 
+- DO use Pascal casing irrelevant of access modifiers.
+- DO use camel casing for parmeter names.
+
+== Using Parameters
+
+Since functions run in isolation the only way to get data to them is through parameters. 
+Parameters are local variables that are initialized when the function call starts. 
+The runtime is responsible for getting and setting the parameter values.
+
+.Function with Parameter
+void Print ( int value )
+{
+  Console.WriteLine(value);
+}
+
+Input and input/output parameters are definitely assigned when the function executes. 
+Their value is provided by the caller.
+Input parameters may be changed without any impact on the caller.
+
+.Function with Input Parameter
+void Double ( int value )
+{
+  value *= 2;
+}
+
+The above function does nothing. Changing the parameter has no impact on the original argument. 
+
+NOTE: It is generally recommended to not have more than 5 or 6 parameters. 
+If more are needed then use an aggregate type instead.
+
+=== Input/Output Parameters
+
+Input/output parameters allow a function to modify the original argument value.
+Input/output parameters must be preceded by the keyword `ref` to make it clear they are pass by reference.
+
+.Function with Input/Output Parameter
+double CalculateArea ( ref int length, int width )
+{
+  double result = length * width;
+
+  length *= 2;
+
+  return result;
+}
+
+The `length` parameter is written and is input/output so the underlying argument is also modified.
+
+CAUTION: Input/output parameters generally only make sense to use input/output parameters with value types.
+
+=== Output Parameters
+
+Output parameters require that the function returns a value.
+The most common usage for this is "Try" methods that return success or failure.
+In all other cases the return type should be used instead.
+
+Output parameters are preceded by the keyword `out` to make it clear they are output.
+
+.Function with Output Parameter
+bool TryParseDouble ( string value, out double result )
+{
+  return Double.TryParse(value, out result);
+}
+
+The following restrictions apply to output parameters.
+
+- They must be last in the parameter list.
+- Output parameters must be set before they can be read.
+- Output parameters must be set before the function returns.
+
+=== Parameter Validation
+
+When accepting parameters functions should always validate the parameter value before doing any work.
+Failure to do so may result in unexpected behavior.
+To validate a parameter check to ensure the parameter meets the desire criteria. If the parameter is invalid it is generally recommend that an exception be thrown.
+
+.Parameter Validation
+[source,csharp]
+----
+double Divide ( int left, int right )
+{
+  if (right <= 0)
+     return 0;  //Report an error
+
+  return left / (double)right;
+}
+----
+
+=== Default Arguments
+
+Input parameters may have a default argument. 
+A default argument is the value to use for the parameter if it is not specified.
+
+.Function With Default Argument
+[source, csharp]
+----
+string ReplaceTabs ( string value, int tabSize = 3 )
+{
+   ...
+}
+
+//Replaces tab characters with 4 spaces
+string result1 = ReplaceTabs("Hello\tWorld", 4);
+
+//Replaces tab characters with the default spaces
+string result2 = ReplaceTabs("Hello\tWorld");
+----
+
+Once a default argument is specified for a parameter all subsequent parameters must also specify a default argument.
+
+WARNING: Default arguments are set at compile time. Changing the default argument in a function definition does not impact any calling code until the calling code is recompiled.
+
+In terms of overloading a parameter with a default argument does not change the function signature and must be unique. During function resolution the compiler will prefer functions without default arguments over functions with default arguments.
+
+In functions that have multiple parameters with default arguments it is often useful to skip some parameters while setting others. C# allows named-based parameter matching in addition to ordinal-based matching. 
+To use name-based matching precede the argument with the parameter name separated by a colon.
+
+.Name vs Ordinal-based Matching
+[source,csharp]
+----
+void Print ( string value, int indent = 0, bool includeNewLine = true ) {}
+
+//Ordinal: indent = 0, includeNewLine = true
+Print("Hello");
+
+//Ordinal: indent = 3, includeNewLine = true
+Print("Hello", 3);
+
+//Ordinal: indent = 3, includeNewLine = false
+Print("Hello", 3, false);
+
+//Name: indent = 0, includeNewLine = false
+Print("Hello", includeNewLine: false);
+
+//Name: indent = 3, includeNewLine = false; out of order
+Print("Hello", includeNewLine: false, indent: 3);
+----
+
+CAUTION: Because of name-based matching it is a breaking change to alter the name of a parameter.
+
+Besides functions with too many parameters the most common use case for named parameters is to distinguish between arguments of the same type.
+
+NOTE: Default arguments are a compile time feature. At compilation the default arguments are included in the function call. Changing the parameter name or default argument has no impact on code after compilation.
+
+== Returning Values
+
+To return a value from a function set the return type. Then use the `return` statement to return a value.
+
+.Function with Return Value
+[source,csharp]
+----
+double CalculateArea ( double length, double width )
+{
+  return length * width;
+}
+----
+
+C++ CAUTION: Like definitely assigned variables, a function that has a return type must ensure all possible code paths return a value.
+
+If a function does not have a return type then the `return` statement must be used without an expression.
+
+NOTE: Prefer return types in lieu of other approaches for returning values from functions.
+
+== Function Overloading
+
+Function Overloading::
+Functions that share the same name, but different parameter types.
+
+Function overloading is useful for providing variations of a function implementation. 
+Overloading requires the functions to share the same name. 
+
+.Function Overloading
+[source,csharp]
+----
+//Print a character
+void Print ( char value ) {}
+
+//Print a string
+void Print ( string value ) {}
+
+//Print an int
+void Print ( int value ) {}
+----
+
+WARNING: The parameter types must differ otherwise a compiler error occurs.
+
+When the compiler runs across a function call it enters function resolution mode. The general process is as follows.
+
+. Find all functions in scope that have the same name as the function being called.
+. For each matching function
+.. Starting with the first argument find all functions that have the exact same parameter type in the same location for each argument.
+.. If no exact matches are found then find all functions for which type coercion is possible.
+. If no matches are found then compiler error.
+. If more than one good match is found then compiler error.
+
+In some cases it may be unclear which function overload to call. The compiler will always generate a compiler error in this case. 
+But if it is unclear to the programmer then use a typecast to make it clear.
 
 == See Also
 
 link:functions.adoc[Functions] +
-

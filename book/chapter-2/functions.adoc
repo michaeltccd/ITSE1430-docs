@@ -119,6 +119,62 @@ Employee employee = GetEmployee(10);
 
 C++ CAUTION: Any type can be returned from a function in C#.
 
+== Call Stack
+
+The runtime call stack is a critical structure for modular programs. 
+A stack is traditionally represented as an array that grows up. 
+Items are "pushed" onto the stack to add them. 
+Items are "popped" from the stack to remove them.
+Only the topmost item is accessible from the stack.
+
+When a program starts the entry point function is at the bottom of the stack. 
+Each time a function call is made a new "stack frame" is pushed onto the stack.
+When the function call returns the stack frame is popped from the stack.
+At any point in time the current function is at the top of the stack.
+
+The call stack is used to debug issues with functions and to help determine why a function call was made by showing all the function calls that are currently happening to get to the current function.
+
+The stack frame represents the data needed to call the function. Amongst other things it contains the following.
+
+- Function name
+- Instruction to return to when the function call completes
+- All parameter storage
+- All local variables
+
+.Call Stack Example
+[source,csharp]
+----
+void Main ()
+{
+   Foo();
+}
+void Foo ()
+{
+   Bar();
+}
+void Bar ()
+{
+   //Stopped here
+}
+----
+
+The callstack would look like this.
+
+|===
+| Bar
+| Foo
+| Main
+|===
+
+Because all the parameters and local variables are in the stack frame they go out of scope when the stack frame is used (when the function call ends).
+Thus there is no actual cleanup of a function call in most cases.
+
+When debugging and looking at the call stack you can navigate back to previous stack frames and see the values of the parameters and local variables because they are stored in the corresponding stack frame.
+
+CAUTION: Whether the caller or called is responsible for setting up or cleaning up the stack is determined by the calling convention. For .NET this does not matter but when calling into other code pay careful attention to the calling convention.
+
+Because the stack frame stores local variables it is possible to run out of room if a function allocates too many local variables. In .NET this is almost impossible given how the implementation works but can happen if you recursively call a function enough times.
+
 == See Also
 
 link:functions-calling.adoc[Calling Functions] +
