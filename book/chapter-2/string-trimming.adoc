@@ -1,0 +1,68 @@
+= Trimming Strings
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+One complication when working with strings is leading and trailing whitespace. Users do not normally care about whitespace but code does. 
+
+.Whitespace in Strings
+[source,csharp]
+----
+//User enters "  "
+string line = Console.ReadLine();
+
+//False because it has whitespace in it
+if (String.IsNullOrEmpty(line))  ...;
+----
+
+For this specific case you could use the https://docs.microsoft.com/en-us/dotnet/api/system.string.isnullorwhitespace[String.IsNullOrWhiteSpace] function but the preferred approach is to trim the string of whitespace.
+
+The `String` class provides the https://docs.microsoft.com/en-us/dotnet/api/system.string.trim[Trim] method to remove leading and trailing whitespace.
+
+.Trimming a String
+[source,csharp]
+----
+//User enters "  "
+string line = Console.ReadLine();
+
+//Trim whitespace
+line = line.Trim();
+
+//True because string is trimmed
+if (String.IsNullOrEmpty(line))  ...;
+----
+
+All leading and trailing whitespace is removed but not whitespace within the string. Remember that strings are immutable so the function returns the modified string. You should always consider trimming a string when you get a string from an unknown source.
+
+NOTE: There are also `TrimStart` and `TrimEnd` to trim just the start and end of a string if desired.
+
+The `Trim` function also allows trimming of other characters by using the overload if desired. For example you can trim leading and training asterisk (`*`) if desired.
+
+== Padding Strings
+
+Related to trimming strings is padding them. Often useful for making strings fit into a table or fixed-width space, padding adds a delimiter to the front or back of a string to make it a fixed width. 
+
+NOTE: `PadLeft` and `PadRight` behave the same. They only differ by which side the padding is placed.
+
+.Pad a String
+[source,csharp]
+----
+string name = Console.ReadLine();
+
+Console.WriteLine("Name\t\tStatus");
+
+//Create a string of lines, length 50
+Console.WriteLine("".PadLeft(50, '-'));
+
+//Ensure the name is at least 30 characters
+Console.WriteLine(name.PadLeft(50));
+----
+
+Padding ensures the string is at least as long as the width given. If it is less than the given width then the overload accepting a single integer adds whitespace to the left or right until the string is the given width. If the string is at least the given width then it will not be truncated.
+
+The overload accepting a character allows padding of non-spaces. In the example above a line is drawn between the table header and contents by taking an empty space and padding it with dashes to the desired width.
+
+== See Also
+link:strings.adoc[Strings] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.padleft[String.PadLeft Method] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.padright[String.PadRight Method] +

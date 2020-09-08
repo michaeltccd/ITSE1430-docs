@@ -1,4 +1,4 @@
-= String Parsing
+= Parsing Strings
 Michael Taylor <michael.taylor@tccd.edu>
 v1.0
 :toc:

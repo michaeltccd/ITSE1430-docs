@@ -1,14 +1,18 @@
-= String Formatting
+= Formatting Strings
 Michael Taylor <michael.taylor@tccd.edu>
 v1.0
 :toc:
 
+Options: string builder
+
 Formating arguments
 String.Format
-Concatenation
 
 interpolation
+
+ToString with parameters
 
 == See Also
 
 link:strings.adoc[Strings] +
+iinkg:string-building.adoc[Building Strings] +

@@ -1,9 +1,104 @@
-= String Comparison
+= Comparing Strings
 Michael Taylor <michael.taylor@tccd.edu>
 v1.0
 :toc:
 
+String comparison works like the other primitive types using the relational operators.
+
+.String Comparison with Relational Operators
+[source,csharp]
+----
+Console.Write("Enter first string: ");
+string left = Console.ReadLine();
+Console.Write("Enter second string: ");
+string right = Console.ReadLine();
+
+Console.WriteLine("left == right: " + left == right);
+Console.WriteLine("left != right: " + left != right);
+Console.WriteLine("left > right: ", left > right);
+Console.WriteLine("left >= right: ", left >= right);
+Console.WriteLine("left < right: ", left < right);
+Console.WriteLine("left <= right: ", left <= right);
+----
+
+The relational operators are case sensitive so `Value` and `value` are not equal. 
+
+NOTE: String comparison using the relational operators always uses the current locale's comparison rules for purposes of ordering.
+
+== Case Insensitive Comparison
+
+One limitation of the relational operators is they are always case sensitive for the current locale. In many situations the casing should not matter. To perform case insensitive comparison there are several options.
+
+=== String.Compare
+
+The preferred approach is to use the https://docs.microsoft.com/en-us/dotnet/api/system.string.compare[String.Compare] function. This function accepts the two strings to compare and optionally the type of comparison to perform as defined by the https://docs.microsoft.com/en-us/dotnet/api/system.stringcomparison[StringComparison] enumeration.
+
+.Case Insensitive Comparison
+[source,csharp]
+----
+Console.Write("Enter first string: ");
+string left = Console.ReadLine();
+Console.Write("Enter second string: ");
+string right = Console.ReadLine();
+
+//Case insensitive, using the locale settings
+int result = String.Compare(left, right, true);
+
+//Case insensitive, using the ordinal settings
+int result = String.Compare(left, right, StringComparison.OrdinalIgnoreCase);
+
+Console.WriteLine("left == right: " + result == 0);
+Console.WriteLine("left != right: " + result != 0);
+Console.WriteLine("left > right: ", result > 0);
+Console.WriteLine("left >= right: ", result >= 0);
+Console.WriteLine("left < right: ", result < 0);
+Console.WriteLine("left <= right: ", result <= 0);
+----
+
+The overload accepting a boolean is used to indicate whether the comparison is case sensitive (`false`) or not (`true`). It uses the current locale and is appropriate for things like searching and user input.
+
+The overload accepting `StringComparison` is used for more complex scenarios. The ordinal comparison is locale agnostic and is used for things that are not impact by locale such as file paths. It is also faster.
+
+The result is an `int` which follows the standard C-based approach to tristate return values.
+
+.Tri-State Return Values
+|----
+| Result | Meaning
+|   < 0  | left < right
+|  == 0  | left == right
+|   > 0  | left > right
+|----
+
+Thus to determine if two strings are equal compare to zero. To determine if two strings are not equal then compare to not zero.
+
+NOTE: This method will not fail if either string is `null`.
+
+=== Case Conversion
+
+`String.Compare` is the most appropriate option in almost all cases. However there are alternative for very specific cases. The most common alternative is to convert both strings to either lower case using https://docs.microsoft.com/en-us/dotnet/api/system.string.tolower[String.ToLower] or upper case using https://docs.microsoft.com/en-us/dotnet/api/system.string.toupper[String.ToUpper].
+
+.Case Conversion
+[source,csharp]
+----
+string name = Console.ReadLine();
+
+string lowerName = name.ToLower();
+string upperName = name.ToUpper();
+----
+
+CAUTION: Comparing by converting to lower or upper case does not work for many languages. Do not use this for string comparison when working with non-English languages.
+
+WARNING: If the string is `null` then an error will occur if these methods are called.
+
+=== Advanced Comparison
+
+In some cases more advanced comparisons are needed. As with all types in .NET comparison is configurable on a case by case basis. For strings the https://docs.microsoft.com/en-us/dotnet/api/system.stringcomparer[StringComparer] class defines the standard approaches to comparing strings. Alternatively code can create its own `IComparer<string>` implementation instead. This is beyond the scope of this class.
 
 == See Also
 
 link:strings.adoc[Strings] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.compare[String.Compare Method] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.tolower[String.ToLower] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.tolower[String.ToUpper] +
+https://docs.microsoft.com/en-us/dotnet/api/system.stringcomparer[StringComparer Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.stringcomparison[StringComparison Enumeration]  +

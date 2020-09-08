@@ -3,16 +3,266 @@ Michael Taylor <michael.taylor@tccd.edu>
 v1.0
 :toc:
 
-literals
-escape chars
-interpolation
-verbose
+The https://docs.microsoft.com/en-us/dotnet/api/system.string[string] type is one of the most versatile types in .NET. So much so that all other types, irrelevant of who defines them, are convertible to string. 
 
-Formatting
+A string in C# is a primitive type but, like all the other types, its implementation is defined by the runtime. At a basic level a string is simply an array of Unicode characters. Each charaacter takes up two bytes.
+
+You can assign a value to a string, concatenate strings together, compare strings and manipulate their contents.
+
+.Working With a String
+[source,csharp]
+----
+string name;
+do
+{
+   //Assign a value to a string
+   name = Console.ReadLine();
+} while (name != "");  //Compare to empty string
+
+//Concatenate two strings
+string message = "Hello, " + name;
+----
+
+NOTE: In C# you will never need to access the underlying array. It is undefined how this data is stored. The runtime will handle any conversions to and from a character array if needed.
+
+== Immutability
+
+One very important attribute of all strings is that they are immutable. Once a string value is created it cannot be changed. The runtime will handle the immutability behind the scenes.
+
+.Immutable String
+[source,csharp]
+----
+//No value
+string name;
+
+//String Bob created in memory
+//Variable `name` references it.
+name = "Bob";
+
+//String Hello created in memory
+//Hello and value referenced by `name` are concatenated together to form a new string
+//`message` references new string
+string message = "Hello, " + name;
+----
+
+At the end of the above code there are three strings in memory: `Bob`, `Hello, ` and `Hello, Bob`.  If `message` were assigned a new value the existing strings would remain in memory unchanged. This is a process known as "copy on write". The runtime creates a copy of a string when it is written. The original string is never modified.
+
+NOTE: The runtime uses a special algorithm to reuse string values. If two strings have the same value then in most cases they are stored only once. This reduces the amount of memory strings take up in most cases. Hence if three different string variables happen to have the same string value, irrelevant of how that value was calculated, then they are all referring to the same string in memory.
+
+== Strings as Parameters
+
+It may sound like a string works like all the other primitive types but it doesn't. All the primitives, except `string`, are value types. `String` is a reference type but follows value semantics. This concept will be discussed in detail later.
+
+The biggest impact on code for immutable strings is that you cannot modify a string variable without assigning the string a new value. Because of this strings, while being a reference type, still follow value semantics. Hence to modify a string parameter it must be passed by reference.
+
+.String as Parameter
+[source,csharp]
+----
+//Input parameter, pass by value
+void Print ( string value )
+{
+   //Modify the parameter value, but not the original argument
+   value = "Hello, " + value;
+}
+
+void AdjustString ( ref string value )
+{
+   //Modify the parameter value, modifies the original argument as well
+   value = "Hello, " + value;
+}
+----
+
+In general prefer to return modified strings as the return type instead.
+
+== String Literals
+
+String literals are enclosed in double quotes. String literals cannot cross new lines but string concatenation can be used to break up a string. The compiler will combine the string into a single literal at compile time so there is no impact on runtime performance.
+
+.String Literals
+[source,csharp]
+----
+string message = "This is a simple message";
+
+string longMesage = "This is a long message." +
+                    " It is broken up across multiple lines in code" +
+                    " for readability purposes but the actual literal" +
+                    " will have no newlines.";
+----
+
+=== Escape Sequences
+
+Within a string literal certain characters are not allowed because they conflict with the scanning process. Specifically a double quote cannot be inside a string literal as the compiler would see it as the end of the string. In order to use such a character it must be escaped using the backslash (`\`) character. The backslash indicates the start of an escape sequence. 
+
+.Escape Sequences
+[source,csharp]
+----
+string stringWithEscape = "Hello, \"Bob\"";
+
+string multilineString = "Hello\nBob";
+----
+
+The following table lists the escape sequences in C#.
+
+.Escape Sequences
+|===
+| Sequence | Generates
+| \a | Bell
+| \b | Backspace
+| \f | Form feed
+| \n | New line (environment specific)
+| \r | Carriage return
+| \t | Tab
+| \v | Tab (vertical)
+| \' | Single quote (only in character literals)
+| \" | Double quote
+| \\ | Backslash
+| \xhh | Hex value (e.g. `\x10`)
+| \xhhhh | Unicode character
+|===
+
+C++ CAUTION: C# uses the same escape characters as C\++ plus a few extra.
+
+While multiple characters are used for the sequence they result in only a single character being generated. When counting string lengths take this into account.
+
+WARNING: If the compiler finds an escape sequence it does not recognize then it generates a compiler warning and ignores the slash.
+
+=== Verbatim Strings
+
+In general escape sequences are seldom needed. For newline, the most common case, the string can be broken up using other means. The exception to this is with file-like paths because a slash (at least in Windows) is commonly used.
+
+.File Path String Literal
+[source,csharp]
+----
+//Wrong: compiler warning, actual path = CTempMyAppfile.txt
+string wrongPath = "C:\Temp\MyApp\file.txt";
+
+//Right
+string correctPath = "C:\\Temp\\MyApp\\file.txt";
+----
+
+For this very special case, or other cases where you do not want escape sequences, there is an easier approach by using a verbatim string literal. A verbatim string literal is a string literal preceded by the at (`@`) sign.
+
+.File Path with Verbatim String
+[source,csharp]
+----
+//Right
+string correctPath = @"C:\Temp\MyApp\file.txt";
+----
+
+The above string is the same as the correct string given earlier. The verbatim string tells the compiler to ignore escape sequences in the string. Both values will map to the same string literal at runtime.
+
+CAUTION: When looking at strings in the debugger note that the debugger will normally escape strings automatically in the display. Do not confuse this with the actual string contents.
+
+== Empty Strings
+
+The empty string is one of the most commonly used strings in C#. Empty string is often used as an indicator that the string has no value. Checking for an empty string can be done several different ways.
+
+.Empty String Detection
+[source,csharp]
+----
+string value = Console.ReadLine();
+
+//1. Relational operator
+if (value == "") ...;
+
+//2. Relational operator with field
+if (value == String.Empty) ...;
+
+//3. Length check
+if (value.Length == 0) ...;
+
+//4. Function check
+if (String.IsNullOrEmpty(value)) ...;
+----
+
+Option 1 uses the relational operator to compare against the empty string literal.
+
+Option 2 does the same check but uses the https://docs.microsoft.com/en-us/dotnet/api/system.string.empty[String.Empty] value. There are mixed opinions on whether `String.Empty` should be used in C# or not. This value is provided for languages that do not support strings. Since C# supports strings the literal is the better approach in most cases.
+
+Option 3 is to check the length of the string using the https://docs.microsoft.com/en-us/dotnet/api/system.string.length[Length] property. This returns the number of characters in the string. If it is zero then the string is empty.
+
+Option 4 is to use the https://docs.microsoft.com/en-us/dotnet/api/system.string.isnullorempty[String.IsNullOrEmpty] function. This is the most versatile approach and is preferred in all cases. It is not quite as readable but handles more scenarios than the others.
+
+NOTE: Use `String.IsNullOrEmpty` unless you have a very good reason not to.
+
+=== Null vs Empty String
+
+The issue with comparing strings to empty is that a string can also be `null`. Because strings are reference types they start out uninitialized or `null`. Empty string is not the same as `null`.
+
+.Null vs Empty String
+[source,csharp]
+----
+string value1 = "";
+string value2 = null;
+
+//Always false
+bool areEqual = value1 == value2;
+----
+
+Furthermore attempting to use any functionality on a string that is `null` will result in a crash. The preferred approach is to use the value agnostic versions of functions provided by the `String` type instead. Going back to the earlier empty string example.
+
+.Empty String Detection with Null
+[source,csharp]
+----
+string value = null;
+
+//Never true
+if (value == "") ...;
+
+//Never true
+if (value == String.Empty) ...;
+
+//Crashes
+if (value.Length == 0) ...;
+
+//Always works
+if (String.IsNullOrEmpty(value)) ...;
+----
+
+Yet another reason why `String.IsNullOrEmpty` should be used. However refer to the section on trimming on string for another scenario that should be handled.
+
+CAUTION: Pay careful attention to functions that accept or return strings. They will document how they handle `null`. In all framework provided functions they will rarely return `null` from a function. It is recommended your code follows the same approach.
+
+== Converting To a String
+
+The runtime and most UIs rely heavily on the ability to convert any value to a string. This functionality is baked into every type in .NET using the https://docs.microsoft.com/en-us/dotnet/api/system.object.tostring[ToString] function. Given any type you can convert it to a string using this function.
+
+.Convert to String
+[source,csharp]
+----
+string hoursAsString = 10.ToString();
+string payRateAsString = 12.80.ToString();
+string nowAsString = DateTime.Now.ToString();
+string nameAsString = "Jane".ToString();
+----
+
+In the above example literals are being used but all expressions (because it has a value) support `ToString`. For the primitives and some of the non-primitive types in .NET the value is converted to its string equivalent.
+
+NOTE: Calling `ToString` on a string is meaningless and shouldn't be done but it is harmless otherwise.
+
+For other types the return value will generally be the type name. This is the default behavior for types. This functionality can be overridden by a type as will be discussed in the object oriented section.
+
+CAUTION: `ToString` will never return a `null` but it might return an empty string if a type does not properly implement it.
+
+== Common String Operators
+
+`String` is one of the most flexible types and has a lot of built in functionailty. Refer to the full documentation on `string` for more details.
+
+CAUTION: All string functions that modify the string return the new string. Be sure to capture the modified value otherwise it will have no impact.
+
+link:string-trimming.adoc[Trimming Strings] +
+link:string-formatting.adoc[Formatting Strings] +
+link:string-comparison.adoc[Comparing Strings] +
+link:string-building.adoc[Building Strings] +
+link:string-substrings.adoc[Working with Substrings] +
 
 == See Also
 
 link:types-primitives.adoc[Primitive Types] +
-link:string-comparison.adoc[String Comparison] +
-link:string-formatting.adoc[String Formatting] +
-link:string-parsing.adoc[String Parsing]
+link:string-building.adoc[Building Strings] +
+link:string-comparison.adoc[Comparing Strings] +
+link:string-formatting.adoc[Formatting Strings] +
+link:string-parsing.adoc[Parsing Strings] +
+link:string-trimming.adoc[Trimming Strings] +
+link:string-substrings.adoc[Working with Substrings] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string[String Class] +

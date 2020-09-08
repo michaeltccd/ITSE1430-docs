@@ -41,6 +41,6 @@ This chapter provides information on using C# for the equivalent of a programmin
 ** link:string-comparison.adoc[String Comparison]
 ** link:string-formatting.adoc[String Formatting]
 ** link:string-parsing.adoc[String Parsing]
-* [Enumerations]
+* [Enumerations] +
 :leveloffset: -1
 

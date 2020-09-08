@@ -1,0 +1,108 @@
+= Building Strings
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+Sometimes it is necessary to build strings from other strings or even other types. There are a variety of ways to do this in C#. 
+
+NOTE: When working with non-string types consider using string formatting as discussed in the link:string-formatting.adoc[Formatting Strings] section.
+
+== String Concatentation
+
+The most common approach to building strings is to concatenate them together using the addition operator.
+
+.Combining Strings
+[source,csharp]
+----
+string firstName = Console.ReadLine();
+string lastName = Console.ReadLine();
+
+string message = "Hello, " + firstName + " " + lastName;
+----
+
+=== Concat Function
+
+Remember that each string is immutable so as you add more strings to the expression you begin wasting memory. In the example above `message` requires four initial string allocations plus 3 joined strings resulting in 7 total strings. The C# compiler will optimize these into a more efficient call to https://docs.microsoft.com/en-us/dotnet/api/system.string.concat[String.Concat] instead.
+
+.String Concatenation
+[source,csharp]
+----
+//Equivalent
+//string message = "Hello, " + firstName + " " + lastName;
+string message = String.Concat("Hello, ", firstName, " ", lastName);
+----
+
+`String.Concat` takes an arbitrary number of strings and concatenates them together using a more efficient algorithm that requires a single allocation. The C# compiler will do this automatically for up to 6 parameters. Therefore it is generally not necessary to use this function directly.
+
+=== Combining with Non-Strings
+
+Combining strings with non-string types is common as well. Because every type can be converted to a string the C# compiler also allows the use of any type in either the concatenation operator or the `String.Concat` function. The compiler will silently rewrite the code to convert each value to a string first.
+
+.String Concatenation with Non-Strings
+[source,csharp]
+----
+int hours = 10;
+double payRate = 12.5;
+
+string message = "You worked " + hours + " hours at " + payRate + " and will get " + hours * payRate;
+
+//Or
+string message = String.Concat("You worked ", hours, " hours at ", payRate, " and will get " , hours * payRate);
+----
+
+== Joining Strings
+
+Sometimes you need to join strings together separated by a value such as a slash or space. The https://docs.microsoft.com/en-us/dotnet/api/system.string.join[String.Join] function handles this case.
+
+.Join Strings
+[source,csharp]
+----
+string firstName = Console.ReadLine();
+string middleName = Console.ReadLine();
+string lastName = Console.ReadLine();
+
+string name = String.Join(" ", firstName, middleName, lastName);
+----
+
+This function accepts a separtor character or string and any number of additional strings. Each string is joined to the next separated using the separator. In the example above each name is separated by a space. 
+
+CAUTION: This function does not check for `null` or empty. It simply concatenates each value together with the separator.
+
+`String.Join` can also be used to combine series of non-string values as well. Each value is converted to a string using `ToString`.
+
+== Building Strings
+
+In some cases it is necesary to build a string programmatically based upon some inputs or conditions in code. The previous approaches to building strings cannot be easily optimized in this case so a different approach is needed.
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.text.stringbuilder[StringBuilder] class is designed to build arbitrary strings together. It is optimized to build strings using an in memory buffer. To build a string use the various append methods such as https://docs.microsoft.com/en-us/dotnet/api/system.text.stringbuilder.append[Append], https://docs.microsoft.com/en-us/dotnet/api/system.text.stringbuilder.appendformat[AppendFormat] and https://docs.microsoft.com/en-us/dotnet/api/system.text.stringbuilder.appendline[AppendLine].
+
+.Using StringBuilder
+[source,csharp]
+----
+StringBuilder builder = new StringBuilder();
+
+//Append fixed message
+builder.Append("Hello");
+
+if (includeName)
+   builder.ApppendFormat(", {0}", name);
+
+if (allowMultiline)
+   builder.AppendLine("");
+
+builder.AppendLine("How are you today?");
+
+//Get final string
+string message = builder.ToString();
+----
+
+NOTE: To use `StringBuilder` import the `System.Text` namespace.
+
+The builder can be cleared and strings can be inserted or removed but for the most part the best option is to manage what gets appended into the builder. Once the string is built the final string can be created by using `ToString`.
+
+== See Also
+link:strings.adoc[Strings] +
+link:string-formatting.adoc[Formatting Strings] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.concat[String.Concat Method] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.join[String.Join Method] +
+https://docs.microsoft.com/en-us/dotnet/api/system.text.stringbuilder[StringBuilder class] +
