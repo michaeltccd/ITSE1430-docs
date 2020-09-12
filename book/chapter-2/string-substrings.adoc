@@ -1,0 +1,127 @@
+= Working with Substrings
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+Manipulating strings is a common need in C# and the https://docs.microsoft.com/en-us/dotnet/api/system.string[String] class has support for this.
+
+NOTE: All string functions are case sensitive unless otherwise specified.
+
+== Find a Substring
+
+Determining if a string contains some text, a substring, is often necessary. The https://docs.microsoft.com/en-us/dotnet/api/system.string.contains[Contains] function can do this. Given a string this function searches for another string or character and returns whether it exists or not. 
+
+.Find a Substring
+[source,csharp]
+----
+string input = Console.ReadLine();
+
+if (input.Contains("error", StringComparison.OrdinalIgnoreCase))
+   Console.WriteLine("String contains error");
+
+if (input.Contains('F'))
+   Console.WriteLine("String contains F");
+----
+
+The function has overloads accepting https://docs.microsoft.com/en-us/dotnet/api/system.stringcomparison[StringComparison] for controlling comparison.
+
+WARNING: This function will error if the string being search or the string to find is `null`.
+
+Often it is necessary to determine if a string starts or ends with a substring. The https://docs.microsoft.com/en-us/dotnet/api/system.string.startswith[StartsWith] determines if a string starts with another string (or character) and the https://docs.microsoft.com/en-us/dotnet/api/system.string.endswith[EndsWith] function determines if the string ends with the given string (or character).
+
+.Check Start/End of String
+[source,csharp]
+----
+string JoinPaths ( string left, string right )
+{   
+   var endingSlash = left.EndsWith("/");
+   var startingSlash = right.StartsWith("/");
+
+   //If there is starting and ending slash then need to ignore one
+   if (endingSlash && startignSlash)
+      return left + right.Substring(1);   
+
+   //If only one has a slash then just join them
+   else if (endingSlash || startingSlash) 
+      return left + right;
+
+   //Neither has a slash so add one
+   else
+      return left + "/" + right;
+}
+----
+
+As with other string functions it is case sensitive. There are overloads accepting `StringComparison` to change the behavior.
+
+== Get a Substring
+
+Often just determining whether a substring exists isn't enough, you need to get the string. 
+`Contains` is not enough here. There is a class of functions that can be used to get the zero-based index of a substring (or character) in a string. 
+
+- https://docs.microsoft.com/en-us/dotnet/api/system.string.indexof[IndexOf]
+- https://docs.microsoft.com/en-us/dotnet/api/system.string.indexofany[IndexOfAny] +
+- https://docs.microsoft.com/en-us/dotnet/api/system.string.lastindexof[LastIndexOf] +
+- https://docs.microsoft.com/en-us/dotnet/api/system.string.lastindexofany[LastIndexOfAny] +
+
+.Find scheme in a URL
+[source,csharp]
+----
+string url = "https://tempuri.org";
+
+//Find the scheme in a URL (https)
+int index = url.IndexOf(":");
+if (index >= 0)
+   ; //String found
+----
+
+If the string is not found then a value less than zero is returned. Overloads exist that support `StringComparison` and starting search after a given character.
+
+Once an index to a substring is found it is often necessary to get the string before or after the index. The https://docs.microsoft.com/en-us/dotnet/api/system.string.substring[Substring] function will get the substring from a starting index. There is an overload that allows the start and end index to be specified.
+
+Continuing on with the earlier example, this example creates a function to get the scheme of a URL.
+
+.Get Scheme in URL
+[source,csharp]
+----
+string GetUrlScheme ( string url )
+{
+   //Find the scheme in a URL (https)
+   int index = url.IndexOf(":");
+   
+   return (index > 0) ? url.Substring(0, index) : "";
+}
+
+string url = "https://tempuri.org";
+
+//Returns https
+string scheme = GetUrlScheme(url);
+----
+
+== Split a String
+
+While `IndexOf` and `Substring` can be used to split a string it is often necessary to break up a string based upon a set of delimiters. In this case the https://docs.microsoft.com/en-us/dotnet/api/system.string.split[Split] function may be a better choice.
+
+This function takes a string/character delimiter or set of delimiters and returns an array of strings split on the delimiter boundary. 
+
+.Get Parts of Path
+[source,csharp]
+----
+string filePath = @"C:\Temp\App\file.txt";
+
+//Get the parts of the path: C:, Temp, App, file.txt
+var parts = filePath.Split(@"\");
+----
+
+There are optional overloads that allow skipping empty strings and limiting the number of elements returned.
+
+== See Also
+link:strings.adoc[Strings] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.contains[String.Contains] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.endswith[String.EndsWith] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.indexof[String.IndexOf] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.indexofany[String.IndexOfAny] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.lastindexof[String.LastIndexOf] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.lastindexofany[String.LastIndexOfAny] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.startswith[String.StartsWith] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.substring[String.Substring] +
+https://docs.microsoft.com/en-us/dotnet/api/system.stringcomparison[StringComparison] +

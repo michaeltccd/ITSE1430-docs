@@ -3,16 +3,200 @@ Michael Taylor <michael.taylor@tccd.edu>
 v1.0
 :toc:
 
-Options: string builder
+Formatting strings is one of the most common string operations that can be done. 
+In C# there are a variety of ways to do it depending upon the needs.
 
-Formating arguments
-String.Format
+- Concatenation
+- Building
+- Formatting
+- Interpolation
 
-interpolation
+NOTE: Refer to the section link:strings.adoc[Converting to a String] for more information on how the runtime converts values to strings.
 
-ToString with parameters
+== String Concatenation
+
+String concatenation is the simplest approach to formatting strings. This approach is more formally discussed in the section link:string-building.adoc[Building Strings].
+
+.Concatenate a String
+[source,csharp]
+----
+int hours = 10;
+int payRate = 12.50;
+
+string message = "Pay: " + hours + " * " + payRate + " = " + (hours * payRate);
+----
+
+This approach is harder to read than the other approaches. It is also inefficient on memory.
+
+NOTE: `StringBuilder` as discussed in link:string-building.adoc[Building Strings] is another appraoch. Refer to that section for information on using that approach.
+
+== String Format
+
+The earliest approach to formatting strings is using https://docs.microsoft.com/en-us/dotnet/api/system.string.format[String.Format]. This function takes a format string and a series of arguments and produces a formatted string. 
+
+.Format a String
+[source,csharp] 
+----
+int hours = 10;
+int payRate = 12.50;
+
+string message = String.Format("{0} * {1} = {2}", hours, payRate, hours * payRate);
+----
+
+This should look familiar to anyone who has used `printf` in C/C++.
+The string contains placeholders in curly braces. The place holder values are the zero-based indice of the arguments that follow the format string. The number of arguments passed to the function must match the number of zero-based indiced used in the format string otherwise a runtime error occurs. 
+
+The format string is easier to read than when using string concatenation but it is still hard to see what actual argument is being used. The format string can become difficult if there is a lot of conditional formatting.
+
+WARNING: Ensure the number of arguments match the format specifiers otherwise a runtime error will occur.
+
+=== Functions with Formatting
+
+Because `String.Format` is the original approach to formatting many functions that accept a string message as input also allow for message arguments. While there is no way to know for sure whether a function has such overloads the pattern is generally consistent and the documentation will always mention it. For example `Console.WriteLine` supports format arguments.
+
+.WriteLine With Formatting
+[source,csharp]
+----
+int hours = 10;
+int payRate = 12.50;
+
+Console.WriteLine("{0} * {1} = {2}", hours, payRate, hours * payRate);
+----
+
+The syntax is identical, just with a different function name. In general if you see overloads with the following signatures they most likely support string formatting.
+
+- `( string message )`
+- `( string message, object argument )`
+- `( string message, param object[] arguments )`
+
+== String Interpolation
+
+String interpolation was added to C# a few versions back. String interpolation is string formatting done at compile time. This is the preferred approach in almost all cases.
+
+.String Interpolation
+[source,csharp]
+----
+int hours = 10;
+int payRate = 12.50;
+
+string message = $"{hours} * {payRate} = {hours * payRate}";
+----
+
+The above example is equivalent to the original `String.Format` example. An interpolated string starts with the dollar sign (`$`). Within the string itself curly braces are used to identify the arguments. Unlike the traditional format string approach the actual argument is placed inside the curly braces instead of the index. This has several advantages.
+
+. The message is more clear as the expression is part of the string.
+. The compiler will enforce that the expression is valid and available.
+. Requires less code to write.
+. The IDE provides intellisense support inside the curly braces to help avoid errors.
+
+At compile time the compiler rewwrites the call to the equivalent `String.Format` call. At runtime there is no performance difference. 
+
+NOTE: Interpolation only works at compile time with string literals. If the message has to be build programmatically at runtime then `String.Format` has to be used.
+
+=== Verbatim String Interpolation
+
+To combine string interpolation with a verbatim string put the dollar sign first and then the verbatim string (`@`) indicator.
+
+.String Interpolation with Verbatim Strings
+[source,csharp]
+----
+string path = "Temp";
+string file = "test.txt";
+string fullPath = $@"{path}\{file}";
+----
+
+== Controlling Formatting
+
+By itself `String.Format` and string interpolation are not much better than concatenation. Where they start to become more useful is when control over the formatting a value is needed. For example a decimal may need to be printed using accounting formatting rules whereas a date/time may need to be formatted as a full or partial date.
+
+NOTE: To support format specifiers a type must implement the https://docs.microsoft.com/en-us/dotnet/api/system.iformattable[IFormattable] interface. The primitive types support this but many custom types do not. Refer to the documentation for information on whether it is supported or not.
+
+To control the formatting use https://docs.microsoft.com/en-us/dotnet/standard/base-types/formatting-types[format specifiers] in the `ToString` function call or curly braces.
+
+.Format Price
+[source,csharp]
+----
+decimal annualPay = 75432M;
+
+Console.WriteLine(annualPay.ToString());    //75432
+Console.WriteLine(annualPay.ToString("c")); //75,432.00
+
+//With String.Format
+Console.WriteLine(String.Format("{0:C}", annualPay)); //75,432.00
+
+//With format string
+Console.WriteLine("{0:C}", annualPay); //75,432.00
+
+//With string interpolation
+Console.WriteLine($"{annualPay:C}"); //75,432.00
+----
+
+NOTE: The `C` specifier when applied to numeric values indicates to use the current locale's currency settings.
+
+For formatted strings the format specifier is separated from the argument using a colon. In most cases the default behavior is to use the default specifiers for the type and use specifiers for either more specific formats or when no existing format is correct. 
+
+Most types support general purpose format specifiers (such as `C`) and precise formats (such as displaying a date as one or two digits). Refer to the earlier link on format specifiers for a list of all the built in specifiers available to the primitive types. Here's is a summary of some of the more useful ones.
+
+.General Format Specifiers
+|===
+| Type | Specifier | Format
+| Numerics | `C` or `c` | Current locale's currency format including negatives, grouping and decimal precision
+| | `D#` or `d#` | Integral value with given number of digits (left zero padded)
+| | 'E#' or 'e#' | Exponential notiation
+| | `F#` or `f#` | Fixed point notation
+| | 'G#' or 'g#' | Either fixed or exponential, whichever requires less space
+| | `N#` or `n#` | Floating point value with group separator
+| | `P#` or `p#` | Percentage
+| Integral | `X#` or `x#` | Hexadecimal
+| DateTime | `d` | Short date
+| | `D` | Long date
+| | `f` | Full date and short time
+| | `F` | Full date and full time
+| | `t` | Short time
+| | 'T' | Long time
+|===
+
+CAUTION: Case matters in specifiers. Many times either case can be used because the specifier allows both.
+
+If you need more fine grain control over the format then custom format specifiers are available as well.
+
+.General Format Specifiers
+|===
+| Type | Specifier | Format
+| Numerics | `0` | Digit or 0 placeholder
+| | `#` | Digit placeholder
+| DateTime | `d` | Day of month (`1-31`)
+| | `dd` | Day of month as two digits (`01-31`)
+| | `ddd` | Day of week abbreviated (`Mon`)
+| | `dddd` | Day of week (`Monday`)
+| | `f` | Fractional seconds (can have up to 5 specifiers)
+| | `h` | Hour in 12-hour time (`1-12`)
+| | `hh` | Hour in 12-hour two digit time (`01-12`)
+| | `H` | Hour in 24-hour time (`0-23`)
+| | `HH` | Hour in 24-hour two digit time (`00-23`)
+| | `m` | Minute (`0-59`)
+| | `mm` | Minute in two digits (`00-59`)
+| | `M` | Month number (`1-12`)
+| | `MM` | Month number in two digits (`01-12`)
+| | `MMM` | Month abbreviation (`Jan`)
+| | `MMMM` | Month name (`January`)
+| | `s` | Seconds (`0-59`)
+| | `ss` | Seconds in two digits (`00-59`)
+| | `y` | Year up to two digits (`01-99`)
+| | `yy` | Year in two digits (`01-99`)
+| | `yyyy` | Year in four digits (`0001-9999`)
+
+If a character is in the format specifier that is unrecognized then it is inserted into the formatted string as is.
+
+CAUTION: You cannot combine general with custom format specifiers in a single expression.
+
+For more advanced scenarios you can also use composite formatting. Composite formatting allows different specifiers for positive, zero and negative values. Refer to the https://docs.microsoft.com/en-us/dotnet/standard/base-types/formatting-types[format specifiers] for more information.
 
 == See Also
 
 link:strings.adoc[Strings] +
-iinkg:string-building.adoc[Building Strings] +
+iink:string-building.adoc[Building Strings] +
+https://docs.microsoft.com/en-us/dotnet/standard/base-types/formatting-types[Formatting Types] +
+https://docs.microsoft.com/en-us/dotnet/api/system.iformattable[IFormattable Interface] +
+https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/string-interpolation[String Interpolation] +
+https://docs.microsoft.com/en-us/dotnet/api/system.string.format[String.Format] +

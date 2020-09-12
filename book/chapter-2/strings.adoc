@@ -244,6 +244,12 @@ For other types the return value will generally be the type name. This is the de
 
 CAUTION: `ToString` will never return a `null` but it might return an empty string if a type does not properly implement it.
 
+=== Controlling Type Formatting
+
+Some types implement the https://docs.microsoft.com/en-us/dotnet/api/system.iformattable[IFormattable] interface. This interface provides overloads for `ToString` that allow format specifiers to be used to control the formatting. Many of the primitive types support this interface and therefore allow some control over how the value is formatted.
+
+Refer to the section link:string-formatting.adoc[Formatting Strings] for more information on this.
+
 == Common String Operators
 
 `String` is one of the most flexible types and has a lot of built in functionailty. Refer to the full documentation on `string` for more details.

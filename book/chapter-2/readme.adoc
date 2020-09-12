@@ -37,6 +37,8 @@ This chapter provides information on using C# for the equivalent of a programmin
 ** link:do-statement.adoc[Do While Statement]
 ** link:for-statement.adoc[For Statement]
 ** link:foreach-statement.adoc[Foreach Statement]
+** link:break-statement.adoc[Break Statement]
+** link:continue-statement.adoc[Continue Statement]
 * link:strings.adoc[Strings]
 ** link:string-comparison.adoc[String Comparison]
 ** link:string-formatting.adoc[String Formatting]
