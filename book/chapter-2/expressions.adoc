@@ -1,16 +1,16 @@
 = Expressions
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 An expression is a series of tokens that produce a value such as an addition operation, variable reference or function call. Expressions can be one of the following categories.
 
 Unary::
-An expression with one argument such as unary plus or minus.
+   An expression with one argument such as unary plus or minus.
 Binary::
-An expression with two arguments such as addition or multiplication.
+   An expression with two arguments such as addition or multiplication.
 Ternary::
-An expression with three arguments such as the conditional operator.
+   An expression with three arguments such as the conditional operator.
 
 All expressions have a type and a value. By looking at the types involved it is possible to determine the type of the expression. For purposes of this discussion the actual expression values are not relevant, just the types.
 
@@ -40,7 +40,7 @@ NOTE: Like other languages an expression may be evaluated at compile or runtime.
 Since C# requires that all operand types be the same this can introduce an issue because even simple expressions like `4.5 + 10` would fail. The language allows for `type coercion`
 
 Type Coercion::
-The implicit type conversion from a smaller to a larger type performed by the compiler.
+   The implicit type conversion from a smaller to a larger type performed by the compiler.
 
 When evaluating the numeric types in an expression the compiler is allowed to, for the purposes of the expression, type cast a smaller type to a larger type. This never results in data loss and is therefore always safe. In general the conversion follows this hierarchy from smallest to largest.
 
@@ -72,7 +72,7 @@ CAUTION: Type coercion only applies when the types vary. If they are the same th
 You learned the operator precedence rules in grade school most likely, at least to a small degree. Multiplication is performed before addition, for example. Understanding operator precedence is critical for properly writing expressions.
 
 Operator Precedence::
-The order in which operators are performed when part of a larger expression.
+   The order in which operators are performed when part of a larger expression.
 
 .Operator Precedence
 [source,csharp]
@@ -114,7 +114,7 @@ NOTE: Refer to the full table https://docs.microsoft.com/en-us/dotnet/csharp/lan
 Another factor in evaluating expressions is operator associativity.
 
 Operator Associativity::
-Determines whether a binary (or ternary) operator evaluates the left operand (left associative)  or right operand (right associative) first.
+   Determines whether a binary (or ternary) operator evaluates the left operand (left associative)  or right operand (right associative) first.
 
 Operator associativity determines how the operands in an operator are evaluated. This is generally not important outside of computers because general math expressions do not have side effects. But in computers operands may have side effects so it is important to understand which operand is evaluated first.
 

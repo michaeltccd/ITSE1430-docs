@@ -1,0 +1,23 @@
+= Chapter 5: Common Type System
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+
+This chapter will cover the common type system (CTS) used by .NET
+
+The topics to be covered include:
+
+* Object class
+* Type Checking
+* Reference vs Value Types
+* Handling Null
+
+== Table of Contents
+
+* [Common Type System]
+* [Object Class]
+* [Reference vs Value Types]
+* [Type Checking]
+* [Handling Null]
+** [Null Checks]
+** [Null Coalescing Operator]
+** [Null Conditional Operator]

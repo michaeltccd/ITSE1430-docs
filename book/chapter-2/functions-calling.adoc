@@ -1,6 +1,6 @@
 = Calling Functions
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 Function calls are one of the most common statements in code. The syntax for calling a function is given below.
@@ -73,7 +73,7 @@ int grade = 50;
 ApplyCurve(ref grade);
 ----
 
-C\++ CAUTION: Input/output parameters are similar to C++ reference parameters but they are not the same thing.
+NOTE: [C\++] Input/output parameters are similar to C++ reference parameters but they are not the same thing.
 
 === Output Arguments
 
@@ -89,7 +89,7 @@ if (TryGetInt32(out result))
    Console.WriteLine(result);
 ----
 
-C\++ CAUTION: There is no equivalent of output parameters in C++.
+NOTE: [C\++] There is no equivalent of output parameters in C\++.
 
 === Inline Variable Declarations
 

@@ -1,6 +1,6 @@
 = Terminology
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 Programming languages tend to use the same constructs but change up the syntax. C# is no different. In language design there is some agreed upon terminology that can be used to discuss parts of a language. 
@@ -8,29 +8,29 @@ Programming languages tend to use the same constructs but change up the syntax. 
 NOTE: A `token` in language design is anything in the code, generally separated by whitespace. Examples might include `+`, `if` and `payRate`.
 
 Comment::
-A textual comment about the code. Generally treated as whitespace in code but does not impact compilation.
+   A textual comment about the code. Generally treated as whitespace in code but does not impact compilation.
 Constant::
-A named value set at compilation time and cannot be changed. A constant has a name, value and type. A constant is an expression.
+   A named value set at compilation time and cannot be changed. A constant has a name, value and type. A constant is an expression.
 Expression::
-A value that can be calculated at compile or runtime. Expressions by themselves have a value and a type but do nothing until called by a larger expression.
+   A value that can be calculated at compile or runtime. Expressions by themselves have a value and a type but do nothing until called by a larger expression.
 Identifier::
-A non-symbol token that is not a keyword (e.g. `payRate`). Identifiers are generally provided by the programmer but are often provided by additional libraries.
+   A non-symbol token that is not a keyword (e.g. `payRate`). Identifiers are generally provided by the programmer but are often provided by additional libraries.
 Keyword::
-An identifier that has special meaning to the language (e.g. `for` or `true`). Keywords cannot generally be used where identifiers are normally allowed.
+   An identifier that has special meaning to the language (e.g. `for` or `true`). Keywords cannot generally be used where identifiers are normally allowed.
 Literal::
-An expression whose value can be determined at compilation time. Examples would include `10` or `Hello`. Literals have a value and type but no name. A literal is an expression.
+   An expression whose value can be determined at compilation time. Examples would include `10` or `Hello`. Literals have a value and type but no name. A literal is an expression.
 Operator::
-A mathematical operator such as `+` (addition), `-` (subtraction) and `*` (multiplication).
+   A mathematical operator such as `+` (addition), `-` (subtraction) and `*` (multiplication).
 Operator Associativity::
-The order in which operands of an expression are evaluated. Associativity can be left or right.
+   The order in which operands of an expression are evaluated. Associativity can be left or right.
 Operator Precedence::
-The order in which operators are performed in expressions.
+   The order in which operators are performed in expressions.
 Punctuator::
-Any symbol that is not an operator.
+   Any symbol that is not an operator.
 Statement::
-An executable set of code. A statement may consist of multiple child statements. Statements in C# end in a semicolon.
+   An executable set of code. A statement may consist of multiple child statements. Statements in C# end in a semicolon.
 Variable::
-A named memory location where data is stored. A variable has a name, type and value. A variable is an expression.
+   A named memory location where data is stored. A variable has a name, type and value. A variable is an expression.
 
 NOTE: The semicolon is a `sequence point`. A sequence point is used by the compiler to help reset after a syntactical error occurs. Appropriate use of semicolons help the compiler recover faster resulting in easier to diagnose and more accurate errors.
 

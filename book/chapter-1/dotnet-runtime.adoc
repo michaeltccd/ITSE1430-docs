@@ -1,6 +1,6 @@
 = .NET Runtime
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 C# the language was written to demonstrate the abilities of .NET the framework. \.NET is a combination of runtime and framework library for running applications. It is impossible to study C# without also studying .NET. No other language exposes such a low level view of the runtime as C#. 
@@ -38,11 +38,13 @@ At runtime the MSIL is "just in time" compiled (JITted) to the target machines a
 Today there are 3 .NET runtimes supported by Microsoft.
 
 .NET Framework::
-The original framework designed for Windows. It is the most feature complete but evolves slowly given the decades worth of code written for it.
+   The original framework designed for Windows. It is the most feature complete but evolves slowly given the decades worth of code written for it.
+
 .NET Core::
-The re-envisioned version of the framework that is smaller and faster. It is designed for Windows, Linux and MacOS. Unfortunately it does not have all the same features because of cross platform concerns. 
+   The re-envisioned version of the framework that is smaller and faster. It is designed for Windows, Linux and MacOS. Unfortunately it does not have all the same features because of cross platform concerns. 
+
 .NET 5::
-This is the next generation of the platform expected to go live in Nov 2020. It is built in .NET Core but with the compatibility of .NET Framework.
+   This is the next generation of the platform expected to go live in Nov 2020. It is built in .NET Core but with the compatibility of .NET Framework.
 
 When you design to build a .NET application you currently have to decide which platform to use. Some applications cannot currently be built with .NET Core but .NET Framework only supports Windows. .NET 5 is supposed to solve this problem but it is still in early access. Ultimaely .NET 5 will be the platform going forward with .NET Framework and .NET Core going away.
 

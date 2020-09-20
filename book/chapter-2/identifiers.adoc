@@ -23,11 +23,11 @@ CAUTION: If the IDE or compiler generates an error about an identifier being und
 There are several different styles of casing in programming.
 
 Camel Casing::
-Camel casing capitalizes on word boundaries except the first word. Camel casing does not use underscores. Examples include `payRate`, `firstName` and `rateOfPay`.
+   Camel casing capitalizes on word boundaries except the first word. Camel casing does not use underscores. Examples include `payRate`, `firstName` and `rateOfPay`.
 Pascal Casing::
-Pascal casing capitalizes on word boundaries including the first word. Pascal casing does not use underscores. Examples include `Program`, `MyData` and `DateTime`.
+   Pascal casing capitalizes on word boundaries including the first word. Pascal casing does not use underscores. Examples include `Program`, `MyData` and `DateTime`.
 Snake Casing::
-Snake casing is camel casing but instead of capitalizing on word boundaries a dash is used as for a space yet. This casing is not used in C#. Eaxmples include `pay-rate`, `first-name` and `date-time`.
+   Snake casing is camel casing but instead of capitalizing on word boundaries a dash is used as for a space yet. This casing is not used in C#. Eaxmples include `pay-rate`, `first-name` and `date-time`.
 
 In C# the following guidelines apply to casing. More guidelines will be given later.
 
@@ -49,7 +49,7 @@ Good identifiers explain the purpose of something and should be understand based
 * DO USE descriptive identifiers so the meaning is clear.
 * DO limit the length of the identifier to the minimal needed to clearly identify the purpose.
 * DO leave out connector words like `the`, `of` and `for`.
-* DO NOT USE link:https://en.wikipedia.org/wiki/Hungarian_notation[Hungarian notation].
+* DO NOT USE https://en.wikipedia.org/wiki/Hungarian_notation[Hungarian notation].
 * DO NOT USE abbreviations or acronyms in identifiers unless it is well known.
 * DO NOT USE keywords as identifiers except when the keyword is context sensitive.
 

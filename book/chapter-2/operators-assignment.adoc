@@ -1,6 +1,6 @@
 = Assignment Operators
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 The assignment operator is used to assign a value to a variable. The assignment operator has the following syntax.
@@ -13,9 +13,9 @@ E => variable = E
 When talking about assignment the terms `lvalue` and `rvalue` will come up.
 
 lvalue::
-An expression that can appear on the left side of assignment.
+   An expression that can appear on the left side of assignment.
 rvalue::
-An expression that can appear on the right side of an assignment.
+   An expression that can appear on the right side of an assignment.
 
 All expressions are rvalues and can be read, ignoring semantic rules. Only variables are lvalues and can be assigned a value.
 

@@ -1,6 +1,6 @@
 = Switch Statement
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 The `switch` statement is a decision statement. It is used to conditionally execute one of many statements depending on a condition. It is a specialized statement used to replace link:if-statement.adoc[if-else-if] statements in a very specific scenario. It has the following syntax.
@@ -70,7 +70,7 @@ If the above conditions are met then a `switch` statement can be used.
 
 NOTE: Newer versions of C# support pattern matching as well. This is beyond the scope for this course.
 
-C\++ CAUTION: Unlike C\++ non-integral types can be used including strings.
+NOTE: [C\++] Unlike C\++ non-integral types can be used including strings.
 
 == Fallthrough
 
@@ -90,7 +90,7 @@ switch (operation)
 };
 ----
 
-C\++ CAUTION: This is in contrast to C\++ that allows fallthrough and often results in unexpected behavior.
+NOTE: [C\++] This is in contrast to C\++ that allows fallthrough and often results in unexpected behavior.
 
 The one exception to this rule is when a `case` statement has no statement. 
 In this very special case fallthrough is allowed. 

@@ -1,6 +1,6 @@
 = Arithmetic Operators
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 C# has the following binary arithmetic operators.
@@ -106,9 +106,9 @@ The prefix/postfix operators are designed for the common case of adding 1 (incre
 Increment and decrement work identical except increment adds 1 and decrement subtracts 1. In both cases the variable is incremented/decremented by 1 as a side effect. The prefix/postfix operators only differ in what the result of the expression is.
 
 Prefix::
-The variable is incremented/decremented and the result of the expression is the new value.
+   The variable is incremented/decremented and the result of the expression is the new value.
 Postfix::
-The variable is incremented/decreemented and the result of the expression is the original (unmodified) value.
+   The variable is incremented/decreemented and the result of the expression is the original (unmodified) value.
 
 .Prefix and Postfix
 [source,csharp]

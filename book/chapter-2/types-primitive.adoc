@@ -1,6 +1,6 @@
 = Primitive Types
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 As a refresher, a type defines the kinds of values can be stored in something such as an expression or variable. Types also impact the operations that can be performed on its values. For example numeric types allow standard math operations like addition and subtraction. Most types define a range of values but some allow any value. 
@@ -223,7 +223,7 @@ The `char` type should be used when a single character is neededd. Examples of g
 
 The `char` type defaults to `\0`. 
 
-CUATION: while `char` is not a numeric type it can be used in some numeric operations. However the type is not interchangeable with `int` and should never be used in that way.
+CAUTION: while `char` is not a numeric type it can be used in some numeric operations. However the type is not interchangeable with `int` and should never be used in that way.
 
 === Literals
 

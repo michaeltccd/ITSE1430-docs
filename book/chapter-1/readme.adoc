@@ -1,16 +1,13 @@
 = Chapter 1: Introduction to C#
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 
 This chapter provides an introduction to C# and the .NET runtime.
 
 == Table of Contents
 
-:leveloffset: +1
 * link:hello-world.adoc[Hell World] 
 * link:terminology.adoc[Terminology]
 * link:parts-of-csharp.adoc[Parts of C#]
 * link:csharp-history.adoc[C# History]
 * link:dotnet-runtime.adoc[.NET Runtime]
-:leveloffset: -1
-

@@ -1,0 +1,43 @@
+= Chapter 4: Windows Forms
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+
+This chapter will cover the https://docs.microsoft.com/en-us/dotnet/desktop/winforms[Windows Forms] framework (winforms). 
+Winforms is a .NET framework for building graphical user interfaces (GUIs) in Windows. 
+It is a low-level framework designed to provide a standard UI compliant with Windows guidelines.
+
+The topics to be covered include:
+
+* Windows Forms Basics
+* Forms
+* Controls
+* Form Lifetime
+* Control Validation
+
+== Table of Contents
+
+* [Windows Forms Basics]
+* [Forms]
+** [Using the Designer]
+** [Common Properties]
+** [Form Lifetime]
+* [Controls]
+** [Control Members]
+** [Common Controls]
+*** [Label]
+*** [TextBox]
+*** [Button]
+*** [CheckBox]
+*** [MenuStrip]
+** [Child Windows]
+*** [MessageBox]
+*** [Child Forms]
+** [Laying Out Controls]
+*** [Designer]
+*** [Anchors]
+*** [Docking]
+*** [Optional: Containers]
+** [Input Validation]
+*** [Control Validation]
+*** [Form Validation]
+*** [ErrorProvider]

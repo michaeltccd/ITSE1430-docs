@@ -1,6 +1,6 @@
 = Variables
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 A variable is a named memory location used to store data. A programmer generally defines the variables needed by the code but the compiler can create its own variables as well. All variables in C# have a name, value and type. Variable lifetime, scope, is determine by where the variable is defined.
@@ -88,7 +88,7 @@ double payRate = 12.50, hours = 40;
 One benefit of initializing a variable when it is first declared is type inferencing. 
 
 Type Inferencing::
-The compiler infers a type based upon the context.
+   The compiler infers a type based upon the context.
 
 In the following example it is obvious what the type of the variables should be.
 

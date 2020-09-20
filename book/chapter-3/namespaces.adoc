@@ -1,0 +1,248 @@
+= Namespaces
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+
+One of the challenges with modular programming is ensuring uniqueness of identifiers. 
+As programs get larger the odds of two areas of code using the same identifiers increases.
+This is made even more difficult in languages, like C#, that allow the importing of other libraries.
+Provided these identifiers are never in the same scope at the same time then problems will not occur but this is hard to manage. Namespaces help resolve this issue.
+
+Namespace::
+   An identifier used to scope other identifiers in a hierarchical manner. In C# the dot (`.`) is used to separate namespaces.
+
+In many languages, including C#, namespaces form a hierarchy. The further down the hierarchy the more specific a namespce becomes. For example here are some example namespaces in .NET.
+
+:Example Namespaces
+|===
+| Namespace | Purpose
+| System | Core types needed by all .NET code.
+| System.Data | Types related to working with databases.
+| System.Data.SqlClient | Types related to working with SQL databases.
+| System.Text | Types related to working with text.
+| System.Text.RegularExpressions | Types related to regular expressions.
+|===
+
+== Full Type Names
+
+To help avoid possible conflicts the compiler always requires that types use the full name. 
+The full name includes the entire namespace containing the type. 
+
+.Full Type Name
+|===
+| Type | Namespace | Full Type Name
+| `string` | `System` | `System.String`
+| `Employee` | `Company.Product` | `Company.Product.Employee`
+| `Point` | `System.Drawing` | `System.Drawing.Point`
+|===
+
+Full Type Name::
+   The name of a type including the namespace it is defined in.
+Fully Qualified Type Name::
+   The full type name including the assembly it is contained in.
+
+CAUTION: The compiler cannot distinguish between identifiers with the same full name but different assemblies. Trying to do so results in a compilation error with no easy workaround.
+
+== Nested Namespaces
+
+Namespaces can be nested. This is useful for specializing types. In general more specialized namespaces rely on the types in the higher level namespace. For example the `System.Data.SqlClient` namespace contains the types for working with SQL Server and rely on the types in the more general purpose `System.Data` namespace.
+
+NOTE: Remember that namespaces are not a runtime construct. A namespace is appended to all the types defined in it at compile time. 
+
+It is strongly recommended that the first namespace be a company name to help ensure uniqueness of all the namespaces. Under the company namespace is generally a product name to separate products with in a componay. Below that can be namespaces based upon feature area, technology or related product, depending upon need.
+
+Always use nouns for namespace names and prefer plural words to singular. Avoid having many namespaces with few types, generally less than 5 types. Keep related types in the same namespace.
+
+CAUTION: Do not use `System` or `Microsoft` in your namespaces to avoid conflicting with system and Microsoft-provided namespaces.
+
+The IDE will help enforce good namespace structure. Each project has a default namespace that matches the project name. Following the earlier recommendation project names should be `company.product.<area>` to ensure the namespace root is set up properly. Within a project the IDE will assume the folder structure matches the namespace structure. Thus if a project has a folder `Sql` then any source files created under that folder will reside in the child namespace `Sql`. 
+
+CAUTION: Do not name projects or folders with non-identifier characters like dots or spaces. If this is done then the compiler will convert it to a safe, generally less useful name.
+
+== Using Namespaces
+
+Because the compiler requires the full type name writing code in C# looks something like this.
+
+.Full Type Name Example
+[source,csharp]
+----
+System.String input = System.Console.ReadLine();
+System.Int32 hours = System.Int32.Parse(input);
+----
+
+Since this is tedious C# has the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-directive[Using Directive] to simplify the syntax. 
+
+.Using Directive Syntax
+----
+using-directive ::= using identifier ;
+----
+
+The identifier must be a namespace name. 
+
+NOTE: Starting with C# 9 the `using` directive can also be used to import static class members directly.
+
+The `using` directive brings all the identifiers contained in a namespace into the current scope. Refer to the section on link:../chapter-2/scope.adoc[scope] for a refresher on how scoping works. Take the following code as an example.
+
+.Type Without Using
+[source,csharp]
+----
+//Defined in namespace A
+class MyType { }
+
+//Defined in namespace B
+void Foo ()
+{
+   MyType instance;
+}
+----
+
+For the above code to compile `MyType` needs to be fully typed. The compiler will start in the current scope (the containing type) looking for an identifier `MyType`. If it doesn't find it then it looks in the current namespace (`B`). If it does not find it there then it will look in the global namespace. If it does not find it there then it is a compiler error.
+
+The `using` directive will import the identifiers defined in the namespace given in the directive. Modifying the earlier code to include a `using` allows it to compile.
+
+.Type with Using
+[source,csharp]
+----
+//Defined in namespace A
+class MyType { }
+
+//Defined in namespace B
+using A;
+
+void Foo ()
+{
+   MyType instance;
+}
+----
+
+Once again the compiler looks in the current scope (the type) and then the current namespace (`B`). However the `using` directive brings in all the identifiers from `A` so the compiler does find `MyType` in `A` and properly resolves the reference.
+
+A file can have any number of `using` directives. The order does not matter.
+
+NOTE: It is possible to use the `using` directive for some namespaces but the full type name for others. This is generally only done when one type is needed in another namespace or if conflicts will occur.
+
+This is one advantage of the `var` keyword. Namespaces only need to be imported if they are directly referenced in the source file. Thus the `var` keyword, besides type inferencing, eliminates the need for a `using` directive if the type is not referenced. The compiler is still smart enough to be able to work with the type even though the namespace is not imported.
+
+=== Using Nested Namespaces
+
+The `using` directive can be used to import any namespace including nested ones.
+
+.Nested Namespace Import
+[source,csharp]
+----
+using System.Collections.Generics;
+
+List list;   //Defined in System.Collections.Generics
+----
+
+When using a nested namespace only the namespace in the `using` directive is imported. Parent namespaces must be implicitly imported if desired. Thus in the above example the types defined in `System.Collections` are not automatically imported to the current scope.
+
+=== Aliasing
+
+One issue with the `using` directive is that it is possible to include multiple namespaces with the same identifier. Because the `using` directive imports all identifiers into the current scope we are back to the original problem that namespaces were striving to solve.
+To help with this situation a namespace can be aliased instead.
+
+.Using Directive With Alias Syntax
+----
+using-directive ::= using [alias] identifier ;
+alias ::= identifier = 
+----
+
+The alias is a prefix that maps to the corresponding namespace. The compiler silently replaces the alias with the namespace name.
+
+.Alias Namespace Example
+[source,csharp]
+----
+using CompanyA;
+using B = CompanyB;
+
+//Assume Util is defined in both CompanyA and CompanyB's namespaces
+Util util;    //Resolves to CompanyA.Util
+B.Util util;  //Resolves to CompanyB.Util
+----
+
+Aliasing should only be used when there is a conflict between namespace. In general alias the less used namespace.
+
+NOTE: When using a namespace alias the namespace alias qualifier can also be used (`::`). This is equivalent to the normal namespace separator (`.`) but has the added advantage of only working with namespaces.
+
+== Declaring Namespaces
+
+All code in C# is contained in a namespace. To declare a namespace use the `namespace` keyword.
+
+.Namespace Declaration Syntax
+----
+namespace-declaration ::= namespace identifier { S* }
+----
+
+The `identifier` can be simple or complex. Any number of statements can be contained inside the namespace. Namespace declarations do not end with a semicolon.
+
+.Namespace Declaration Example
+namespace Company
+{
+   //Full type name = Company.MyType
+   public class MyType
+   {}
+}
+
+The namespace may be a new namespace or an existing namespace. The compiler merges all namespaces that match together when defining scope.
+
+== Declaring Nested Namespaces
+
+Namespace statements can be nested if desired.
+
+.Nested Namespace Example
+namespace Company
+{
+   namespace Product
+   {
+      //Full type name = Company.Product.MyType
+      public class MyType
+   }
+}
+
+While this is allowed it is generally easier to simply use a compound identifier.
+
+.Nested Namespace Example
+namespace Company.Product
+{
+   //Full type name = Company.Product.MyType
+   public class MyType
+}
+
+The behavior is the same.
+
+== Global Namespace
+
+While C# does not directly support declaring identifiers in the global namespace it does exist. It is primarily used as the root of all other namespaces and therefore can be used to ensure that a namespace name is starting at the root. 
+
+.Global Namespace
+[source,csharp]
+----
+//Defined in namespace A
+   //Defined in namespace A.Collections
+      MyType
+   
+//Defined in namespace C
+   //Defined in namespace C.Collections
+      MyType
+
+//In namespace C
+Collections.MyType type;  //Refers to C.Collections
+global::A.Collections.Mytype type2;  //Refers to A.Collections
+----
+
+The `global` keyword should be used sparingly.
+
+== Namespace Guidelines
+
+* USE nouns, generally plural, as the namespace name.
+* DO follow standard identifier guidelines for naming.
+* DO start a namespace with a company name to avoid conflicts with any other company's code.
+* DO use a product name as the second level to avoid conflicts with other products in the same company.
+* PREFER to use the same namespace names when creating product-specific types that parallel existing namespaces (e.g. prefer `Company.Product.Collections` for custom collections in a product).
+* DO nest namespaces if they are a specialization of a higher level namespace.
+* PREFER to have more types in fewer namespaces, generally five or more.
+
+== See Also
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/namespaces[C# Namespaces] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/namespace[Namespace Statement] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-directive[Using Directive] +

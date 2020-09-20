@@ -43,7 +43,7 @@ void Print ( int value ) {}
 double GetArea ( double length, double width ) {}
 ----
 
-C++ CAUTION: C# does not need or support function prototypes (sometimes called forward references).
+NOTE: [C\++] C# does not need or support function prototypes (sometimes called forward references).
 
 Within a function any statement can appear except for declaring new types.
 All (local) variables defined within a function are removed when the function call ends.
@@ -242,7 +242,7 @@ double CalculateArea ( double length, double width )
 }
 ----
 
-C++ CAUTION: Like definitely assigned variables, a function that has a return type must ensure all possible code paths return a value.
+NOTE: [C\++] Like definitely assigned variables, a function that has a return type must ensure all possible code paths return a value.
 
 If a function does not have a return type then the `return` statement must be used without an expression.
 

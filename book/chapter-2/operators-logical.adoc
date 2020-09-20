@@ -1,6 +1,6 @@
 = Logical Operators
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 The logical operators allow for combining expressions together using AND and OR conditions. They have the following syntax.
@@ -60,7 +60,7 @@ var cond = (true || false) && false || false;
 When using logical operators short circuit evaluation always applies.
 
 Short Circuit Evaluation::
-Stops the evaluation of an expression as soon as the answer is known even if the remainder of the expression has not been evaluated yet.
+   Stops the evaluation of an expression as soon as the answer is known even if the remainder of the expression has not been evaluated yet.
 
 Short circuit evaluation has two benefits.
 

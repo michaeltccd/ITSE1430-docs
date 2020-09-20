@@ -1,6 +1,6 @@
 = Functions
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 A function is an isolated block of code that can be used in other parts of a program, or even across programs. Functions have numerous benefits including the following.
@@ -19,7 +19,7 @@ Modular programming provides many benefits but there are a few disadvantages as 
 - More dependency on documentation when trying to understand how a function works.
 - Function calls introduce a slight overhead at runtime.
 
-*Warning: Do not confuse modular programming with functional programming. They are completely different paradigms.*
+WARNING: Do not confuse modular programming with functional programming. They are completely different paradigms.
 
 The general recommendation is to write code inline without functions to begin with. When a piece of code meets any of the following qualifications then refactor it into a function.
 
@@ -32,18 +32,18 @@ The general recommendation is to write code inline without functions to begin wi
 Since functions run in isolation the only information they have access to is the information provided by or too the caller. This is generally handled through parameters.
 
 Parameter::
-A variable defined as part of the function allowing the caller to send or receive data to the function.
+   A variable defined as part of the function allowing the caller to send or receive data to the function.
 Argument::
-An expression whose value is passed to the function at runtime in order to set the value of a parameter.
+   An expression whose value is passed to the function at runtime in order to set the value of a parameter.
 
 There are three kinds of parameters in programming.
 
 Input::
-Also referred to as "pass by value". The caller passes a copy of the value to the function. The function cannot modify the parameter value.
+   Also referred to as "pass by value". The caller passes a copy of the value to the function. The function cannot modify the parameter value.
 Output::
-The function returns a value for the parameter. The caller does not provide anything to the function in most cases other than perhaps a place to store the returned value.
+   The function returns a value for the parameter. The caller does not provide anything to the function in most cases other than perhaps a place to store the returned value.
 Input/Output::
-Also referred to as "pass by reference". The caller passes a value to the function. The function may modify the value and pass it back to the caller.
+   Also referred to as "pass by reference". The caller passes a value to the function. The function may modify the value and pass it back to the caller.
 
 C# supports all three parameter kinds plus the return type. 
 

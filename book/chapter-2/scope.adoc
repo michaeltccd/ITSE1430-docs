@@ -1,12 +1,12 @@
 = Scope
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 Understanding and managing scope is critical to properly building programs.
 
 Scope::
-The lifetime of an identifier, generally a variable.
+   The lifetime of an identifier, generally a variable.
 
 When talking about scope it is important to distinguish between compile time scope and runtime scope.
 The compile time scope is the list of identifiers that are visible to the current code. 

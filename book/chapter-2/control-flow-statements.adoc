@@ -1,6 +1,6 @@
 = Control Flow Statements
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 C# has all the standard control flow statements.
@@ -20,7 +20,7 @@ NOTE: The `foreach` statement is used when working with lists of items and will 
 When discussing looping statements the term `loop variant` will be used.
 
 Loop Variant::
-A variable whose values is changed by the loop (such as a counter or a condition).
+   A variable whose values is changed by the loop (such as a counter or a condition).
 
 In addition to the decision and looping statements the link:break-statement[break] and link:continue-statement.adoc[continue] statements are used in the looping statements.
  

@@ -1,6 +1,6 @@
 = Strings
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 The https://docs.microsoft.com/en-us/dotnet/api/system.string[string] type is one of the most versatile types in .NET. So much so that all other types, irrelevant of who defines them, are convertible to string. 
@@ -120,7 +120,7 @@ The following table lists the escape sequences in C#.
 | \xhhhh | Unicode character
 |===
 
-C++ CAUTION: C# uses the same escape characters as C\++ plus a few extra.
+NOTE: [C\++] C# uses the same escape characters as C\++ plus a few extra.
 
 While multiple characters are used for the sequence they result in only a single character being generated. When counting string lengths take this into account.
 

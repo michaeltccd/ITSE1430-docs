@@ -1,6 +1,6 @@
 = Bitwise Operators
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v0.1
 :toc:
 
 NOTE: TBD
