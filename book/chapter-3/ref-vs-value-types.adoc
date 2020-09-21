@@ -1,0 +1,373 @@
+= Reference vs Value Types
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+All types in .NET are broken up into either reference or value types. It is critical to understand what category a type is before using it otherwise expected compiler or runtime errors can occur.
+
+Value Type::
+   A type that derives from `System.ValueType`, `struct` in C#, and represents a single, atomic value. Examples include integers and `DateTime`.
+Reference Type::
+   A type that derives from `System.Object`, `class` in C#, and represents an object that may have simple or complex requirements.
+
+CAUTION: Value and reference types are defined by the framework. But each language determines how to represent these types in the language-specific format.
+
+== Value Types
+
+Value types are the simplest type and are designed to simply wrap a set of related values. 
+Value types are most appropriate when the individual values have no meaning by themselves and the type is really nothing more than a grouping of related data.
+
+An example of value types might be a rectangle or mailing address. If these types had a single value then a primitive would be sufficient. But since they have multiple values primitives cannot be used without wrapping them.
+
+In C# the following types are value types.
+
+. All primitives except `string`
+. Any type defined as a `struct`
+. Enumerations
+
+NOTE: Even though value types are designed to wrap a set of values does not mean they cannot also define functionality, albeit in a more limited manner.
+
+== Reference Types
+
+Reference types are used for most types in a program. A reference type is a collection of data and the features needed to support it. Reference types are designed to be extensible and flexible for the needs of the program. They have more complex semantics but are easier to use.
+
+In C# the following types are reference types.
+
+. Any type defined as a `class`.
+. Arrays
+
+== Type Semantics
+
+With the definition of value and reference types out of the way it is now possible to compare the semantic rules that these two types follow.
+
+For purposes of discussion assume the following code is available.
+
+.Type Semantic Example
+[source,csharp]
+----
+struct PointValueType 
+{ 
+   int X;
+   int Y;
+
+   //ToString prints out the values of X, Y
+}
+
+class PointReferenceType
+{
+   int X;
+   int Y;
+
+   //ToString prints out the values of X, Y
+}
+
+//Type is either PointValueType or PointReferenceType
+PointXYZ left;   // 10, 10
+PointXYZ right;  // 20, 20
+----
+
+=== Assignment
+
+The first semantic is how assignment works. Take the following example.
+
+.Assignment Behavior
+[source,csharp]
+----
+left = right;
+----
+
+Copy Semantics::
+   Copy a value from one variable to another. Also known as value semantics.
+Reference Semantics::
+   Copy the reference to the underlying data from one variable to another.
+
+In .NET value types follow value semantics and reference types follow reference semantics. 
+
+Value semantics is straightforward and involves copying the value from one memory location to another. This is what you would expect to happen if you, for example, assigned the value 10 to another variable. If the object has multiple values, such as points of a line, then all values are copied.
+
+In the above example if the variables are `PointValueType` then the integral values are copied from `right` to `left`. Each variable holds its own copy of the value and the values can be altered independently.
+
+.Assignment with Value Semantics
+[source,csharp]
+----
+left = right;
+
+left.X = 30;
+Console.WriteLine(left);   //Prints 30, 10
+Console.WriteLine(right);  //Prints 20, 20
+----
+
+Reference semantics does not copy the value but the reference to the object. Worded another way, two or more identifiers can reference the same memory location. In the above example `left` would be referring to the same object in memory as `right` is until it either goes out of scope or gets assigned another value.
+
+In the above example if the variables are of type `PointReferenceType` then both variables will point to the same instance in memory. Changing the values contained within the variable from one instance impacts the other. Of course if either variable is assigned a different value then they no longer refer to the same instance.
+
+.Assignment with Reference Semantics
+[source,csharp]
+----
+left = right;
+
+left.X = 30;
+Console.WriteLine(left);   //Prints 30, 20
+Console.WriteLine(right);  //Prints 30, 20
+----
+
+NOTE: C# does not provide any options to change this behavior.
+
+=== Equality
+
+Equality is also impacted by the type. Take the following example.
+
+.Equality Behavior
+[source,csharp]
+----
+bool areEqual = left == right;
+----
+
+Value Semantics::
+   Compare the values (the data within the memory) for equality.
+Reference Semantics::
+   Compare the values of the variables directly for equality.
+
+In .NET value types follow equality value semantics and reference types follow equality reference semantics, by default.
+
+Equality value semantics compares the data, not the instances. Given the `PointValueType` two instances are equal only if the data they contain (`X` and `Y`) are the same. Whether this is two different instances in memory or the same is not relevant. 
+
+.Equality with Value Types
+[source,csharp]
+----
+//Left is 10,10 and right is 20,20
+left.X = 20;
+left.Y = 20;
+
+//True because left.X = right.X and left.Y = right.Y
+bool areEqual = left == right;
+
+//True because they are the same instance
+bool areEqual2 = left == left;
+----
+
+Equality reference semantics compares two values to ensure they refer to the same instance. If they refer to the same instance then all the data is the same as well. However if two instances have the same data they are still not equal.
+
+.Equality with Reference Types
+[source,csharp]
+----
+//Left is 10,10 and right is 20,20
+left.X = 20;
+left.Y = 20;
+
+//False because left is not the same instance as right, the underlying data does not matter
+bool areEqual = left == right;
+
+//True because they are the same instance
+bool areEqual2 = left == left;
+----
+
+CAUTION: Equality can be overridden in some advanced scenarios. `String` is a good example. It follows value semantics even though it is a reference type. This is an advanced technique that is used only in cases where value semantics are required.
+
+=== Memory
+
+The memory used for storing data is determined by its type.
+
+Scope Based::
+   Data is stored in temporary memory, generally the stack. The lifetime of the data is determined by the scope it is defined in.
+Heap Based::
+   Data is stored in the heap. Data can persist after the lifetime of any variable referencing it.
+
+Value types are scope based. Reference types are heap based. There is no way to change this behavior.
+
+Value types are scope based. In most cases the memory is allocated on the stack and when the function call ends the data is gone. But if a value type is stored as part of a larger set of data, such as a reference type, then its lifetime is controlled by the larger type. The important part is that the lifetime of the data is managed automatically.
+
+Reference types are heap based. All reference types have their data stored in the heap which is shared by the entire application. Thus the data stored by a reference type will extend beyond any variables referring to it. The runtime, at some future point, will identify unused objects and automatically clean it up. 
+
+=== Creation
+
+An impact of being scope vs heap based is how the initial data is created. Value types always have a value whereas reference types only have a value when they are assigned. For this discussion ignore the fact that C# has the definitely assigned rule and assume we can declare a variable without a value.
+
+Value types are zero initialized when they are created. If a value type has multiple values then all values are zero initialized. Therefore it is not possible for a value type to not be set.
+
+Reference types on the other hand require a memory allocation on the heap. Until that happens they have the value https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/null[null]. To initialize a reference type an explicit call to https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/new-operator[new] must be made. The `new` operator is discussed more under link:constructors.adoc[Constructors].
+
+.Initial Values
+[source,csharp]
+----
+
+int hours;         //Value type is zero initialized
+int maxWork = 40;  //Value type with explicit initialization
+
+string name;                  //Reference type is null
+string name = new string();   //Reference type is initialized
+----
+
+NOTE: Strings rarely use `new` because string literals are easier.
+
+When working with reference types code must handle the case where a value is `null`. Refer to the section link:nullability.adoc[Nullability] for more information on working with `null`.
+
+=== Inheritance
+
+The runtime formally defines a value type as any type that derives from https://docs.microsoft.com/en-us/dotnet/api/system.valuetype[System.ValueType]. All the primitives, except `string`, derive from this.
+
+Value types are designed for performance. Because of this they lack some of the flexibility of reference types. Nowhere else is this more clear than with inheritance. Value types do not support inheritance. Specifically you cannot derive from a value type. This allows the runtime to perform optimizations to speed up value type calls.
+
+In C# the compiler does not allow you to derive from `ValueType` directly. This is to prevent misuse of value types. Instead, to declare a type as a value type, use a `struct`.
+
+.Declaring a Value Type
+[source,csharp]
+----
+public struct Point
+{   
+}
+----
+
+Structs are very limited in what they can do and a full discussion is beyond the scope of this course. Here is a short list of limitations as defined by the runtime.
+
+- Cannot create a default constructor.
+- Must initialize all fields.
+- Cannot create derived types.
+- Cannot alter assignment behavior.
+- Must override equality behavior.
+
+Reference types have few of these restrictions. Reference types may derive from any other reference type that supports it, may define constructors and override equality or not. To create a type as a reference type create it as a class.
+
+.Declaring a Reference Type
+[source,csharp]
+----
+public class Point
+{   
+}
+----
+
+Refer to the section link:class-defining.adoc[Defining a Class] for more information on how to declare a class.
+
+=== Mutability
+
+Because of the limitations of value types they should always be immutable.
+
+Immutable::
+   The value(s) contained in the object cannot be changed once set.
+
+The `string` class is a good example of an immutable type. Immutable types are often desirable because they are easier to code, harder to break and are easier to share across threads and processes. Unfortunately immutability is often not possible without having a negative impact on memory.
+
+Because value types are designed to store sets of data it often makes sense that changing one value requires changing them all, for example a point. If such immutability is not easy then a value type might not be the best option.
+
+Immutability is critical to value types because the compiler generates the necessary code to implement equality for the runtime. Equality requires that values do not change over time. Thus to allow the proper use of value types in equality immutability is required.
+
+== Parameter Kinds and Types
+
+A strong parallel exists between assignment semantics and parameter behavior. Pass by value parameters follow value semantics and pass by reference parameters follow reference semantics. However to understand the behavior it is important to remember that parameter behavior is from argument to parameter whereas assignment is between variables. There are four possible combinations.
+
+. Pass by value with value type
+. Pass by value with reference type
+. Pass by reference with value type
+. Pass by reference with reference type
+
+For pass by value parameters the argument is copied to the parameter. Therefore only the underlying type is relevant. Pass by value with a value type does not change the semantics in any way. In order to make a permanent change the new value has to be returned from the function. Generally this is done using the return type but this is also the case where an `out` parameter is useful.
+
+.Pass By Value with Value Type
+[source,csharp]
+----
+void Move ( PointValueType point, int offset )
+{
+   //Has no effect on original point
+   point.X += offset;
+   point.Y += offset;
+}
+----
+
+Pass by value of a reference type behaves just like reference assignment. For the life of the function the parameter and the argument refer to the same instance. Changes made to the avlues within the instance impact the original argument but the argument itself cannot be changed to refer to a different instance.
+
+.Pass By Value with Reference Type
+[source,csharp]
+----
+void Move ( PointReferenceType point, int offset )
+{
+   //Changing the value within the instance impacts the original argument as well
+   point.X += offset;
+   point.Y += offset;
+
+   //Changes what the parameter references but does not impact the original argument
+   point = new Point();
+}
+----
+
+Pass by reference with a value type is used when the original argument needs to be modified and the return type is not available. A good example is the various `TryParse` functions.
+
+.Pass By Reference with Value Type
+[source,csharp]
+----
+void Move ( ref PointValueType point, int offset )
+{
+   //Impacts the original argument
+   point.X += offset;
+   point.Y += offset;
+}
+----
+
+The argument and parameter are pointing to the same instance so any changes made to the values in the argument are seen after the function returns.
+
+Pass by reference with a reference type behaves the same as a value type.
+
+.Pass By Reference with Reference Type
+[source,csharp]
+----
+void Move ( ref PointReferenceType point, int offset )
+{
+   //Impacts the original argument
+   point.X += offset;
+   point.Y += offset;
+}
+----
+
+The argument and parameter are pointing to the same instance so any changes made to the values in the argument are seen after the function returns. The only real benefit of ever passing a reference type by reference is if a function needs to change the underlying argument to use a different instance. In practice simply use the return type instead.
+
+== Value or Reference Types
+
+With a comparison of value and reference types done some guidelines can be given on when to choose one over the other.
+
+Choose a value type if:
+
+- The type is immutable
+- The type needs to follow value semantics
+- Performance is critical
+- The data being stored is smaller (generally less than 64 bytes)
+- The data does not contain reference types
+
+In all other cases use a reference type. If you are unsure start with a reference type. 
+
+CAUTION: Changing between a reference and value type is a breaking change. Do not make this change if there is published code already relying on the type.
+
+== Nullable Value Types
+
+There is a special case where `null` is needed for value types. A nullable database column is the most common scenario. C# does support https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types[nullable Value Types]. A nullable value type is a value type that is wrapped in a (value) type that allows either `null` or the value. In C# follow the type name with a question mark (`?`).
+
+.Declaring a Nullable Value Type
+[source,csharp]
+----
+int? hours;
+boolean? isSet;
+----
+
+Any value type can be made nullable. The wrapper type handles conversion to and from the underlying value type and allows for comparison with `null`. Code that relies on nullable value types must be careful to ensure the value is not `null` before using it.
+
+.Working with a Nullable Value Type
+[source,csharp]
+----
+//Determine if has a value and then get the value
+if (hours.HasValue)
+{
+   var totalHours = hours.Value;
+}
+
+//Alternative to get the value or the default if it is not set
+var totalHours = hours.GetValueOrDefault();
+----
+
+CAUTION: Do not use nullable value types unless it is absolutely needed.
+
+== See Also
+
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/new-operator[New Operator] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types[Nullable Value Types] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/null[Null] +
+link:nullability.adoc[Nullability] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types[Reference Types] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types[Value Types] +

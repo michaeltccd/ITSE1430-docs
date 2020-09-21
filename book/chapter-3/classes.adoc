@@ -1,6 +1,6 @@
 = Classes
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
 A class is a type in C# that provides a blueprint for data contained in it.
@@ -12,13 +12,11 @@ Instance::
 Object::
    A created value of a type. 
 
+NOTE: Objects and instances are used interchangeably in object oriented discussions. To avoid confusion with the `object` in .NET this book will use the term instance.
+
 Classes are similar to primitive types but generally contain more complex data and logic. The language does not have implicit knowledge of the class and what it contains so has more limited support for it. In some cases a class can be "enhanced" to support basic functionality provided by the language as will be discussed later.
 
-NOTE: In C# a class is a first class type and can be used anywhere a type is allowed.
-
-== Defining a Class
-
-Refer to the section link:class-defining.adoc[Defining a Class] for information on how to define a class.
+In C# a class is a first class type and can be used anywhere a type is allowed. There are no restrictions on when a class can be used unless otherwise stated.
 
 == Creating an Instance
 
@@ -33,7 +31,7 @@ new-expression ::= new T ([arguments]);
 
 The `new` operator creates the instance in memory and returns a reference to the new instance.
 
-The operator requires a type that can be created. The parenthesis are required. Inside the parenthesis are the arguments to pass to create the type. Refer to the section link:constructors.adoc[constructors] for more information on arguments.
+The operator requires a type that can be created. The parenthesis are required. Inside the parenthesis are the arguments to pass to create the type. Refer to the section link:members-constructor.adoc[constructors] for more information on arguments.
 
 .New Example
 [source,csharp]
@@ -44,7 +42,7 @@ MyType instance = new MyType();
 
 The `var` keyword could be used here to infer the type if desired. 
 
-NOTE: While it is common to create an instance and immediately assign it to a variable it is not required. The new operator can be used in a larger expression. Assigning to a variable is only necessary if the instance needs to be used later.
+It is common to create an instance and immediately assign it to a variable but this is not required. The new operator can be used in a larger expressions. Assigning to a variable is only necessary if the instance needs to be used later.
 
 NOTE: [C\++] Unlike other languages there is no equivalent `delete`. The CLR will automatically clean up instances when they are no longer needed.
 
@@ -54,6 +52,25 @@ When it comes to terminology a variable and an instance are two different things
 
 A variable may or may not refer to an instance in memory. If a variable contains the instance address then the variable can be used to interact with that object. However if no variable references to the object then it is still in memory but is no longer accessible.
 
+.Instance vs Variable
+[source,csharp]
+----
+void Foo ()
+{
+   if (true)
+   {
+      //Creates an instance of MyType and stores in local variable value
+      var value = new MyType();
+   };
+
+   //Local variable is no longer in scope but instance is still in memory
+
+   //Creates an instance of MyType and passes as parameter to another function
+   //No local variable is created to store it
+   Bar(new MyType());
+}
+----
+
 NOTE: The CLR will clean up unreferenced instances in memory. When this occurs is undefined but ensures that a process will not run out of memory because of unreferenced instances.
 
 == Nullability
@@ -62,7 +79,9 @@ When a variable is declared of class type but it is not yet assigned a value the
 
 Refer to the section link:nullability.adoc[Nullability] for information on how to handle `null`.
 
-NOTE: 
+== Defining a Class
+
+Refer to the section link:defining-class.adoc[Defining a Class] for information on how to define a class.
 
 == See Also
 https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/classes[C# Class] +

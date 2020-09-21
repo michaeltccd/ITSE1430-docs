@@ -1,6 +1,113 @@
 = Nullability
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
+CAUTION: Before proceeding it is strongly recommended that you have a thorough understanding of link:ref-vs-value-types.adoc[reference vs value types]. The discussion that follows only refers to reference types.
+
+== Working with Null
+
+When working with reference types it is important to handle the value being https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/null[null]. This can happen either because the variable was never assigned or it was purposefully reset to `null`. To check for `null` use a simple `if` statement.
+
+.Checking for Null
+[source,csharp]
+----
+void PrintMessage ( string message )
+{
+   if (message != null)
+   {
+      //Safe to use value
+   }
+}
+----
+
+CAUTION: Always check for `null` with accepting reference types as parameters.
+
+While there are some cases where using a value that is `null` will not fail in most cases an error will occur and the program will terminate. This includes any case where the value on the left side of the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators[member access operator] is `null`.
+
+.Crash with Null
+[source,csharp]
+----
+//This will crash the program
+string message = null;
+
+message = message.Trim();
+----
+
+== Null Coalescing Operator
+
+The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator[null coalescing operator] is provided to handle the common case of selecting the first value from a series of expressions that is not `null`.
+
+.Null Coalescing Operator Syntax
+----
+null-coalesce-operator ::= E ?? E
+----
+
+The result of the expression is the first value, from left to right, that is not `null`. Any number of expressions can be chained together. If all the values are `null` then that is the value returned.
+
+As an example `string` can be `null` but in almost all cases it is better to return an empty string because it conveys the same information and does not require any special code. The null coalescing operator is perfor for this.
+
+.Return an Empty String
+[source,csharp]
+----
+void PrintMessage ( string message )
+{
+   Console.WriteLine(message ?? "");
+}
+----
+
+== Null Conditional Operator
+
+The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators[null conditional operator] is also designed to make it easier to work with `null` but it is specifically designed for accessing members.
+
+.Null Conditional Operator Syntax
+----
+null-conditional-operator ::= E?.M
+----
+
+`E` is any expression and `M` is a member of the expression's type. The null conditional operator is equivalent to the following `if` statement.
+
+.Null Conditional Equivalent
+----
+if (E != null) E.M   
+----
+
+An example may clarify this.
+
+.Getting Length of a String
+[source,csharp]
+----
+int? GetLength ( string value )
+{
+   return value?.Length;
+}
+----
+
+If the expression is `null` then the member access is skipped otherwise it is executed normally. This works with both function calls that return no value and those that return a  value. In the case where the member returns a value then the null conditional operator modifies the return type to be a nullable type. For reference types this does not change anything. For value types however the return value is a nullable value type.
+
+In the example above notice the return type is `int?`. If `value` is not null then `Length` returns an `int`. But if it is `null` then the member is skipped and `null` is returned instead. 
+
+It is very common to combine the null conditional operator with the null coalescing operator to avoid `null` altogether. Here's the previous example rewritten to use both. Notice the return type is now `int`.
+
+.Getting Length of a String (Corrected)
+[source,csharp]
+----
+int GetLength ( string value )
+{
+   return value?.Length ?? 0;
+}
+----
+
+== Nullable Reference Types
+
+This is a new features starting in C# 8. `null` causes problems when both compiling and running code. By default reference types can be `null` but value types cannot. https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-reference-types[Nullable reference types], when enabled, enforces the same rules for both value and reference types. Reference types no longer support `null`. Of course this is a breaking change and is therefore an opt in only feature. 
+
+Further discussion of this topic can be read in the online documentation.
+
 == See Also
+
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/null][Null] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator[Null Coalescing Operator] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators[Null Conditional Operator] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-reference-types[Nullable Reference Types] +
+link:ref-vs-value-types.adoc[Reference vs Value Types] +

@@ -1,0 +1,75 @@
+= Defining a Class
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+To define a class start with the type declaration.
+
+.Class Declaration Syntax
+----
+class-declaration ::= [access] class identifier { class-member* }
+----
+
+The type declaration starts with an optional accessibility, discussed in the section link:accessibility.adoc[Accessibility], followed by the keyword `class`, the identifier representing the class name and then curly braces with the class members inside. 
+
+CAUTION: C# does not allow a semicolon at the end of the declaration.
+
+An example class declaration might look like this.
+
+.Simple Class
+[source,csharp]
+----
+public class Rectangle
+{
+   //Class members   
+}
+----
+
+Class members is a lengthy discussion that is covered in the section link:members.adoc[Class Members]. The following class members are supported.
+
+- Fields
+- Methods
+- Properties
+- Constructors
+- Operators
+- Events
+
+NOTE: In general classes, as with all types, should be declared directly in the containing namespace. While nested types are supported they are rarely used.
+
+== Naming Guidelines
+
+The following guidelines apply to naming classes.
+
+- USE a descriptive noun for the class name.
+- AVOID plural nouns unless the type is storing a collection of items.
+- USE Pascal casing for the type name, following the standard .NET convention.
+- AVOID generic names like `Utility`, `Common` or `Helper`.
+- DO name a class based upon the functionality it provides.
+
+== Documentation
+
+Documenting types is critical for allowing others to use the code without having to look at the source code. The section link:doctags.adoc[Documentation] has a full discussion of how to document code. 
+
+For a class the following doctags should be used on the declaration.
+
+- `summary`
+- `remarks`
+- `seealso` (when appropriate)
+- `typeref` (when appropriate)
+
+.Class with Documentation
+[source,csharp]
+----
+/// <summary>Represents a rectangle on the screen.</summary>
+public class Rectangle
+{
+}
+----
+
+== See Also
+
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/access-modifiers[Access Modifiers] +
+link:accessibility.adoc[Accessibility] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/classes[C# Classes] +
+link:members.adoc[Class Members] +
+link:doctags.adoc[Doctags] +
