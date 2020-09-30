@@ -3,7 +3,13 @@ Michael Taylor <michael.taylor@tccd.edu>
 v0.1
 :toc:
 
+== Naming
+
+== Accessibility
+
+== Documentation
+
 == See Also
 
 link:members.adoc[Class Members] +
-
+link:accessibiilty.adoc[Accessibility] +

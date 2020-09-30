@@ -3,7 +3,128 @@ Michael Taylor <michael.taylor@tccd.edu>
 v0.1
 :toc:
 
+Methods provide the functionality of a class. A method is the same thing as a function in most languages and the terms are used interchangeably.
+
+Method::
+   A function defined in a class.
+
+== Defining Methods
+
+With the exception of the accessibility modifier, methods follow the same syntax and rules as already discussed in the section link:../chapter-2/functions-declaring.adoc[Declaring Functions].
+
+.Method Declaration Syntax
+----
+method-declaration ::= [access] T identifier ( [parameter-list] ) { S* }
+parameter-list ::= parameter { , parameter }*
+parameter ::= [parameter-modifier] T identifer [ = E ]
+parameter-modifier ::= ref | out 
+----
+
+The biggest difference between traditional functions and methods is that methods already have access to the data in a class and therefore generally have less parameters. 
+As discussed in the section link:members.adoc[Class Members] the `this` keyword provides access to the instance a method is running against. 
+Because the instance data is accessible the need to pass around a lot of parameters is unnecessary. This reduces the complexity of calling methods on a class.
+
+.Method Declaration Example
+[source,csharp]
+----
+public class Rectangle
+{
+   public bool Intersects ( Rectangle other )
+   { ... }
+}
+----
+
+== Calling Methods
+
+Calling methods follow the same syntax as discussed in the section link:../chapter-2/functions-calling.adoc[Calling Functions]. The only difference is that an instance of the class must be used in combination with the member access operator.
+
+.Method Calling Syntax
+----
+method-call ::= E . identifier ( [arguments] ) ;
+arguments ::= E { , E }*
+----
+
+The instance is the first expression followed by the member access operator (`.`) and the method to call.
+
+WARNING: If the instance is `null` then the program will generate an error.
+
+.Calling Method Example
+[source,csharp]
+----
+Rectangle left = new Rectangle();
+Rectangle right = new Rectangle();
+
+var intersect = left.Intersect(right);
+----
+
+== Naming
+
+Like functions, methods are actions and should be named with verbs. 
+It is not necessary to include the class name in the name because it is implied by the type.
+
+.Method Naming
+[source,csharp]
+----
+class Rectangle
+{   
+   void Translate ( Point xOffset, Point yOffset )
+   { ... }
+}
+----
+
+- USE Pascal casing for method names
+- USE verbs for naming methods
+- DO NOT include the class name as part of the method name
+- DO NOT USE names that conflict with keywords in C# or other languages
+
+== Accessibility
+
+Methods can be any accessibility depending upon need. In general a method should start as `private` and be promoted to `public` if the functionality is needed outside the class.
+
+.Method Accessibility
+[source,csharp]
+----
+class Rectangle
+{
+   //Public so other code can use it
+   public bool Intersects ( Rectangle other )
+   { ... }
+
+   //Private, only used in class
+   private Size CalculateArea ( )
+   { ... }
+}
+----
+
+== Documentation
+
+Publicly visible methods should be documented so other code can use the method. The following tags should be used.
+
+`summary`::
+   Describes the purpose of the method.
+`remarks`::
+   Optional. Provides extended information about how to call or use the method.
+`param`::
+   One for each parameter that describes the purpose of the parameter.
+`returns`::
+   Required if the method returns a value. Describes what the method returns.
+`exception`::
+   Optional. Describes the errors that can occur calling the method.
+
+.Documentation Example
+[source,csharp]
+----
+/// <summary>Determines if a rectangle intersects this rectangle.</summary>
+/// <param name="other">The rectangle to check.</param>
+/// <returns>true if the rectangles intersect.</returns>
+public bool Intersects ( Rectangle other )
+{ ... }
+----
+
 == See Also
 
 link:members.adoc[Class Members] +
-
+link:accessibiilty.adoc[Accessibility] +
+link:../chapter-2/functions-calling.adoc[Calling Functions] +
+link:../chapter-2/functions-declaring.adoc[Declaring Functions] +
+link:doctags.adoc[Documentation] +

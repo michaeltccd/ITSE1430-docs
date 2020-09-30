@@ -1,13 +1,149 @@
 = Class Members
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
+
+A class consists of class members. Class members provide the functionality of the class.
+The following class members are available in C#. Each member is discussed in further detail in its own section.
+
+.Class Members
+|===
+| Member | Purpose
+| Field | Data storage
+| Method | Functionality applicable to class
+| Property | Functionality with field semantics
+| Event | Provide notifications to other code
+| Constructor | Manage creation of instances
+| Operator | Basic operator support for supported languages
+|===
+
+== Accessibility
+
+All class members support link:accessibility.adoc[access modifiers]. 
+Unless otherwise specified the default access modifier for members is `private`.
+
+It is permitted, and common, for a type to have different accessibility than its members. The following guidelines apply to member accessibility
+
+- USE the most restrictive access that still allows the member to be useful.
+- USE `public` for members that expose functionality to users of the type.
+- USE `private` for members that provide implementation details for a type.
+- USE `protected` for members that provide implementation details for derived types.
+
+When a type has different accessibility than a member it is additive.
+For a public type the access modifier on the member is used.
+For an internal type the type and its members are acccessible only in the calling assembly.
+Within the assembly the member access then further restricts access.
+
+== Member Scope
+
+Within a member all the members of the type are fully accessible and can be used.
+The scoping rules are adjusted when inside a member. 
+The compiler always starts with the current scope when searching for identifiers.
+If no match is found then the class members are then searched.
+If no match is found in the class members then base type members are searched.
+If no match is found in any base type then scoping continues as normal using the higher level scopes, if any.
+
+.Member Scope Example
+[source, csharp]
+----
+class DerivedType : BaseType
+{
+   public void Foo ()
+   {       
+      int id;
+
+      //id is a local variable in current scope
+      //_id is a field in the owning type
+      id = _id;
+
+      //_baseId is an accessible member in the base type
+      id = _baseId;
+   }
+
+   private int _id;
+}
+----
+
+== This 
+
+When inside a member the keyword `this` can be used to identify the current instance. 
+
+.This Syntax
+----
+this-expression ::= this . member
+----
+
+This is seldom necessary and should simply be left off.
+The compiler implicitly adds `this` to any class members.
+
+.This Example
+[source,csharp]
+----
+class Employee
+{
+   public int GetId ()
+   {
+      //Preferred
+      return _id;
+
+      //Compiler converts to this
+      //return this._id;
+   }
+
+   private int _id;
+}
+----
+
+Do not use `this` unless necessary. It is redundant and provides no value. 
+There are only two cases where `this` is necessary.
+
+- To disambiguate an identifier.
+- Working with the entire object.
+
+The first case, conflicting identifiers, should never occur in practice because of the naming conventions used in C#.
+
+.Identifier Conflict
+[source,csharp]
+----
+class Employee
+{
+   public bool IsId ( int id )
+   {
+      //Compiler uses parameter and therefore this is always true
+      return id == id;
+
+      //Use this to avoid issue
+      return this.id == id;
+   }
+
+   private int id;
+}
+----
+
+The second case, working with the object, is more common and occurs when the entire instance needs to be passed to something else. In that case the current instance can be referenced using `this`.
+
+.Identifier Conflict
+[source,csharp]
+----
+class Employee
+{
+   public void MakeMeTheBoss ( Employee subordinate )
+   {
+      //Setting the manager to this instance
+      subordinate.Manager = this;
+   }
+}
+----
+
+This is the only valid use case for `this`.
 
 == See Also
 
 link:defining-class.adoc[Defining a Class] +
+link:accessibility.adoc[Accessibility] +
 link:members-constructors.adoc[Constructors] +
 link:members-events.adoc[Events] +
 link:members-fields.adoc[Fields] +
 link:members-methods.adoc[Methods] +
 link:members-properties.adoc[Properties] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/this[This keyword] +

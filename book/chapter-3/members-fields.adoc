@@ -1,9 +1,240 @@
 = Fields
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
+
+Fields store data in a class. No other member provides this functionality so all data storage must occur through fields.
+
+Syntactically and semantically fields behave just like local variables except for the following.
+
+- Fields are stored in the heap as part of the memory that makes up the instance.
+- The lifetime of the field is the lifetime of the containing instance.
+- Fields are zero initialized.
+
+The syntax of a field declaration looks like a local variable with a few adjustments.
+
+.Field Declaration Syntax
+----
+field-declaration ::= [access-modifier] T field-identifiers ;
+field-identifiers ::= field-identifier { , field-identifier }*
+field-identifier ::= identifier [ = expression ]
+----
+
+A field identifier consists of the optional access modifier, the field type and one or more identifiers.
+Each identifier may have an initializer expression.
+
+.Field Example
+[source,csharp]
+----
+class Employee
+{
+   private int _id;
+   private string _name = "";   
+}
+----
+
+NOTE: Unlike local variables the `var` keyword cannot be used with fields. A field's type must always be explicitly specified.
+
+== Initialization
+
+Fields are zero initialized before any user code executes.
+For C# this means they are always zero initialized.
+In some cases it may be necessary to initialize a field to a non-zero value. There are two approaches.
+
+. Initializer expression
+. Constructor
+
+Constructors will be discussed more in the link:members-constructors.adoc[Constructors] section.
+The initializer expression is the preferred approach and should be used in all cases except those listed later.
+The initializer expression works just like a variable initializer and follows all the same rules.
+
+NOTE: Do not initialize a field to zero (or the type equivalent). This is redundant.
+
+There are two cases where the initializer expression cannot be used.
+
+. Dependency on other fields
+. Complex initialization
+
+The order in which fields are initialized is undefined by the runtime.
+To prevent issues the C# compiler does not allow an initializer expression to use any instance members of the class, including methods (static members and constant fields are allowed).
+
+.Field Initialization Order
+[source,csharp]
+----
+class Employee
+{
+   private string _firstName = "Bob";
+   private string _lastName = "Smith";
+
+   //Compiler error - fields are not initialized in any particular order
+   private string _fullName = _firstName + " " + _lastName;
+}
+----
+
+The other case is when initialization cannot be converted to an expression. 
+A lot of effort has gone into making most code usable in expressions but there are some cases where this isn't supported.
+Fields that require the execution of statements cannot be initialized with an initializer expression.
+
+== Naming
+
+Fields represent data and follow all the same naming conventions of local variables. The following guidelines apply to naming fields.
+
+- USE a noun as the name
+- For private fields use camel casing but prefix the field with an underscore (`_`)
+- For public fields use Pascal casing
+
+.Field Naming
+[source,csharp]
+----
+class Employee
+{
+   private int _id;
+   private string _name;
+
+   void SetName ( string name )
+   {
+      _name = name;
+   }
+}
+----
+
+Refer to the section on link:members.adoc[Class Members] for scoping rules.
+
+== Accessibility
+
+Fields should always be private. A field represents an implementation detail and is only applicable to the owning type.
+To expose data outside a class, even to derived types, use a link:members-properties.adoc[property] or link:members-methods.adoc[method].
+
+.Field Accessibility
+[source,csharp]
+----
+class Employee
+{
+   //WRONG: Fields are implementation details
+   public int _id;
+
+   //WRONG: Fields are implementation details
+   protected string _name;
+
+   //RIGHT: Fields are private
+   private double _payRate;
+}
+----
+
+The only exception to this rule is for fields that are constant as discussed below.
+In this case it is allowed for the field to be public if appropriate.
+
+== Documentation
+
+Since fields are not publicly accessible, even to derived types, there is no need to provide documentation.
+
+== Constant and Read Only Values
+
+A constant has an unchangeable value. Constants are often used to represent minimal/maximal values or well-defined values. C# supports constant and read only values.
+
+=== Constants
+
+A constant value is fixed at compile time. 
+The value cannot be changed without recompiling the code because the actual value is baked into the source code.
+
+.Constant Declaration
+[source,csharp]
+----
+class Employee
+{
+   public const int MaximumNameLength = 200;
+}
+----
+
+Constant values must be initialized at the point they are declared. The value of a constant must be a compile time constant meaning it must meet the following criteria.
+
+. Be a primitive type
+. Have a value that is a literal or a constant express
+
+NOTE: Local variables and fields can be declared as constant.
+
+To use a constant use the field name.
+
+.Constant Usage
+[source,csharp] 
+----
+var message = $"Name cannot be longer than {Employee.MaximumNameLength} characters";
+----
+
+NOTE: Because a constant value is known at compile time the compiler can optimize references like it would for any literal value.
+
+Constants are most useful for values that rarely or never change. For examples the months of a year would be a good constant. When referencing a constant the compiler replaces the constant field reference with the actual value. The earlier example looks like this after compilation.
+
+.Constant Post Compilation
+[source,csharp] 
+----
+var message = "Name cannot be longer than 200 characters";
+----
+
+If a constant value is ever changed then the owning type must be recompiled AND any code that relies on the constant value must also be recompiled otherwise the previous value will continue to be used.
+
+=== Read Only
+
+Read only values are similar to constants but have different runtime behavior. A read only value can be assigned a value only once and only when it is being created. For the remainder of its scope the value is read only. 
+
+CAUTION: The value of a read only variable is set when it is created but does not have to be the same each time the variable comes into scope.
+
+.Read Only Declaration
+[source,csharp]
+----
+class Employee
+{
+   public readonly int MaximumNameLength = 200;
+}
+----
+
+Unlike constant values a read only value can be of any type and can be initialized using any valid expression. 
+However the initialization can only happen in one of two places:
+
+. Field initializer expression
+. Constructor
+
+NOTE: Only fields can be declared as read only.
+
+WARNING: Marking a field as read only makes the field constant. It does not impact the underlying instance. If the instance has writtable data then they can still be written which can have unexpected behavior to calling code.
+
+Using a read only field is the same as a constant.
+
+.Read Only Usage
+[source,csharp] 
+----
+var message = $"Name cannot be longer than {Employee.MaximumNameLength} characters";
+----
+
+Unlike a constant the value of a read only field is looked up at runtime just like a regular field. This makes read only values ideal for constant values that may change over time. Because the value is determined at runtime it can be changed without having to recompile any calling code. The most common usage of read only is to provide pre-created instances of types that can be shared.
+
+.Read Only Example
+[source,csharp]
+----
+class Node
+{
+   public static readonly Node Empty = new Node();
+}
+----
+
+Because the value is not known at compile time a read only field is never considered a constant expression. Any code that requires a constant expression, such as a `case` label, cannot use read only fields.
+
+=== Constant vs Read Only
+
+Since constant and read only values serve similar purpose it can be difficult to determine when to use one over the other.
+Use the following guidelines to help in making a decision.
+
+Use a constant value when:
+
+. The value is unlikely ever to change
+. The value is needed where only a constant expression is allowed (e.g. a `case` label)
+. The type is a primitive
+. The value can be calculated at compile time
+
+For all other cases use a read only field instead.
 
 == See Also
 
 link:members.adoc[Class Members] +
-
+link:accessibiilty.adoc[Accessibility] +
+link:members-properties.adoc[Properties] +

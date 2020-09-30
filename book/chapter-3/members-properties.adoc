@@ -3,7 +3,157 @@ Michael Taylor <michael.taylor@tccd.edu>
 v0.1
 :toc:
 
+A property is a hybrid between a field and method. A property is a method that uses field syntax making it easier to work with in code but providing the functionality of a method. Properties are used to get or set a value in the instance.
+
+Declaring a property looks like a field declaration with the addition of two special methods: the getter ('get') and setter (`set`).
+
+.Property Declaration Syntax
+----
+property-declaration ::= [access] T identifier { [ getter; ] [ setter; ] }
+getter ::= get { S* }
+setter ::= set { S* }
+----
+
+An example may look like this.
+
+.Proeprty Declaration Example
+[source,csharp]
+----
+public class Rectangle 
+{
+   public int Length 
+   {
+      get { return _length; }
+      set { _length = value; }
+   }
+
+   private int _length;
+}
+----
+
+The property type is determined by the declaration. A property, like a field, has a fixed type. 
+As mentioned earlier properties follow field syntax so calling code can read and write the property.
+
+.Using a Property
+[source,csharp]
+----
+Rectangle left = new Rectangle();
+left.Length = 10;
+Console.WriteLine(left.Length);
+----
+
+The `get` method is called whenever the property is read. The `set` method is called whenever the property is written.
+The equivalent code would look like this.
+
+.Using a Property with Methods
+[source,csharp]
+----
+Rectangle left = new Rectangle();
+left.Length.set(10);
+Console.WriteLine(left.Length.get());
+----
+
+=== Getter
+
+The getter returns a value from the property. It is called by the runtime whenever the property is read. 
+The method can do anything it wants but it must return a value.
+
+In most cases a getter will simply return an underlying field's value. 
+However the property can manipulate the value before returning. This is often done with strings as discussed later.
+In some cases a getter may simply calculate a value. This will be discussed later.
+
+.Getter Examples
+[source,csharp]
+----
+public class Person
+{
+   public DateTime BirthDate
+   {
+      get { return _dob; }
+      set { _dob = value; }
+   }
+
+   public int Age
+   {
+      get { return (DateTime.Now - _dob).Years; }
+      set { }
+   }
+
+   private DateTime _dob;
+}
+----
+
+=== Setter
+
+The setter is called to set the property value. Within this method the context sensitive keyword `value` represents the value to set the property to. 
+In the earlier example the `_dob` field was set to the value assigned to the property.
+
+Like the getter the setter can do anything it wants up to and including not saving the value.
+In some cases the setter may do nothing.
+
+??
+
+why properties
+
+auto properties
+get only properties
+
+returning strings and arrays
+
+== Naming
+
+Properties represent values and are named using nouns just like fields. However to avoid confusion with fields they use Pascal casing.
+
+- USE nouns for property names.
+- USE Pascal casing.
+
+.Property Naming
+[source,csharp]
+----
+public class Point
+{
+   public int X { get; set; }
+
+   public int Y { get; set; }
+}
+----
+
+== Accessibility
+
+Properties, like methods, can be any accessibility. In most cases a property will be public simply because of how they are used. One unique aspect of properties is that there are two methods involved in implementing them. Because of this properties support mixed accessibility.
+
+Mixed Accessibility::
+   A property that has a getter or setter that uses an accessibility different than the property.
+
+Mixed accessibility is useful in cases where the property must be accessible but not settable.
+
+??
+
+== Documentation
+
+Publicly visible properties should use the following doctags.
+
+`summary`::
+   Summarizes the purpose of the property.
+`value`::
+   Optional. The default value.
+`exception`::
+   Optional. The errors that can occur when getting or setting the property.
+
+.Documentation Example
+[source,csharp]
+----
+/// <summary>Gets or sets the name of the employee.</summary>
+public string Name { get; set;}
+----
+
+== Properties vs Methods
+
+
+
 == See Also
 
 link:members.adoc[Class Members] +
+link:accessibiilty.adoc[Accessibility] +
+link:doctags.adoc[Documentation] +
 

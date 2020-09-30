@@ -1,8 +1,60 @@
 = Accessibility
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
+
+Accessibility determines how accessible a member or type during compilation. For example one block of code may have full access to a type and its members while another block of code can only see some members. Accessibility is a compile time feature. It does not impact how code is called at runtime.
+
+The following language items can have accessiblity.
+
+- Types
+- Type Members including fields, properties and methods
+
+.Access Modifier Example
+[source,csharp]
+----
+public class Employee
+{
+   public Employee GetSupervisor ()
+   { ... }
+
+   private void CalculateStatus ()
+   { ... } 
+}
+----
+
+The following access modifiers are available in C# from least restrictive to most.
+
+.C# Accessibility
+|===
+| Keyword | Access
+| `public` | Everyone
+| `protected` | Owning Type and Derived Types
+| `internal` | Assembly
+| `protected internal` | Assembly, Owning Type and Derived Types
+| `private protected` | Assembly, Owning Type and Derived Types in the same assembly
+| `private` | Owning Type
+|===
+
+In all but a few cases all the access modifiers are allowed. The following exceptions apply.
+
+- Top level types can be only `internal` or `public`.
+- Type constructors are always `public`.
+- Interface members are always `public`.
+- Enumeration members are always `public`.
+
+== Default Accessibility
+
+The access modifier is optional. When not specified the default accessibility is used instead. 
+
+- For type level types the default is `internal`.
+- For all other cases the default is `private`.
+
+Therefore, by default, no type or member is accessible outside the type that defines it.
+
+CAUTION: It is recommended that accessibility always be specified to avoid unexpected issues.
 
 == See Also
 
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/access-modifiers[C# Access Modifiers] +
 link:defining-class.adoc[Defining a Class] +
