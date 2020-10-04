@@ -1,9 +1,25 @@
 = Properties
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
 A property is a hybrid between a field and method. A property is a method that uses field syntax making it easier to work with in code but providing the functionality of a method. Properties are used to get or set a value in the instance.
+
+Given the ease of use of a field it may be hard to understand why a property is useful.
+There are several reasons why properties are preferred to fields for exposing data.
+
+CAUTION: Only fields store data in a class. Properties are only useful for exposing data, generally to other code.
+
+Maintainability::
+   Class implementations should not bubble up to calling code. How data is stored, and what type, is an implementation detail. Properties allow a class to expose data in the most convenient format for callers while allowing the implementation to use whatever type internally makes the most sense.
+Usability::
+   Compared to methods, properties are easier to read and write. 
+Flexibility::
+   Properties can be used to transform field values before being exposed or before being set allowing for more flexibility including validation, if needed.
+
+CAUTION: Many areas of the framework, and third party libraries, only work with properties and not fields.
+
+== Declaring a Property
 
 Declaring a property looks like a field declaration with the addition of two special methods: the getter ('get') and setter (`set`).
 
@@ -53,14 +69,13 @@ left.Length.set(10);
 Console.WriteLine(left.Length.get());
 ----
 
-=== Getter
+=== Getters and Setters
 
 The getter returns a value from the property. It is called by the runtime whenever the property is read. 
 The method can do anything it wants but it must return a value.
 
 In most cases a getter will simply return an underlying field's value. 
 However the property can manipulate the value before returning. This is often done with strings as discussed later.
-In some cases a getter may simply calculate a value. This will be discussed later.
 
 .Getter Examples
 [source,csharp]
@@ -83,22 +98,137 @@ public class Person
 }
 ----
 
-=== Setter
-
 The setter is called to set the property value. Within this method the context sensitive keyword `value` represents the value to set the property to. 
 In the earlier example the `_dob` field was set to the value assigned to the property.
 
 Like the getter the setter can do anything it wants up to and including not saving the value.
 In some cases the setter may do nothing.
 
-??
+== Returning Strings and Arrays
 
-why properties
+A special case exists for strings and arrays.
+Both types are reference types and can be `null` but this just adds complexity to a caller.
+When returning a string or an array do not return `null` unless there is an actionable difference between `null` and a reasonable default value.
+For strings return an empty string.
+For arrays return an empty array.
 
-auto properties
-get only properties
+.Returning Strings and Arrays
+[source,csharp]
+----
+class Course
+{
+   public string Name 
+   {
+      get { return _name ?? ""; }
+      set { _name = value; }
+   }
 
-returning strings and arrays
+   public Student[] Students
+   {
+      get { return _students ?? Array.Empty<Student>(); }
+      set { _students = value; }
+   }
+
+   private string _name;
+   private Student[] _students;
+}
+----
+
+NOTE: Do not create an return an empty array for performance reasons.
+
+== Calculated Properties
+
+In some cases a property simply returns a value that is calculated from fields.
+In this case having a setter does not make sense and may be left off.
+Returning to the sample earlier with a calculated age it can be rewritten this way.
+
+.Calculated Property
+[source,csharp]
+----
+public class Person
+{
+   public DateTime BirthDate
+   {
+      get { return _dob; }
+      set { _dob = value; }
+   }
+
+   public int Age
+   {
+      //Calculated, no setter
+      get { return (DateTime.Now - _dob).Years; }
+   }
+
+   private DateTime _dob;
+}
+----
+
+The advantage of this is that attempts to assign a value to the property result in a compilation error. 
+This makes it clear to callers that the property cannot be set.
+
+C# allows either the getter or setter to be left off, but not both.
+Have a set only property is rare but may be useful when dealing with sensitive data like passwords.
+
+== Auto Properties
+
+In many cases a property simply acts as a public way of accessing a field with no manipulation.
+In this boundary case the overhead of the property syntax is high. 
+C# allows the auto property syntax when a property simply gets or sets the backing field.
+
+.Auto Property Syntax
+----
+auto-property ::= [access] T identifier { get; set; } [= E]
+----
+
+CAUTION: Auto properties only work when getting/setting a backing field. If any manipulation needs to be done then auto properties cannot be used.
+
+Using the `Person` example of earlier we can simplify one of the properties to use auto properties.
+
+.Auto Property Example
+[source,csharp]
+----
+public class Person
+{
+   public DateTime BirthDate { get; set; }
+
+   public int Age
+   {
+      //Calculated, no setter
+      get { return (DateTime.Now - _dob).Years; }
+   }
+}
+----
+
+During compilation the compiler converts the auto property syntax to a regular, full property with a backing field.
+There is no difference between the two syntax at runtime. 
+Because the field is generated by the compiler it is not accessible at compilation and cannot be used.
+
+When using an auto property you lose the underlying field declaration and cannot initialize the field, if desired.
+To make this easier with auto properties the property may end with a field initializer.
+When used the compiler moves the field initializer expression to the generated field.
+It must follow all the same rules as a regular field initializer.
+
+== Read Only Properties
+
+Properties may be read only. A read only property is the same as a read only link:members-fields.adoc[field] in that it's value is set at creation and cannot change. This is different than a get only property.
+
+A get only property can be read, but not written, by callers but is changeable by the owning type. 
+A read only property can be read by callers but can only be written once by the owning type.
+
+.Read Only Property
+[source,csharp]
+----
+public class Employee
+{
+   public int Id { get; }
+}
+----
+
+NOTE: This example is using an auto property but the same rules apply to a full property.
+
+When the compiler generates the full property it generates the setter as private.
+Furthermore it marks the underlying field as `readonly` making the property read only as well. 
+It can be initialized, as with fields, either during construction or using a field initializer.
 
 == Naming
 
@@ -127,7 +257,17 @@ Mixed Accessibility::
 
 Mixed accessibility is useful in cases where the property must be accessible but not settable.
 
-??
+.Mixed Accessibility Example
+public class BaseObject
+{
+   public int Id { get; private set; }
+}
+
+In this example anybody can read the `Id` but only the owning type can write it.
+
+NOTE: Auto properties are being used here but the same rules apply to full properties.
+
+Mixed accessibility should be used rarely but is useful when access varies and prevents the need for a method.
 
 == Documentation
 
@@ -149,7 +289,65 @@ public string Name { get; set;}
 
 == Properties vs Methods
 
+In languages that do not support properties it is common to use methods instead. These tend to have a common prefix
+such as `GetX` or `SetY`. These are almost always clear indicators of where a property should be used instead.
+There are cases where either a property or a method might be used and the following guidelines should be used
+to help decide.
 
+Choose a property if all the following conditions apply.
+
+. The member is getting or setting a value.
+. The value can be cached to avoid future calls.
+. The value is deterministic.
+. Getting or setting the value does not require an expensive call.
+
+In all other cases use a method.
+
+To better understand these guidelines it is important to understand how methods and fields are generally used.
+
+In the case of a field it is clear a value is being read or written. This is assumed to be fast, have no side effects
+and be deterministic. If a field were to suddenly change values or take a long time to return then a caller would be surprised. Because of this code that uses fields generally do not cache the value and allow the compiler to make some assumptions about the consistency of the data.
+
+.Field Sample Usage
+[source,csharp]
+----
+void PrintOrders ( Customer customer )
+{
+   foreach (var order in customer.Orders)
+      Console.WriteLine(order);
+}
+----
+
+A method on the other hand make be fast or slow depending upon what it is doing.
+If it has a value to return then it will do so as the return type.
+Code that needs to use the return type will normally store it in a temporary variable.
+It would not make sense to keep calling the method each time.
+
+.Method Sample Usage
+[source,csharp]
+----
+void PrintOrders ( Customer customer )
+{
+   var orders = customer.LoadOrders();
+   foreach (var order in orders)
+      Console.WriteLine(order);
+}
+----
+
+=== Determinism
+
+Determinism is one of the most important requirements for a property.
+
+Deterministic::
+   The value returned from a member does not change each time the member is called unless something in the associated
+   object is changed first.
+
+In the database world determinism is very important for ensuring atomic operations.
+In C# this concept applies to properties because a property's value may be cached by the processor, like any other variable. A property value should not change unless some other data point on the object is written to.
+Failure to adhere to determinism rules can result in unexpected behavior when running on a multi-processor machine.
+
+The one example in the framework where this rule is not followed is https://docs.microsoft.com/en-us/dotnet/api/system.datetime.now[DateTime.Now].
+This property is non-deterministic. Every time it is called it returns a new value. This should have been a method but because of backwards compatibility cannot be changed.
 
 == See Also
 

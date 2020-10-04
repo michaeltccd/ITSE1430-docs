@@ -1,17 +1,178 @@
 = Events
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
+
+An event is a notification from a classn to anyone that is interested that something has happened such as a button being clicked or an object's properties changing.
+Events are most useful in UI classes but can be used anywhere.
+
+Event::
+   A notification that something has, or is about, to happen.
+Event Arguments::
+   Arguments that may optionally be provided to event handlers containing additional information about the event.
+Event Handler::
+   A method called in response to an event being raised.
+Event Source::
+   The instance that raised the event. Useful in cases where an event handler may be handling multiple events from different sources.
+
+When an event is raised, or fired, any event handlers (methods) associated with it are called.
+In most cases the order of the methods is undefined.
+An event handler cannot stop other methods from being notified nor can event handlers modify the event arguments.
+
+== Declaring an Event
+
+Declaring an event looks a lot like a field declaration.
+
+.Event Declaration Syntax
+----
+event-declaration ::= [access] event T id;
+----
+
+The following is an example of what an event might look like.
+
+.Event Example
+----
+class Button
+{
+   public event EventHandler<EventArgs> Clicked;
+}
+----
+
+The `Clicked` event is an event that accepts an `EventArgs` argument as a parameter.
+The https://docs.microsoft.com/en-us/dotnet/api/system.eventhandler-1[Event Handler] type is a wrapper around a function that has the signature `void handler ( object sender, EventArgs e )` where `EventArgs` is either https://docs.microsoft.com/en-us/dotnet/api/system.eventargs[EventArgs] or a type that derives from it.
+
+It is important that events use the same signature to provide a consistent approach to calling them. 
+The first argument is the instance, if any, that is raising the event. 
+It can be cast to the appropriate type if a handler needs this information.
+The second argument is the data for the event.
+
+== Event Arguments
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.eventargs[EventArgs] type is empty and is really just a base type for other event arguments.
+Sometimes an event by itself may not be sufficient to handle.
+Clicking the mouse, for example, generally needs to know where the mouse was clicked. 
+Event arguments allow events to provide additional information.
+To add data to the event a derived type must be created and the data added as properties.
+
+.Custom Event Arguments
+[source,csharp]
+----
+public class MouseEventArgs : EventArgs
+{
+   public MouseEventArgs ( Point point )
+   {
+      Point = point;
+   }
+
+   public Point Point { get; }
+}
+----
+
+In the example notice that the data is exposed as read only data.
+This is important because handlers are called in an undefined order and one handler should not be able to modify the data seen by later handlers.
+It can result in unexpected behavior.
+
+== Raising an Event
+
+To raise an event the `Invoke` method has to be used. This method requires the arguments that the event handlers will receive.
+
+.Raising an Event
+[source,csharp]
+----
+public class Buttton
+{
+   public event EventHandler<EventArgs> Clicked;
+
+   protected virtual void RaiseClicked ( Point point )
+   {
+      Clicked?.Invoke(this, new MouseEventArgs(point));
+   }
+}
+----
+
+It is common practice to wrap the event in a protected, virtual method so that derived types can raise the event as well. If a class does not support inheritance then a simple private method is sufficient.
+The arguments for the event are generally passed as parameters to the method.
+The current instance is almost always the first parameter and becomes the `sender` in the handler.
+
+NOTE: The null conditional operator is used in this example because C# does not initialize the event until at least one handler is assigned. Therefore the `Clicked` event could be `null` when invoked.
+
+== Handling an Event
+
+To be notified when an event occurs code must register a method, an event handler. 
+
+.Defining an Event Handler
+[source,csharp]
+----
+void OnClicked ( object sender, EventArgs e )
+{   
+}
+----
+
+The method must conform to the signature required by the event but otherwise can be in any type and accessibility does not matter.
+
+To add an event handler use the `+=` operator. 
+To remove an event use the `-=` operator.
+
+.Adding and Removing a Handler
+[source,csharp]
+----
+//Add a handler
+//EventHandler<EventArgs> Clicked;
+button1.Clicked += OnClicked;
+
+//Remove a handler
+button1.Clicked -= OnClicked;
+----
+
+NOTE: These operators are not the combination operators. They simply use the same syntax.
+
+Notice that the syntax is almost identical to a function call but the parenthesis are left off. The method is being used as a delegate which will be discussed later.
+The instance is not specified as part of the handler but the compiler generates the code to ensure the handler is properly associated with the instance it is being called on.
+
+WARNING: Do not add the handler multiple times to the same event. Doing so will cause it to be potentially called multiple times for the same event.
+
+CAUTION: Remove a handler before the instance it is associated with is no longer referenced otherwise the object may persist longer than required.
+
+== Cancelling Events
+
+In general event handlers cannot impact the calling of other handlers but a special case exists for future events (e.g. `Validating`). Future events are generally used to notify other code that something is about to happen and allow them to prevent it, for example closing a form. 
+Because event handlers do not have a return type and event arguments should not be changeable an alternative is needed.
+
+Cancellable events are those events that can be cancelled. Future events are almost always cancellable.
+To be cancellable an event derives from https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.canceleventargs[CancelEventArgs] instead of `EventArgs`.
+This class adds a single `Cancel` property that can be set by handlers.
+While handling an event a handler may set the `Cancel` property to `true`.
+What this means is up to the implementation of event. In some cases it immediately stops the event and does not call any further handlers.
+In other cases all event handlers are called and then the property is checked.
+In either case the raiser of the event determines that at least one handler wants to cancel the event and does not proceed to go through with whatever action was about to take place.
+
+NOTE: There is nothing special about `CancelEventArgs`. It is provided as a convenience so code does not need to create their own version.
 
 == Naming
 
+Events, like all other public members, are Pascal cased.
+
+Events are notifications that an action is taking place, or will.
+They are named using future or past tense verbs such as `Clicked`, `Validating` and `Validated`.
+Future events use `-ing` and past events use `-ed`.
+
 == Accessibility
 
+While an event can have any accessibility it is designed for notifications of other code and therefore is almost always public. 
+
+NOTE: The accessibility of an event handler is not relevant. Events are called at runtime and accessibility does not apply there.
+
 == Documentation
+
+Events really only have a single purpose and therefore do not require much documentation.
+
+`summary`::
+   Describes when the event will be raised.
 
 == See Also
 
 link:members.adoc[Class Members] +
 link:accessibiilty.adoc[Accessibility] +
-
-
+https://docs.microsoft.com/en-us/dotnet/api/system.eventhandler-1[Event Handler] +
+https://docs.microsoft.com/en-us/dotnet/api/system.eventargs[EventArgs] +
+https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.canceleventargs[CancelEventArgs] +

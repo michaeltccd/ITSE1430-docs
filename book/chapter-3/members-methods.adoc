@@ -1,6 +1,6 @@
 = Methods
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
 Methods provide the functionality of a class. A method is the same thing as a function in most languages and the terms are used interchangeably.
