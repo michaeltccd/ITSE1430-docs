@@ -5,6 +5,7 @@ v0.1
 This chapter covers https://en.wikipedia.org/wiki/Object-oriented_programming[object oriented programming] (OOP) in C#.
 While no previous knowledge of OOP is required this chapter will not attempt to cover all the aspects of OOP. 
 Instead we will focus on OOP as used with C#.
+
 The topics to be covered include:
 
 * Namespaces
@@ -24,9 +25,6 @@ The topics to be covered include:
 *** link:members-properties.adoc[Properties]
 **** link:members-constructors.adoc[Constructors]
 *** link:members-events.adoc[Events]
-* [Objects]
-** link:ref-vs-value-types.adoc[Reference vs Value Types]
-** link:nullability.adoc[Nullability]
 * [Inheritance]
 ** [Overriding]
 ** [Base Members]

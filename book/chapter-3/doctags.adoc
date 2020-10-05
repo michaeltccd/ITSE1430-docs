@@ -1,6 +1,6 @@
 = Documentation
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
 Especially when creating publicly consummable types it is important to document the class purpose and any information related to using the type. Anyone using the code will generally not have access to the source code but they do have access to the documentation, provided it follows the documentation guidelines (https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/xmldoc/recommended-tags-for-documentation-comments[doctags]) used by C#. The IDE is configured to read the documentation and provide portions of it to calling code.
@@ -13,11 +13,13 @@ The general syntax of a doctag is three slashes before the declaration being doc
 /// <summary>Represents a rectangle.</summary>
 ----
 
-Doctags are well formatted comments that describe the code after it. Each doctag is in XML format and in almost all cases must have a starting element (`<summary>`) and ending element ('</summary>'). Case matters and all doctags are lower case. The text within the tag contains the content that may contain additional, inline, tags.
+CAUTION: Doctags are well formatted comments that describe the code after it. Each doctag is in XML format and in almost all cases must have a starting element (`<summary>`) and ending element ('</summary>'). Case matters and all doctags are lower case. The compiler will report warnings if doctags are malformed or reference identifiers that are not valid.
+
+The text within the tag contains the content that may contain additional, inline, tags.
 
 == Summary
 
-The summary tag always comes first and is applicable to all documentation. It is provides a one sentence summary of the declaration and is generally written as a full sentence.
+The `summary` tag always comes first and is applicable to all documentation. It is provides a one sentence summary of the declaration and is generally written as a full sentence.
 
 .Summary Doctag
 [source,csharp]
@@ -29,31 +31,253 @@ class Employee
 
 == Remarks
 
+The `remarks` tag is used to provide additional information.
+The remarks can be as large and complex as needed but are generally only visible if documentation is generated and viewed.
+
+The `remarks` tag is often used to provide additional information about how an algorithm works, scenarios that may behave incorrectly and any alternatives available.
+
+.Remarks Doctag
+[source,csharp]
+----
+/// <summary>Represents an employee of the company.</summary>
+/// <remarks>
+/// This class represents an employee and provides access to their direct reports. Do not
+/// create an instance of this class directly but instead use the manager.
+/// </remarks>
+class Employee
+{}
+----
+
 == Parameter
+
+The `param` tag is used to document parameters.
+Besides the `summary` tag this is the most important tag to use because it documents the expectations of a parameter.
+
+Each parameter will have its own tag and describes the purpose of the parameter.
+To map the tag to the parameter use the `name` attribute.
+
+Additional information about the parameter and how it relates to other parameters can be documented using the `remarks` tag.
+
+.Param Doctag
+[source,csharp]
+----
+/// <summary>Formats a message.</summary>
+/// <param name="message">The message to format.</param>
+/// <param name="includeSpaces">true to include the spaces.</param>
+void Format ( string message, bool includeSpaces )
+{}
+----
+
+NOTE: `param` is not used on properties.
 
 == Returns
 
+The `returns` tag is used to document the return value of a method.
+It serves the same purpose as the `param` tag.
+
+.Returns Doctag
+[source,csharp]
+----
+/// <summary>Gets an employee.</summary>
+/// <param name="id">The employee to retrieve.</param>
+/// <returns>The employee, if found.</returns>
+Employee GetEmployee ( int id )
+{}
+----
+
+NOTE: `returns` is not used on properties.
+
 == Exceptions 
+
+The `exception` tag is used to document errors that can occur when calling the member.
+While any code can raise an exception the `exception` tag is used to document the exceptions that are explicitly raised.
+
+Like the `param` tag a member can raise different errors so multiple tags can be used. 
+Each tag specifies the exception type using the `cref` attribute.
+
+NOTE: This tag is often used with the `paramref` tag because errors often are associated with the parameters.
+
+.Exception Doctag
+[source,csharp]
+----
+/// <summary>Gets an employee.</summary>
+/// <param name="id">The employee to retrieve.</param>
+/// <returns>The employee, if found.</returns>
+/// <exception cref="ArgumentOutOfRangeException">The ID is invalid.</exception>
+/// <exception cref="UnauthorizedAccessException">User does not have permission.</exception>
+Employee GetEmployee ( int id )
+{}
+----
 
 == See Also
 
+The `seealso` tag is used to provide links to other topics that may be of further use or are related.
+This is most common for members that have sibling methods but can be used on anything.
+
+The link to the other documentation is marked with the `cref` attribute.
+If the item is another member in the same type then it can be listed as is otherwise the containing
+type name must be added.
+
+.Seealso Doctag
+[source,csharp]
+----
+/// <summary>Creates a new employee.</summary>
+/// <param name="name">The employee name.</summary>
+/// <returns>The new employee.</returns>
+/// <seealso cref="DeleteEmployee" />
+Employee CreateEmployee ( string name )
+{}
+----
+
+The `seealso` tag allows for custom text in lieu of the `cref` text.
+To do this use the start and end tag with the text in the middle.
+
+.Seealso with Custom Text
+[source,csharp]
+----
+/// <summary>Creates a new employee.</summary>
+/// <param name="name">The employee name.</summary>
+/// <returns>The new employee.</returns>
+/// <seealso cref="DeleteEmployee">Deleting an Employee</see>
+Employee CreateEmployee ( string name )
+{}
+----
+
 == Type Reference
+
+The `typeparam` tag is used to document a generic type parameter in a generic type.
+The `name` attribute matches the type parameter in the declaration.
+
+.Typeparam Doctag
+[source,csharp]
+----
+/// <summary>Represents a sortable list of items.</summary>
+/// <typeparam name="T">The type to sort.</typeparam>
+public class Sortable<T>
+{}
+----
+
+== Inheritdoc Doctag
+
+The `inheritdoc` doctag is a custom tag that is not formally part of the language but is supported.
+When overriding members of a base type or implementing an interface member it is common to replicate the documentation. 
+To avoid having to do this use the `inheritdoc` tag instead. 
+This tag applies the documentation from the base type/interface to the current type.
+
+.Inheritdoc Doctag
+[source,csharp]
+----
+public class Employee
+{
+   /// <inheritdoc />
+   public override string ToString() { }
+}
+----
 
 == Inline Tags
 
-Some tags are inline tags. They are designed to be used inside the text area of other tags. The following inline tags are available.
+Some tags are inline tags.
+They are designed to be used inside the text area of other tags.
+
+Most inline tags are self closing meaning they have a start tag but no end tag.
+The start tag ends with a `/>`.
+
+.Self Closing Tag
+[source,xml]
+----
+<selfclosingtag />
+----
+
+The following inline tags are available.
 
 === Para
 
+The `para` tag is used to insert a paragraph marker into text.
+It is only really useful in a few tags such as `remarks`.
+
+.Para DocTag
+[source,csharp]
+----
+/// <summary>Represents an employee.</summary>
+/// <remarks>
+/// An employee is already added to the system.
+/// <para />
+/// This is another paragraph.
+/// </remarks>
+public class Employee
+{}
+----
+
 === Parameter Reference
+
+The `paramref` tag is used to reference parameters within the documentation.
+The `name` attribute specifies the parameter name.
+
+It is most often used when documenting errors or in the `remarks` tag.
+
+.Paramref Doctag
+[source,csharp]
+----
+/// <summary>Gets an employee.</summary>
+/// <param name="id">The employee to retrieve.</param>
+/// <returns>The employee, if found.</returns>
+/// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/> is invalid.</exception>
+/// <exception cref="UnauthorizedAccessException">User does not have permission.</exception>
+Employee GetEmployee ( int id )
+{}
+----
 
 === See
 
-
 The `see` tag is a reference to another element either in the current block or a different block. 
-This is most useful when referencing other types or members.
+It is similar to the `seealso` tag but the link is placed directly inline instead of a separate section.
 
-??
+.See Doctag
+[source,csharp]
+----
+/// <summary>Creates a new employee.</summary>
+/// <param name="name">The employee name.</summary>
+/// <remarks>
+/// The employee cannot exist yet. To remove the employee use <see cref="DeleteEmployee".
+/// </remarks>
+/// <returns>The new employee.</returns>
+Employee CreateEmployee ( string name )
+{}
+----
+
+Like the `seealso` tag custom text may be used in lieu of the `cref` text. 
+To do this use the start and end tag with the text in the middle.
+
+.See Doctag
+[source,csharp]
+----
+/// <summary>Creates a new employee.</summary>
+/// <param name="name">The employee name.</summary>
+/// <remarks>
+/// The employee cannot exist yet. Refer to <see cref="DeleteEmployee">Deleting an Employee</see> for more information.
+/// </remarks>
+/// <returns>The new employee.</returns>
+Employee CreateEmployee ( string name )
+{}
+----
+
+The `see` tag is also used to change language-specific keywords in documentation. 
+For example `null` in C# is `Nothing` in Visual Basic. 
+To ensure the documentation is clear the `see` tag can be used to reference the language-specific keyword.
+
+.See with Keyword 
+[source,csharp]
+----
+/// <summary>Gets or sets the name.</summary>
+/// <exception cref="ArgumentNullException">When setting the property and the value is <see langword="null"/>.</exception>
+string Name { }
+----
+
+This should be done for the common keywords such as:
+
+- `false`
+- `true`
+- `null`
 
 == See Also
 

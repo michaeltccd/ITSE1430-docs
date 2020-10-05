@@ -14,10 +14,10 @@ The topics to be covered include:
 == Table of Contents
 
 * [Common Type System]
+* link:ref-vs-value-types.adoc[Reference vs Value Types]
 * [Object Class]
-* [Reference vs Value Types]
+* link:nullability.adoc[Handling Null]
+** link:null-coalescing-operator.adoc[Null Coalescing Operator]
+** link:null-conditional-operator.adoc[Null Conditional Operator]
 * [Type Checking]
-* [Handling Null]
-** [Null Checks]
-** [Null Coalescing Operator]
-** [Null Conditional Operator]
+* link:nullable-reftypes.adoc[Nullable Reference Types]

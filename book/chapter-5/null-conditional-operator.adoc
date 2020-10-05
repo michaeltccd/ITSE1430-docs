@@ -1,0 +1,50 @@
+= Null Conditional Operator
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators[null conditional operator] is also designed to make it easier to work with `null` but it is specifically designed for accessing members.
+
+.Null Conditional Operator Syntax
+----
+null-conditional-operator ::= E?.M
+----
+
+`E` is any expression and `M` is a member of the expression's type. The null conditional operator is equivalent to the following `if` statement.
+
+.Null Conditional Equivalent
+----
+if (E != null) E.M   
+----
+
+An example may clarify this.
+
+.Getting Length of a String
+[source,csharp]
+----
+int? GetLength ( string value )
+{
+   return value?.Length;
+}
+----
+
+If the expression is `null` then the member access is skipped otherwise it is executed normally. This works with both function calls that return no value and those that return a  value. In the case where the member returns a value then the null conditional operator modifies the return type to be a nullable type. For reference types this does not change anything. For value types however the return value is a nullable value type.
+
+In the example above notice the return type is `int?`. If `value` is not null then `Length` returns an `int`. But if it is `null` then the member is skipped and `null` is returned instead. 
+
+It is very common to combine the null conditional operator with the null coalescing operator to avoid `null` altogether. Here's the previous example rewritten to use both. Notice the return type is now `int`.
+
+.Getting Length of a String (Corrected)
+[source,csharp]
+----
+int GetLength ( string value )
+{
+   return value?.Length ?? 0;
+}
+----
+
+== See Also
+
+link:nullability.adoc[Handling Null] +
+link:null-coalescing-operator.adoc[Null Coalescing Operator] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators[C# Null Conditional Operator] +

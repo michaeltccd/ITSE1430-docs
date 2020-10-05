@@ -1,0 +1,46 @@
+= Handling Null
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+CAUTION: Before proceeding it is strongly recommended that you have a thorough understanding of link:ref-vs-value-types.adoc[reference vs value types]. The discussion that follows only refers to reference types.
+
+== Working with Null
+
+When working with reference types it is important to handle the value being https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/null[null]. This can happen either because the variable was never assigned or it was purposefully reset to `null`. To check for `null` use a simple `if` statement.
+
+.Checking for Null
+[source,csharp]
+----
+void PrintMessage ( string message )
+{
+   if (message != null)
+   {
+      //Safe to use value
+   }
+}
+----
+
+CAUTION: Always check for `null` with accepting reference types as parameters.
+
+While there are some cases where using a value that is `null` will not fail in most cases an error will occur and the program will terminate. This includes any case where the value on the left side of the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators[member access operator] is `null`.
+
+.Crash with Null
+[source,csharp]
+----
+//This will crash the program
+string message = null;
+
+message = message.Trim();
+----
+
+Because working with `null` is difficult the following operators can be used to simplify code that uses them.
+
+- link:null-coalescing-operator.adoc[Null Coalescing Operator]
+- link:null-conditional-operator.adoc[Null Conditional Operator]
+
+== See Also
+
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/null][Null] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators[Member Access Operator] +
+link:ref-vs-value-types.adoc[Reference vs Value Types] +

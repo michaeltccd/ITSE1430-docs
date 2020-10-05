@@ -1,0 +1,12 @@
+= Nullable Reference Types
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+This is a new features starting in C# 8. `null` causes problems when both compiling and running code. By default reference types can be `null` but value types cannot. https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-reference-types[Nullable reference types], when enabled, enforces the same rules for both value and reference types. Reference types no longer support `null`. Of course this is a breaking change and is therefore an opt in only feature. 
+
+Further discussion of this topic can be read in the online documentation.
+
+== See Also
+
+https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references[C# Nullable Reference Types] +

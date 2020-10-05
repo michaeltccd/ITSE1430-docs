@@ -1,0 +1,31 @@
+= Null Coalescing Operator
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator[null coalescing operator] is provided to handle the common case of selecting the first value from a series of expressions that is not `null`.
+
+.Null Coalescing Operator Syntax
+----
+null-coalesce-operator ::= E ?? E
+----
+
+The result of the expression is the first value, from left to right, that is not `null`. Any number of expressions can be chained together. If all the values are `null` then that is the value returned.
+
+As an example `string` can be `null` but in almost all cases it is better to return an empty string because it conveys the same information and does not require any special code. The null coalescing operator is perfor for this.
+
+.Return an Empty String
+[source,csharp]
+----
+void PrintMessage ( string message )
+{
+   Console.WriteLine(message ?? "");
+}
+----
+
+== See Also
+
+link:nullability.adoc[Handling Null] +
+link:null-conditional-operator.adoc[Null Conditional Operator] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator[C# Null Coalescing Operator] +
+
