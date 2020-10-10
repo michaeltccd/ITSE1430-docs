@@ -1,0 +1,314 @@
+= Inheritance
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+NOTE: A full discussion of inheritance is beyond the scope of this book.
+
+Inheritance is the process of a type, the derived type, inheriting functionality from another type, the base type.
+
+Base Type::
+   A type that provides the basic data and functionality.
+Derived Type::
+   A type that inherits from a base type.
+
+NOTE: In C# most types can be inherited from but the extent is determined by the base type.
+
+Inheritance allows a type to inherit some basic functionality provided by a base type including its properties and methods. This makes it easier to create types that behave similarly without replicating code. 
+For example in a drawing program all `shapes` have some basic functionality such as their bounding box, rendering, selection and deletion. Using a base type would allow this to be implemented across arbitrary shapes with most functionality being provided by the base type.
+
+Inheritance represents an "is-a" relationship. If type B `is-a` type A then inheritance would be appropriate.
+For example a `Circle` is a `Shape` so inheritance could be used. 
+
+== Specifying the Base Type
+
+To specify the base type put the base type name after the derived type declaration.
+
+.Base Type Declaration
+----
+class-declaration ::= [access] class identifier : T { S* }
+----
+
+`T` is the name of a base type.
+
+NOTE: In C# only a single base type is allowed. Multiple inheritance is not supported but base types can inherit from other types allowing an unlimited number of levels.
+
+For purposes of type compatibility derived types are always compatible with their base type(s).
+
+.Base Type Compatibility
+[source,csharp]
+----
+public class Circle : Shape
+{   
+}
+
+//Method accepting a Shape
+void DrawShape ( Shape shape ) { }
+
+//Usage - allowed because Circle "is-a" Shape
+DrawShape(new Circle());
+----
+
+== Inherited Members
+
+When inheriting a base type all members are inherited except constructors.
+However accessibility still applies so private members are not accessible.
+Since fields are generally private they would not be accessible even though they are there.
+
+In addition to the standard `public` and `private` access modifiers a member can be `protected`.
+`protected` accessibility means public for the owning type and derived types but `private` for everyone else.
+Protected members are ideal for allowing derived types to change the behavior of a base type.
+For example many base types provide a protected, virtual method to override the base type's behavior.
+
+NOTE: It is possible for a derived type to have the same field names as a base type. Because of accessibility
+the compiler will not confuse the two members.
+
+== Virtual Members
+
+Base type member implementations fall into one of the following categories.
+
+Non-virtual::
+   Base type provides the implementation. Derived types cannot change it.
+Virtual::
+   Base type provides a default implementation. Derived types may change it.
+Abstract::
+   Base type declares the existence of a member but no implementation. Derived types must implement it.
+
+.Virtual Member Declarations
+----
+non-virtual-declaration ::= [access] T identifier ( [parameter-lister] ) { S* }
+virtual-declaration ::= [access] virtual identifier ( [parameter-lister] ) { S* }
+abstract-declaration ::= [access] abstract T identifier ( [parameter-lister] );
+----
+
+NOTE: Prefer to use non-virtual implementations when possible and virtual only when necessary.
+
+In a class the following members can be virtual.
+
+- Properties
+- Methods
+- Events
+
+Constructors are never inherited and cannot be virtual.
+Fields store data so virtual does not make sense.
+
+.Virtual Members
+[source,csharp]
+----
+public class Shape
+{
+   // Non-virtual
+   public void Draw () {}
+
+   //Virtual
+   public virtual void Select () {}
+
+   //Abstract
+   public abstract void BoundingBox ();
+}
+----
+
+Non-virtual implementations are the default. A derived type cannot change the implementation. Any attempts to do so result in a compiler error.
+
+Virtual members must have the keyword `virtual` after the access modifier but before the declaration. 
+The member must be implemented and represents the default implementation of the member.
+A derived type may override this implementation if desired.
+
+Abstract members must have the keyword `abstract` after the access modifier but before the declaration.
+There is no implementation, the member is simply a declaration, and therefore the declaration ends with a semicolon.
+
+CAUTION: It is possible to apply the `new` modifier to a member to "override" a non-virtual member however this does not work correctly in most cases and should only be used in advanced scenarios where the actual behavior is well understood.
+
+Use a virtual member when a base type can provide a reasonable implementation but wants to allow for some flexibility in derived types. Abstract members are only for cases where there is no reasonable default implementation.
+
+== Overriding Base Members
+
+To change the behavior of a virtual base member a derived type needs to override it. 
+To override a member declare an identical member but replace `virtual` with `override`.
+The keyword tells the compiler you are changing the implementation.
+
+.Overriding a Virtual Member
+[source,csharp]
+----
+public class Shape
+{   
+   public virtual void Resize () { }
+}
+
+public class Circle : Shape
+{ 
+   public override void Resize ()
+   {
+      //New implementation
+   }
+}
+----
+
+NOTE: It is a compiler error to override a non-virtual member. It is a logical error to not override a virtual member but the compiler will allow it. It just will not behave properly.
+
+== Calling Base Members
+
+Base type members are scoped one level below the derived type's members for lookup. 
+If the compiler does not find an identifier in the current scope or the derived type's members then it automatically looks in all base type members next.
+Only if a base type member is not found does the compiler resume searching following the normal scoping rules.
+Therefore it is not necessary to annotate usages of base members.
+
+.Calling a Base Member
+[source,csharp]
+----
+public class Shape
+{
+   public void Select () { }
+}
+
+public class Circle : Shape
+{
+   public void Enlarge ()
+   {
+      //Calls base class member
+      Select();
+   }
+}
+----
+
+The only time an issue may arise is when a derived type has a member with the same name as the base type, often when overriding methods.
+To ensure the compiler calls the base class member the `base` keyword can be used.
+This is similar to how the `this` keyword can be used on a member but, unlike `this`, it is generally not optional.
+
+.Calling a Base Member Explicitly
+[source,csharp]
+----
+public class Shape
+{
+   public void Select () { }
+   public virtual void Resize () { }
+}
+
+public class Circle : Shape
+{
+   public void Enlarge ()
+   {
+      //Calls base class member
+      Select();
+   }
+
+   public override void Resize ()
+   {
+      //This would recursively call Circle.Resize
+      //Resize();
+      //this.Resize();
+
+      //Call base member explicitly
+      base.Resize();
+   }
+}
+----
+
+== Object Layout
+
+Base types change how object creation works.
+In order to ensure nothing needs to change at runtime in how base members are used the compiler has to generate a wrapper object around derived types.
+The base type `Shape`, for example, has no knowledge of `Circle` and may be compiled completely separately. 
+In order for virtual members to work properly, members must be called using an offset from the instance.
+This offset cannot change otherwise runtime calls will fail.
+Each type has its table of virtual members, often call the `v-table`.
+Furthermore the private members of a type are only accessible to the type itself and derived types, even with the same identifiers, cannot access them.
+
+.Offset Based Calls
+[source,csharp]
+----
+//Assume Shape.Select has offset 1 and Shape.Resize has offset 2
+shape.Select();  //Call method at offset 1 on instance
+shape.Resize();  //Call method at offset 2 on instance
+----
+
+To better understand this imagine creating an instance of the `Circle` class.
+
+- Allocate space for the derived type plus all the base type(s)
+- Initialize the base type fields.
+- Call the base type constructor.
+- Initialize the derived type fields.
+- Call the derived type constructor.
+- Return the derived type instance.
+
+The returned instance, of the derived type, has an instance of the base type contained within it. 
+Because offsets are baked into the code any derived type must ensure that the offset to the base members do not change.
+The easiest way to ensure that is to use the base instance.
+
+.Offset Based Calls with Base Member
+[source,csharp]
+----
+derived.Select(); //Call method at offset 1 on base instance
+----
+
+This works because the derived type has the base instance (layout) inside it. 
+Thus the runtime does not need to figure out whether this is derived type or not because the offsets never change.
+
+== Base Constructors
+
+Derived types, by default, call the default constructor of the base type.
+As mentioned earlier the base instance is always created first.
+If a base type does not have a default constructor or a derived type would like to use a different constructor then it caan use the same syntax as constructor chaining to call the base constructor instead.
+Just change `this` to `base`.
+
+.Calling a Base Constructor
+[source,csharp]
+----
+public class Shape
+{
+   protected Shape ()
+   {}
+
+   public Shape ( Rectangle boundingBox )
+   {}
+}
+
+public class Circle : Shape
+{
+   //Call base constructor, not necessary as this is implied
+   public Circle () : base()
+   {}
+
+   //Call base constructor accepting a Rectangle
+   public Circle ( int radius ) : base(GetBoundingBox(radius))
+   {}
+}
+----
+
+Constructo chaining and base constructors can be combined in a type but each constructor can only call one other constructor, on the same type or a base type.
+
+=== Virtual Calls in Constructors
+
+It is very important that constructors do not call virtual members. 
+This results can be undefined.
+As mentioned earlier a base type is created before the derived type has fully initialized. 
+If a virtual member is called and the derived type overrides it then the overridden method will be called before the derived type that defines it is fully initialized.
+This can have unexpected consequences.
+
+== Abstract Classes
+
+If any member of a type is abstract then it is not possible to instantiate the type with `new`.
+Until all members have an implementation this is not allowed.
+Therefore if any member of a class is abstract then the class must be marked as abstract.
+To make a class abstract add the `abstract` keyword before the class declaration.
+
+.Abstract Class Example
+[source,csharp]
+----
+public abstract class Shape
+{}
+----
+
+Abstract types cannot be used in `new` expressions. 
+Furthermore the constructors are not usable, except in derived types, and therefore are generally marked as protected.
+
+It is possible for a class to be abstract even if it has no abstract members.
+However this would be an odd case and should be avoided.
+
+NOTE: If all members of a class are abstract then use an interface instead.
+
+== See Also
+
+link:defining-class.adoc[Defining a Class] +
+link:accessibility.adoc[Accessibility] +
+

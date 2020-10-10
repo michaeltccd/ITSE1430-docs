@@ -1,6 +1,6 @@
 = Chapter 3: Object Oriented Programming
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 
 This chapter covers https://en.wikipedia.org/wiki/Object-oriented_programming[object oriented programming] (OOP) in C#.
 While no previous knowledge of OOP is required this chapter will not attempt to cover all the aspects of OOP. 
@@ -11,7 +11,6 @@ The topics to be covered include:
 * Namespaces
 * Classes and Class Members
 * Inheritance
-* Objects
 
 == Table of Contents
 
@@ -25,6 +24,4 @@ The topics to be covered include:
 *** link:members-properties.adoc[Properties]
 **** link:members-constructors.adoc[Constructors]
 *** link:members-events.adoc[Events]
-* [Inheritance]
-** [Overriding]
-** [Base Members]
+* link:inheritance.adoc[Inheritance]
