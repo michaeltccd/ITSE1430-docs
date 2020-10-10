@@ -1,0 +1,72 @@
+= Object Class
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+.NET uses a Common Type System (CTS) meaning there is a single type that all other types inherit from. 
+This is not the same as `variant` in Visual Basic or even `var` in Javascript. 
+https://docs.microsoft.com/en-us/dotnet/api/system.object[Object] is the base type from which all other types in .NET derive.
+The C# alias for this is `object`.
+All values can be converted to `object` but this is rarely useful.
+
+.Object Example
+[source,csharp]
+----
+public void Print ( object value )
+{
+   Console.WriteLine(value);
+}
+----
+
+== Base Members
+
+The biggest advantage of the CTS is that all values have a shared set of functionality irrelevant of the underlying type. 
+In .NET `Object` has the following base members.
+
+.Object Members
+|====
+| Member | Purpose | Overridable
+| https://docs.microsoft.com/en-us/dotnet/api/system.object.equals[Equals] | Determines if two objects are equal. | Yes
+| https://docs.microsoft.com/en-us/dotnet/api/system.object.gethashcode[GetHashCode] | Gets the unique hash code for an object. | Yes
+| https://docs.microsoft.com/en-us/dotnet/api/system.object.gettype[GetType] | Gets the underlying type for an object. | No
+| https://docs.microsoft.com/en-us/dotnet/api/system.object.tostring[ToString] | Converts the object to a string. | Yes
+|====
+
+Of the methods only `ToString` is generally overloaded. 
+The other methods are reserved for equality and are beyond this course.
+
+Override the `ToString` method to provide a custom implementation of converting an object to a string.
+The default is to return the full type name.
+The primitives return the string equivalent of their value.
+Custom types can return whatever they want.
+
+.ToString Override
+[source,csharp]
+----
+public class Point
+{
+   public int X { get; }
+   public int Y { get; }
+
+   public override string ToString ()
+   {
+      return $"({X}, {Y})";
+   }
+}
+----
+
+NOTE: `ToString` is called in many places in the framework including in most UIs and in the debugger.  If there is no reasonable string to return for these cases then do not bother to override the method.
+
+== Boxing Value Types
+
+`Object` is a reference type. 
+When a value type is cast to an `object` then a process called https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing[boxing] occurs.
+Boxing wraps the value type in an object.
+The result of this is a temporary object.
+Changes to the temporary object will not impact the original value.
+Care should be taken when boxing a value type as it can cause unexpected results.
+
+== See Also
+link:readme.adoc[Common Type System] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing[Boxing] +
+https://docs.microsoft.com/en-us/dotnet/api/system.object[.NET Object Class] +

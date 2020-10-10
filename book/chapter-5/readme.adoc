@@ -1,6 +1,6 @@
 = Chapter 5: Common Type System
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 
 This chapter will cover the common type system (CTS) used by .NET
 
@@ -13,11 +13,10 @@ The topics to be covered include:
 
 == Table of Contents
 
-* [Common Type System]
+* link:object.adoc[Object Class]
 * link:ref-vs-value-types.adoc[Reference vs Value Types]
-* [Object Class]
 * link:nullability.adoc[Handling Null]
 ** link:null-coalescing-operator.adoc[Null Coalescing Operator]
 ** link:null-conditional-operator.adoc[Null Conditional Operator]
-* [Type Checking]
+* link:type-checking.adoc[Type Checking]
 * link:nullable-reftypes.adoc[Nullable Reference Types]

@@ -1,0 +1,161 @@
+= Type Checking
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+Type checking is often necessary when working with generic code that works with `object`. 
+Type casting is sometimes needed when a value is known to be another type.
+
+Type Casting::
+   Explicitly converting a value from one type to another.
+Type Checking::
+   Programmatically determining the type of a value.
+
+The following operators can be used to do type checking, casting or both.
+
+== Cast Operator
+
+The cast operator can be used to convert a value from one type to another.
+
+.Cast Operator Syntax
+----
+cast-operator ::= ( T ) E
+----
+
+This operator converts the expression to the given type at runtime.
+It is often referred to as a "C-style" cast because of the syntax.
+If the expression is not able to be converted to the given type then a runtime error occurs.
+In general you should avoid using this operator unless absolutely necessary.
+
+.Type Cast Examples
+[source,csharp]
+----
+int num = (int)"5";  //Compiler error, not possible to convert string to int
+object obj = num;    //Everything is an object
+
+double dbl = (double)num;    //Valid 
+----
+
+NOTE: Unlike C\++ you cannot arbitrarly convert a value to another type even if it is invalid. If the compiler cannot confirm that the value and the type are compatible then it will fail to compile.
+
+== As Operator
+
+The preferred way to type cast is to use the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/type-testing-and-cast#as-operator[as] operator.
+
+.As Operator Syntax
+----
+as-operator ::= E as T
+----
+
+`T` must be a reference type. Value types do not work with the `as` operator.
+
+This operator works the same as the cast operator except it is runtime safe.
+At runtime if the expression cannot be converted to the given type then the return value of the expression is `null`.
+This makes it much easier to handle bad conversions at runtime.
+
+.As Operator Examples
+[source, csharp]
+----
+object value = "Hello";
+
+string str = value as string;  //Allowed and valid
+Rectangle rect = value as Rectangle;  //Returns null at runtime
+----
+
+NOTE: Like the cast operator, the compiler will not compile expressions that are not possible.
+
+== Is Operator
+
+The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/type-testing-and-cast#is-operator[is] operator is a type checking operator.
+
+.Is Operator Syntax
+----
+is-operator ::= E is T
+----
+
+The result of the expression is boolean. 
+If the expression is of the given type, or derived type, then it returns `true` otherwise `false`.
+
+.Is Operator Examples
+[source,csharp]
+----
+object value = "Hello";
+
+bool isString = value is string;       //True
+Rectangle isRect = value is Rectangle; //False
+----
+
+NOTE: The `is` operator does not support user-defined conversions.
+
+== Typeof Operator
+
+Sometimes it is necessary to get the actual type of an expression.
+The `typeof` operator returns the type of an expression.
+
+.Typeof Operator Syntax
+----
+typeof-operator ::= typeof ( T )
+----
+
+Any type is allowd. 
+The result is the https://docs.microsoft.com/en-us/dotnet/api/system.type[Type] of the expression.
+
+The `Type` can be used to do more complex work when the basic type checking operators do not work. It is often used to compare the results of `GetType` to determine the type of an expression.
+
+.Typeof Examples
+[source,csharp]
+----
+object value = "Hello";
+
+Type type = value.GetType();  // typeof(string)
+
+bool isString = type == typeof(string);  //True
+----
+
+== Pattern Matching
+
+https://docs.microsoft.com/en-us/dotnet/csharp/pattern-matching[Pattern matching] is relatively new to C# and is evolving to become more powerful.
+At its simplest level it combines the `is` and `as` operators in a manner that is cleaner than traditionally available.
+
+.Pattern Matching Syntax
+----
+pattern-matching-operator ::= E is T identifier
+----
+
+The pattern matching operator determines if the expression is of the given type. 
+If it is then the identifier, of type `T`, is set to the cast value.
+Otherwise the identifier is initialized to the default value of the type.
+
+.Pattern Matching Example
+[source,csharp]
+----
+object value = "Hello";
+
+if (value is string str)   // str is either null or the value as a string
+{   
+}
+----
+
+The pattern matching example is equivalent to the following code.
+
+.Pattern Matching Code
+[source,csharp]
+----
+object value = "Hello";
+
+string str;
+if (value is string)
+   str = (string)value;
+else
+   str = null;
+----
+
+Besides the smaller code it eliminates the need for an `if` statement making it possible to do this type check and cast in a larger expression.
+
+NOTE: There are more advanced usages of pattern matching in C# in later versions including the ability to apply conditions on properties and using pattern matching in switch statements. 
+
+== See Also
+
+link:readme.adoc[Common Type System] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/type-testing-and-cast[C# Type Casting] +
+https://docs.microsoft.com/en-us/dotnet/csharp/pattern-matching[C# Pattern Matching] +
