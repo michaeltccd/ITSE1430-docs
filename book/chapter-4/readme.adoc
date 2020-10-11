@@ -12,15 +12,13 @@ The topics to be covered include:
 * Forms
 * Controls
 * Form Lifetime
-* Control Validation
+* Validation
 
 == Table of Contents
 
-* [Windows Forms Basics]
-* [Forms]
-** [Using the Designer]
-** [Common Properties]
-** [Form Lifetime]
+* link:desktop-apps.adoc[Desktop Applications]
+* link:form.adoc[Windows Form Class]
+* link:form-designer.adoc[Using the Designer]
 * [Controls]
 ** [Control Members]
 ** [Common Controls]
@@ -29,15 +27,16 @@ The topics to be covered include:
 *** [Button]
 *** [CheckBox]
 *** [MenuStrip]
-** [Child Windows]
-*** [MessageBox]
-*** [Child Forms]
-** [Laying Out Controls]
-*** [Designer]
-*** [Anchors]
-*** [Docking]
-*** [Optional: Containers]
-** [Input Validation]
-*** [Control Validation]
-*** [Form Validation]
-*** [ErrorProvider]
+* [Child Windows]
+** [MessageBox]
+** [About Box]
+** [Child Forms]
+* form-layout.adoc[Form Layout]
+** [Alignment]
+** [Anchors]
+** [Docking]
+** [Containers]
+* [Validation]
+** [Control Validation]
+** [Form Validation]
+** [ErrorProvider]

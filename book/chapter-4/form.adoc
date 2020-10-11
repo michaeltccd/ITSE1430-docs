@@ -1,0 +1,168 @@
+= Windows Form Class
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+A form, in Winforms, is a window that is displayed to the user. 
+A form may be a top level or child window.
+It may be customized to fit the needs of an application, within the limits of Winforms.
+A form is responsible for rendering a UI to the user and reacting to events triggered by the user interacting with the form including clicking on a control, typing in a control or using a hotkey or accelerator.
+Winforms wraps the bulk of this functionality automatically.
+Applications can customize the behavior by reacting to events or creating derived types.
+
+In all Winforms applications there is a single main window (form) that acts as the main window of the application. 
+By default when the main window is closed the application terminates.
+Child forms are used to display child windows, or dialogs, to the user.
+In general each form shows only one set of content.
+A Winforms application can have any number of forms.
+
+== Form Class
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form[Form] class represents a form on the screen.
+It is a control and derives from https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control[Control].
+The bulk of the functionality is provided by `Control` with `Form` implementing the functionality necessary for a top level window such as things related to the window frame.
+
+While an instance of the class can be created directly it is more common to derive a class from it and customize the behavior.
+
+.Form Example
+[source,csharp]
+----
+public class MainForm : Form
+{   
+   //Customize behavior
+}
+----
+
+NOTE: It is common to append the `-Form` suffix to forms.
+
+One of the benefits of deriving a type is that all the events raised by the form have corresponding `On-` protected virtual methods that can be overridden instead. 
+It is preferable to override the virtual method instead of handling the event in derived types.
+Some commonly overridden methods include the following.
+
+.Common Overridden Methods
+|===
+| Method | Event | Purpose 
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.onformclosed[OnFormClosed] | https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.formclosed[FormClosed] | Called after the form closes so it can clean up resources.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.onformclosing[OnFormClosing] | https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.formclosing[FormClosing] | Called before the form closes so it can do dirty document detection.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.onload[OnLoad] | https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.load[Load] | Called before the form is displayed the first time. 
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.onpaint[OnPaint] | https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.paint[Paint] | Called to redraw the form.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.onresize[OnResize] | https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.resize[Resize] | Called when the form is resized.
+|===
+
+In most cases the overriden method should call the base method either first or last. 
+The base method will raise the corresponding event in most cases.
+
+NOTE: All the methods accept the same arguments as the corresponding event handlers except the `sender` which is implied to be the current instance.
+
+== Common Properties
+
+Since `Form` derives from `Control` it inherits the properties of the base class.
+Some of the more important properties are described below.
+
+.Common Form Properties
+|===
+| Property | Purpose
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.text[Text] | This property controls the title of the window.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.acceptbutton[AcceptButton] | This property determines the button to automatically click if the user presses `Enter` while inside the form, and not on a control.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.cancelbutton[CancelButton] | This property determines the button to automatically click if the user presses `Esc` while inside the form, and not on a control.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.icon[Icon] | This property determines the icon to show in the system menu on the form and on the taskbar when the form is open.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.size[Size] | This property determines the current size of the form on the screen.
+|===
+
+Of these the `Text` is generally the one that will be set.
+It controls the title shown in the caption bar of the window.
+It also controls what the user sees when they mouse over the window or button in the taskbar.
+
+.Setting Form Title
+[source,csharp]
+public class MainForm : Form
+{
+   public MainForm ()
+   {
+      Title = "My Application";
+   }
+}
+
+== Main Form
+
+The main form of an application is special.
+By default when the main form is closed the application terminates.
+This is configured in the `Program.cs` file in the default project template.
+In most applications it is not necessary to directly create or work with the main window instance.
+
+== Form Lifetime
+
+A form has a well-defined lifetime. 
+As far as .NET is concerned a form is no different than any other object but Winforms manages two different lifetimes.
+The lifetime of a form can be broken up into blocks.
+
+=== Form Creation
+
+A form is created using https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/new-operator[new].
+At this point it is no different than any other .NET type.
+The constructor is called like any other .NET type.
+No Windows resources are allocated at this point.
+
+CAUTION: Do not perform any runtime logic, such as retrieving data from a database, inside the constructor of the form. This code gets run in the designer and will not work properly.
+
+=== Showing a Form
+
+When a form is rendered on the screen using https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.show[Show] or https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.showdialog[ShowDialog] then the following steps are taken.
+
+* Windows allocates resources for the form and its children.
+* https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.onload[OnLoad] method is called to allow the form to initialize itself.
+* https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.load[Load] event is raised to allow other code to response to the form being loaded.
+* https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.onpaint[OnPaint] method is called to render the form on the screen.
+* https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.paint[Paint] event is raised to allow other code to response to the form being painted.
+
+At this point the form begins processing requests from the user including mouse events, keyboard events and system notifications.
+Whenever Windows determines that the window needs to be partially or fully repainted then Winforms will call the `OnPaint` method that raises the `Paint` event.
+
+=== Closing a Form
+
+At some point either through user interaction or by an explicit call to https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.close[Close] the form is closed.
+
+* https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.onformclosing[OnFormClosing] method is called to allow the form to stop the close request.
+* https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.formclosing[FormClosing] event is raised to allow other code to response to the form closing.
+* Windows hides the form.
+* https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.onformclosed[OnFormClosed] method is called to allow the form to clean up resources.
+* https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.formclosed[FormClosed] event is raised to allow other code to response to the form being closed.
+* Windows cleans up resources for the form.
+
+NOTE: It is possible to redisplay a form after it is closed.
+
+The `OnFormClosing` method is the perfect place to implement dirty document logic to prevent the form from closing.
+
+.Dirty Document Detection
+[source,csharp]
+----
+public class DocumentForm : Form
+{
+   protected override void OnFormClosing ( CancelEventArgs e )
+   {
+      if (_isModified)
+      {
+         switch (PromptSaveDocument())
+         {
+            case DialogResult.Yes : SaveDocument(); break;
+            case DialogResult.No: break;
+
+            case DialogResult.Cancel:
+            {
+               e.Cancel = true;
+               break;
+            };
+         };
+      }
+
+      base.OnFormClosing(e);
+   }
+}
+----
+
+== See Also
+link:readme.adoc[Windows Forms] +
+link:child-forms.adoc[Child Forms] +
+link:form-layout.adoc[Form Layout] +
+link:form-designer.adoc[Using the Designer] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form[.NET Form Class] +

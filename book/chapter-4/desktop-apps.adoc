@@ -1,0 +1,147 @@
+= Desktop Applications
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+Desktop applications refer to applications that run on a user's desktop. 
+For older versions of .NET this would be limited to Windows but newer runtimes support other platforms as well.
+For purposes of this discussion we will limit ourselves to Windows.
+
+Component::
+   A type that may interact with the UI but may not have a UI of its own.
+Control::
+   A component that displays something in the UI.
+Dialog::
+   In Windows a child window that displays information to the user. Generally the dialog must be dismissed before the parent window can continue.
+Window::
+   In Windows any control that has a window frame.   
+
+The following sections discuss the current desktop user interface (UI) frameworks available.
+More information can be found https://docs.microsoft.com/en-us/windows/apps/desktop/choose-your-platform[here].
+
+NOTE: This course will only discuss Winforms.
+
+== Windows Forms
+
+https://docs.microsoft.com/en-us/dotnet/desktop/winforms[Windows Forms], winforms for short, is the original user interface (UI) framework that shipped with .NET.
+Winforms is a very light wrapper around the underlying Win32 API that Windows uses for user interfaces.
+As such it allows developers to quickly create Windows applications that align with the standard Windows styling and custom theming a user may have configured.
+
+=== Advantages
+
+- Easy to work with especially for Line of Business (LOB) applications.
+- Provides consistent UI that honors the user's custom styling of Windows.
+- Low runtime overhead because it is a light wrapper around Win32.
+- Can be completely implemented without a designer.
+
+=== Disadvantages
+
+- Not as flexible as other frameworks when creating custom UIs.
+- Data binding is very limited.
+- Validation is very limited.
+- Does not work with newest Windows controls out of the box including the https://docs.microsoft.com/en-us/windows/win32/controls/task-dialogs[Task Dialog], https://docs.microsoft.com/en-us/windows/win32/controls/syslink-control-entry[SysLink] or https://docs.microsoft.com/en-us/windows/win32/windowsribbon/windowsribbon-introduction[Ribbon] controls.
+- Deprecated in lieu of newer frameworks.
+
+=== Supported Platforms
+
+Winforms is supported on the following platforms.
+
+- .NET Framework (all versions)
+- .NET Core (3.1+ but not all features are available and only supported on Windows)
+- .NET 5 (Windows only)
+
+The designer, requiring Visual Studio 2019 16.x+, is in preview for .NET Core/.NET 5 and does not support all features. At this time the known limitations include.
+
+- Menus and toolbars do not support inline editing of properties or setting of events.
+- Tab order does not work.
+- Complex controls do not work.
+- Toolbar containers are not supported.
+- Smart tags only work for some controls.
+
+NOTE: None of these issues impact compilation or runtime. Therefore it is possible to work around the designer by programmatically writing the same code.
+
+== Windows Presentation Foundation
+
+https://docs.microsoft.com/en-us/dotnet/desktop/wpf/getting-started/[Windows Presentation Foundation] (WPF) is a newer UI technology based upon XAML which is an XML language designed for creating objects.
+Microsoft attempted to replace Winforms with WPF but the complexity was so high many companies choose to stick with winforms.
+
+WPF excels at custom UIs that do not follow Windows standards and applications that are heavily data bound.
+To use WPF it is necessary to learn both the framework and XAML which has a large learning curve.
+
+=== Advantages
+
+- Powerful data binding features.
+- Almost everything is customizable making it easy to build custom UIs.
+- Powerful set of multimedia features including transformations, animation and scaling.
+- Separation of UI and code backend.
+- Easily themable.
+- Designer support for data context.
+
+=== Disadvantages 
+
+- Steep learning curve.
+- Multiple ways to do the same thing results in mixed results.
+- Data binding failures can be hard to diagnose.
+- Not easy to build simple LOB applications.
+- Runtime is slower than most other frameworks.
+- Requires significantly more memory than other frameworks.
+- Deprecated in lieu of UWP.
+
+=== Supported Platforms
+
+Winforms is supported on the following platforms.
+
+- .NET Framework (all versions)
+- .NET Core (3.0+ but not all features are available and only supported on Windows)
+- .NET 5 (Windows only)
+
+== Universal Windows Platform
+
+The https://docs.microsoft.com/en-us/windows/uwp/get-started/universal-application-platform-guide[Universal Windows Platform] (UWP) was a XAML-based replacement for WPF built for Windows 10. 
+It is the successor to WinRT which was built for Windows 8.
+UWP was designed as a Windows store-only framework that runs in a sandbox and was an attempt to mimic approaches on other platforms like iOS and Android. 
+
+The platform did not become popular because it was overly restrictive compared to traditional Win32 applications, did not play well with existing Win32 applications such as Office and required Windows 10.
+Companies mostly need to support multiple Windows versions and building a new application just for Windows 10 is not realistic.
+
+Microsoft has attempted to update the UWP framework to run outside the Windows Store allowing for better integration with existing Win32 applications and providing access to all Windows has available.
+But the updates require updated versions of Windows 10 making it even harder to build a commercial application that relies on it.
+
+Many people consider UWP a failed experiment but Microsoft is attempting to keep the platform alive by providing integration points into other frameworks. 
+Microsoft has even implemented a few UWP-only controls that it is now supporting in other frameworks to increase the usage.
+
+UWP is based upon the same XAML format that WPF but they are not the same framework and there are differences.
+Because Microsoft had previously touted WPF as the UI framework of the future and then abandoned it for UWP many companies are waiting to see if UWP becomes more popular before replatforming, potentially again.
+
+=== Advantages
+
+- Provides most of the same benefits of WPF.
+- Can run in a secure sandbox such as the Windows Store.
+- Provides more modern UI controls.
+- Can be run on any platform that supports the Windows Store including PC, XBox and virtual reality headsets.
+
+=== Disadvantages 
+
+- Requires Windows 10, and possibly a specific update.
+- Requires a developer license from Microsoft.
+- More limited features than traditional Win32 applications.
+- Poorer integration with non-UWP applications.
+- Future is uncertain.
+- Learning curve is same as WPF.
+
+=== Supported Platforms
+
+UWP is supported on the following platforms.
+
+- .NET Framework (4.6.1+)
+- .NET Core (2.0+)
+- .NET 5 (Windows, XBox, Xamarin)
+
+== See Also
+
+link:readme.adoc[Windows Forms] +
+link:form.adoc[Form] +
+https://docs.microsoft.com/en-us/windows/apps/desktop/choose-your-platform[Choose a Desktop Framework] +
+https://docs.microsoft.com/en-us/dotnet/desktop/winforms[.NET Windows Forms] +
+https://docs.microsoft.com/en-us/dotnet/desktop/wpf/getting-started/[Windows Presentation Foundation] +
+https://docs.microsoft.com/en-us/windows/uwp/get-started/universal-application-platform-guide[Universal Windows Platform] +
