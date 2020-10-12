@@ -75,6 +75,7 @@ It also controls what the user sees when they mouse over the window or button in
 
 .Setting Form Title
 [source,csharp]
+----
 public class MainForm : Form
 {
    public MainForm ()
@@ -82,6 +83,7 @@ public class MainForm : Form
       Title = "My Application";
    }
 }
+----
 
 == Main Form
 

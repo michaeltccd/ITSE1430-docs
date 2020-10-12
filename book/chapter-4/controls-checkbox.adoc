@@ -1,85 +1,87 @@
 = CheckBox Control
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
-???
-
-The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.button[Button] class allows the user to perform an action by cilcking it.
-Common usage examples include saving or cancelling a form, performing a search and confirming a message.
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.checkbox[CheckBox] control provides a two or three-way toggle to the user.
+It is most often used to allow the user to choose a true/false option but it does support an intermediate state for advanced situations.
 
 == Setting Up the Control
 
-To use a button place it onto the form.
+To use a checkbox place it onto the form.
 
 The following properties are most commonly set as part of the control.
 
 .Common Button Properties
 |===
 | Property | Purpose
-| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.button.dialogresult[DialogResult] | Sets the result to use when the button is clicked and the parent form is closed.
-| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.buttonbase.text[Text] | Sets the text on the button.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.checkbox.checked[Checked] | Determines if the control is checked or not.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.checkbox.checkstate[CheckState] | Determines the state of the checkbox.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.buttonbase.text[Text] | Sets the text on the control.
 |===
 
-.Button Setup Example
+.CheckBox Setup Example
 [source,csharp]
-====
+----
 void Configure ()
 {
-   Button saveButton = new SaveButton();
-   saveButton.Text = "Save";
-   saveButton.DialogResult = DialogResult.OK;
+   CheckBox chkIsOnSale = new CheckBox();
+   chkIsOnSale.Text = "On Sale?";   
 }
-====
+----
 
 NOTE: Normally setup is done through the designer.
 
 == Using the Control
 
-To use the control handle the https://docs.microsoft.com/en-us/dotnet/api/system.windows.control.click[Click] event.
+To get the status of the checkbox get the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.checkbox.checked[Checked] property.
+To set the status of the checkbox set the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.checkbox.checked[Checked] property.
 
-.Button Click Example
-[source,csharp]
-====
-//btnSave.Clicked += OnSave;
-void OnSave ( object sender, EventArgs e )
-{   
-   if (DataIsValid())
-   {
-      DialogResult = btnSave.DialogResult;
-      Close();
-   };
+NOTE: By default the control reacts to click requests automatically so there is no need to programmatically toggle the check state.
 
-   //Ignore the click
-   DialogResult = DialogResult.None;
+If the UI needs to update in response to a change in the check state of the control then handle the
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.checkbox.checkedchanged[CheckChanged] event.
 
-
-CAUTION: If the clicked button's `DialogResult` is set then the `Click` event automatically sets the form's `DialogResult` to the button's value. When the event handlers finish executing then if the form's `DialogResult` property is set then the form automatically closes.
-
-== Customizing the Control
-
-Buttons rarely need to be overridden but they do have some customization options.
-
-=== Cancel Buttons
-
-For cancellation buttons set the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.causesvalidation[CausesValidation] property to `false` so validation does not run.
-Refer to the section on link:validation.adoc[validation] for more information.
-
-=== Button Images
-
-Button's may have text, an image or both.
-To set the text use the standard https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.buttonbase.text[Text] property.
-To set the image use the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.buttonbase.image[Image] property.
-The layout when showing both text and an image is controlled by the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.buttonbase.textimagerelation[TextImageRelation] property.
-
-.Button with Image
+.Check Changed Example
 [source,csharp]
 ----
-void Configure ()
+//chkIsOnSale.CheckedChanged = OnSalesCheckedChanged;
+void OnSalesCheckedChanged ( object sender, EventArgs e )
+{   
+   if (chkIsOnSale.Checked)
+      EnableSalesControls();
+   else
+      DisableSalesControls();
+}
+----
+
+== Tri-State Control
+
+If the control needs to support three states then the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.checkbox.checked[Checked] property will no longer work because it is a boolean value.
+Use the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.checkbox.checkstate[CheckState] proeprty. 
+It works the same way but is an enumerated value.
+
+If it is necessary to handle change events then use the 
+
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.checkbox.checkstatechanged[CheckStateChanged] event instead of https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.checkbox.checkedchanged[CheckedChanged].
+
+.Tri-State Example
+[source,csharp]
+----
+//Initialization
+CheckBox chkYesNoMaybe = new CheckBox();
+chkYesNoMaybe.Text = "Yes/No/Maybe";
+
+//Handler
+//chkYesNoMaybe.CheckStateChanged = OnYesNoMaybeChanged;
+void OnYesNoMaybeChanged ( object sender, EventArgs e )
 {
-   Button saveButton = new SaveButton();
-   saveButton.Text = "Save";
-   saveButton.Image = SystemIcon.Shield;   
+   switch (chkYesNoMaybe.CheckState)
+   {
+      case CheckState.Checked:      //Yes
+      case CheckState.Unchecked:    //No
+      case CheckState.Indeterminate://Maybe
+   };
 }
 ----
 
@@ -87,5 +89,5 @@ void Configure ()
 
 link:readme.adoc[Windows Forms] +
 link:controls.adoc[Controls] +
-https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.button[Button Class] +
-link:validation.adoc[Validation] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.checkbox[CheckBox Class] +
+link:controls-radiobutton.adoc[RadionButton] +

@@ -13,6 +13,7 @@ Some of the more important controls are listed below.
 
 - link:controls-button.adoc[Button]
 - link:controls-checkbox.adoc[CheckBox]
+- link:controls-combobox.adoc[ComboBox]
 - https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.datagridview[DataGridView]
 - link:controls-label.adoc[Label]
 - link:controls-menu.adoc[MenuStrip]

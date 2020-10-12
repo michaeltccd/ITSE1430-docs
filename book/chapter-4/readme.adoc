@@ -22,6 +22,7 @@ The topics to be covered include:
 * link:controls.adoc[Controls]
 ** link:controls-button.adoc[Button]
 ** link:controls-checkbox.adoc[CheckBox]
+** link:controls-combobox.adoc[ComboBox]
 ** link:controls-label.adoc[Label]
 ** link:controls-listbox.adoc[ListBox]
 ** link:controls-menu.adoc[MenuStrip]
