@@ -1,0 +1,93 @@
+= Menu Control
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+???
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.button[Button] class allows the user to perform an action by cilcking it.
+Common usage examples include saving or cancelling a form, performing a search and confirming a message.
+
+CAUTION: Menu vs MenuStrip
+
+== Setting Up the Control
+
+To use a button place it onto the form.
+
+The following properties are most commonly set as part of the control.
+
+.Common Button Properties
+|===
+| Property | Purpose
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.button.dialogresult[DialogResult] | Sets the result to use when the button is clicked and the parent form is closed.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.buttonbase.text[Text] | Sets the text on the button.
+|===
+
+.Button Setup Example
+[source,csharp]
+====
+void Configure ()
+{
+   Button saveButton = new SaveButton();
+   saveButton.Text = "Save";
+   saveButton.DialogResult = DialogResult.OK;
+}
+====
+
+NOTE: Normally setup is done through the designer.
+
+== Using the Control
+
+To use the control handle the https://docs.microsoft.com/en-us/dotnet/api/system.windows.control.click[Click] event.
+
+.Button Click Example
+[source,csharp]
+====
+//btnSave.Clicked += OnSave;
+void OnSave ( object sender, EventArgs e )
+{   
+   if (DataIsValid())
+   {
+      DialogResult = btnSave.DialogResult;
+      Close();
+   };
+
+   //Ignore the click
+   DialogResult = DialogResult.None;
+
+
+CAUTION: If the clicked button's `DialogResult` is set then the `Click` event automatically sets the form's `DialogResult` to the button's value. When the event handlers finish executing then if the form's `DialogResult` property is set then the form automatically closes.
+
+== Customizing the Control
+
+Buttons rarely need to be overridden but they do have some customization options.
+
+=== Cancel Buttons
+
+For cancellation buttons set the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.causesvalidation[CausesValidation] property to `false` so validation does not run.
+Refer to the section on link:validation.adoc[validation] for more information.
+
+=== Button Images
+
+Button's may have text, an image or both.
+To set the text use the standard https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.buttonbase.text[Text] property.
+To set the image use the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.buttonbase.image[Image] property.
+The layout when showing both text and an image is controlled by the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.buttonbase.textimagerelation[TextImageRelation] property.
+
+.Button with Image
+[source,csharp]
+----
+void Configure ()
+{
+   Button saveButton = new SaveButton();
+   saveButton.Text = "Save";
+   saveButton.Image = SystemIcon.Shield;   
+}
+----
+
+== See Also
+
+link:readme.adoc[Windows Forms] +
+link:controls.adoc[Controls] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.button[Button Class] +
+link:validation.adoc[Validation] +

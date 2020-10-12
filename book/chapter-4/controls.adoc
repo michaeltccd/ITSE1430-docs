@@ -1,0 +1,72 @@
+= Controls
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+A control is the primary way a user interacts with the UI. 
+Controls may be passive, such as labels, or interactive, such as text boxes.
+All controls derive from the base type https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control[Control] or another derived type.
+
+Windows Forms ships with many controls out of the box. 
+Almost all these are provided by Windows directly.
+Some of the more important controls are listed below.
+
+- link:controls-button.adoc[Button]
+- link:controls-checkbox.adoc[CheckBox]
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.datagridview[DataGridView]
+- link:controls-label.adoc[Label]
+- link:controls-menu.adoc[MenuStrip]
+- link:controls-listbox.adoc[ListBox]
+- link:controls-radiobutton.adoc[RadioButton]
+- link:controls-textbox.adoc[TextBox]
+
+It is most common to derive from an existing control when slight changes are needed to the behavior.
+For example if a textbox should only accept digits then client code can handle the corresponding key events but it would be easier to derive a class from `TextBox` instead.
+
+.Deriving Controls
+[source,csharp]
+----
+//Not a complete implementation
+public class NumericTextBox : TextBox
+{   
+   protected override void OnKeyPress ( KeyPressEventArgs e )
+   {
+      if (!IsNumeric(e.KeyCode))
+         e.Handled = true;
+      else
+         base.OnKeyPress(e);
+   }
+}
+----
+
+If a control consists of other controls then a composite, or user, control is more approriate.
+User controls derive from https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.usercontrol[UserControl] and provide a blank control that other controls can be placed on.
+In the designer a user control is displayed like a form to allow for WYSIWYG functionality.
+
+If a control does not fit any of the above criteria then deriving from `Control` is appropriate.
+In this case the control may consist of child controls or it may store custom data and manually draw the UI using the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.onpaint[OnPaint] method. 
+This is most appropriate for custom UIs such as drawing graphical items.
+
+== Common Properties
+
+`Control` has a large set of members but some properties are very important to using controls.
+
+.Common Control Properties
+|===
+| Property | Purpose
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.name[Name] | Controls the programmatic name and, in the designer, the field name.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.text[Text] | The textual representation of the control, such as the text on a label or button.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.anchor[Anchor] | Used for link:form-layout.adoc[layout].
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.dock[Dock] | Used for link:form-layout.adoc[layout].
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.enabled[Enabled] | If false then the control is disabled.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.location[Location] | Position of the control in the parent.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.size[Size] | Size of the control.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.tabstop[TabStop] | Determines if the control can be tabbed to using the keyboard.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.visible[Visible] | Determines if the control is visible or not.
+|===
+
+== See Also
+
+link:readme.adoc[Windows Forms] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control[Control Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.usercontrol[UserControl Class] +
