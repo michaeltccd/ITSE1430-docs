@@ -1,0 +1,21 @@
+= Chapter 6: Collections
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+
+This chapter will cover collections in .NET.
+
+The topics to be covered include:
+
+* Arrays
+* Foreach statement
+* Lists and Collections
+* Generic Types
+* Interfaces
+
+== Table of Contents
+
+* [Arrays]
+* [Foreach]
+* [List Class]
+* link:..\..\archives\interfaces\interfaces.adoc[Interfaces] (Archive)
+* [Generic Types]

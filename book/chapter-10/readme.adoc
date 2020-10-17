@@ -1,0 +1,18 @@
+= Chapter 10: File IO
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+
+This chapter will cover using the file system.
+
+== Table of Contents
+
+* link:..\..\archives\io\files.adoc[File Class] (Archive)
+* [Directory Class]
+* link:..\..\archives\io\try-finally.adoc[IDisposable Interface] (Archive)
+* * link:..\..\archives\io\using-statement.adoc[Using Statement] (Archive)
+* [Reading and Writing]
+** [Buffered]
+** link:..\..\archives\io\stream-io.adoc[Streams] (Archive)
+* link:..\..\archives\io\files.adoc[Path Class] (Archive)
+
+

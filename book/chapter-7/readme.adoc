@@ -1,0 +1,11 @@
+= Chapter 7: Advanced Types
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+
+This chapter will cover advanced class concepts.
+
+== Table of Contents
+
+* Abstract classes
+* Static classes
+* Extension methods

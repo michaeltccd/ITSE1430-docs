@@ -1,0 +1,12 @@
+= Chapter 9: Error Handling
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+
+This chapter will cover reporting and handling errors.
+
+== Table of Contents
+
+* link:..\..\archives\error-handling\exceptions.adoc[Exceptions] (Archive)
+* link:..\..\archives\error-handling\throwing-exceptions.adoc[Raising Errors] (Archive)
+* link:..\..\archives\io\try-catch.adoc[Try Catch] (Archive)
+* link:..\..\archives\error-handling\handling-exceptions.adoc[Error Handling] (Archive)

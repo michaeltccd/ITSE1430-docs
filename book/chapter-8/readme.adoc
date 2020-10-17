@@ -1,0 +1,13 @@
+= Chapter 8: LINQ
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+
+This chapter will cover Language Integrated Natural Queries (LINQ).
+
+== Table of Contents
+
+* LINQ
+* Lambda Expressions
+* Expression Bodies
+* Anonymous Types
+
