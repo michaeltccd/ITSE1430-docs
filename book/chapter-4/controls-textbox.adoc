@@ -1,33 +1,32 @@
 = TextBox Control
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
 The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.textbox[TextBox] control provides a way for the user to enter freeform text.
-
-???
+Of the input controls it is the easiest to use.
 
 == Setting Up the Control
 
-To use a button place it onto the form.
+To use the control place it onto the form.
 
 The following properties are most commonly set as part of the control.
 
 .Common Button Properties
 |===
 | Property | Purpose
-| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.button.dialogresult[DialogResult] | Sets the result to use when the button is clicked and the parent form is closed.
-| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.buttonbase.text[Text] | Sets the text on the button.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.textbox.multiline[Multiline] | Enables a multiline control.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.textbox.placeholdertext[PlaceholderText] | Sets the text on the control until the user enters a value.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.textbox.text[Text] | Gets or sets the text on the control.
 |===
 
-.Button Setup Example
+.TextBox Setup Example
 [source,csharp]
 ----
 void Configure ()
 {
-   Button saveButton = new SaveButton();
-   saveButton.Text = "Save";
-   saveButton.DialogResult = DialogResult.OK;
+   TextBox txtName = new TextBox();
+   txtName.PlaceholderText = "Full name";
 }
 ----
 
@@ -35,33 +34,93 @@ NOTE: Normally setup is done through the designer.
 
 == Using the Control
 
-To use the control handle the https://docs.microsoft.com/en-us/dotnet/api/system.windows.control.click[Click] event.
+To use the control get or set the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.textbox.text[Text] property.
+What is in this property is shown in the control.
 
-.Button Click Example
+The more interesting aspect is reacting to the user's input.
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.textchanged[TextChanged] event is raised when https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.textbox.text[Text] changes. 
+This event can be used to react to the user entering a value.
+
+.TextBox Text Changed Example
 [source,csharp]
 ----
-//btnSave.Clicked += OnSave;
-void OnSave ( object sender, EventArgs e )
-{   
-   if (DataIsValid())
-   {
-      DialogResult = btnSave.DialogResult;
-      Close();
-   };
-
-   //Ignore the click
-   DialogResult = DialogResult.None;
+//txtName.TextChanged += OnNameChanged;
+void OnNameChanged ( object sender, EventArgs e )
+{       
+   if (!IsNameUnique(txtName.Text))
+      MessageBox.Show("Name must be unique");
 }
 ----
 
+The event is raised after the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.textbox.text[Text] property is updated which generally does not happen until after the control loses focus.
+Therefore this event is not sufficient for preventing the user from entering values.
+
+=== Preventing Input
+
+If a control needs to prevent the user from entering certain values, such as letters, then the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.keypress[KeyPress] event can be used instead. 
+This event is raised when the user presses a key.
+The event can be used to prevent a character from being added to the control.
+
+.Prevent Key Press
+[source,csharp]
+----
+//txtName.KeyPress += PreventDigits;
+void PreventDigits ( object sender, KeyPressEventArgs e )
+{
+   switch (e.KeyChar)
+   {
+      case '0':
+      case '1':
+      ...
+      case '9': e.Handled = true; break;
+   };
+}
+----
+
+NOTE: There are other keyboard events that can be used to react to key presses but they are generally more difficult to use properly.
+
 == Customizing the Control
 
-multiline
-formatted - RTF
+One common use for a https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.textbox[TextBox] is for multiline descriptions.
+By default the control allows a single line. Pressing `Enter` moves to the next control or accept button.
+
+To allow multiple lines to be entered then either use the smart tag and enable the multiline option or set the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.textbox.multiline[Multiline] property to `true`. 
+Ensure the control is resized to allow for multiple lines to be entered.
+
+.Multiline Example
+[source,csharp]
+----
+void Configure ()
+{
+   TextBox txtDescription = new TextBox();
+
+   //Normally done in the designer
+   txtDescription.Multiline = true;
+}
+----
+
+=== Formatted Text
+
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.textbox[TextBox] does not support formatted input such as bold, different fonts, etc.
+To support this use the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.richtextbox[RichTextBox] control instead. 
+It provides more advanced functionality but is harder to use so only use it if needed.
+
+In addition to these controls there are other specialized text input controls that can be used for specific scenarios.
+
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.datetimepicker[DateTimePicker] for selecting dates and times.
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.maskedtextbox[MaskedTextBox] for masked input.
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.monthcalendar[MonthCalendar] for a calendar.
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.numericupdown[NumericUpDown] for numeric input with a spinner.
+
+Refer to the full documentation for the available controls.
 
 == See Also
 
 link:readme.adoc[Windows Forms] +
 link:controls.adoc[Controls] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.datetimepicker[DateTimePicker] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.maskedtextbox[MaskedTextBox] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.monthcalendar[MonthCalendar] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.numericupdown[NumericUpDown Class] +
 https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.richtextbox[RichTextBox Class] +
 https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.textbox[TextBox Class] +

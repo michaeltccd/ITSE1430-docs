@@ -1,69 +1,164 @@
-= Menu Control
+= MenuStrip Control
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
-The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.menu[Menu] control is used to display a menu to the user, generally at the top of the screen.
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.menustrip[MenuStrip] control is used to display a menu to the user, generally at the top of the screen.
 
-???
+WARNING: https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.menustrip[MenuStrip] is the correct control to use for menus. Do not use the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.menu[Menu] control. It is deprecated and will be removed in a future version.
 
-CAUTION: Menu vs MenuStrip
+Unlike the other controls it is a container with little functionality of its own other than managing the child https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripitem[menu items].
 
 == Setting Up the Control
 
-To use a button place it onto the form.
+To use the control place it onto the form.
+The control will dock to the top of the form.
+Additionally the control will show up in the component drawer at the bottom of the screen.
+Use the designer in the form to edit the menu items.
+Use the component drawer to set properties of the menu.
 
 The following properties are most commonly set as part of the control.
 
-.Common Button Properties
+.Common MenuStrip Properties
 |===
 | Property | Purpose
-| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.button.dialogresult[DialogResult] | Sets the result to use when the button is clicked and the parent form is closed.
-| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.buttonbase.text[Text] | Sets the text on the button.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.menustrip.canoverflow[CanOverflow] | Determines what happens when there are too many menu items to show.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.menustrip.imagelist[ImageList] | List of images shown in the menu.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.menustrip.stretch[Stretch] | Determines if the menu takes up the entire container area.
 |===
-
-.Button Setup Example
-[source,csharp]
-----
-void Configure ()
-{
-   Button saveButton = new SaveButton();
-   saveButton.Text = "Save";
-   saveButton.DialogResult = DialogResult.OK;
-}
-----
 
 NOTE: Normally setup is done through the designer.
 
-== Using the Control
+=== Creating Child Menus
 
-To use the control handle the https://docs.microsoft.com/en-us/dotnet/api/system.windows.control.click[Click] event.
+A menu is a collection of https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripitem[ToolStripItem] instances. 
+For a menu the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripmenuitem[ToolStripMenuItem] class is normally used.
+Each item is a top level menu.
+Each item may have child items resulting in a hierarchy of items.
 
-.Button Click Example
+NOTE: Use the designer to create the menu structure. It is much easier than doing it programmatically.
+
+To add a menu item to the root add the appropriate https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripitem[ToolStripItem] to the menu's https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstrip.items[Items] property.
+To add a child menu to an existing menu item use the child item's https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripdropdownitem.dropdownitems[DropDownItems] property.
+
+.Defining a Menu
 [source,csharp]
 ----
-//btnSave.Clicked += OnSave;
-void OnSave ( object sender, EventArgs e )
-{   
-   if (DataIsValid())
-   {
-      DialogResult = btnSave.DialogResult;
-      Close();
-   };
+void BuildMenu ( MenuStrip menu )
+{
+   //File menu
+   var miFile = new ToolStripMenuItem();
+   miFile.Text = "&File";
+   menu.Items.Add(miFile);
 
-   //Ignore the click
-   DialogResult = DialogResult.None;
+   // File\Exit menu item
+   var miFileExit = new ToolStripMenuItem();
+   miFileExit.Text = "Exit";
+   miFile.DropDownItems.Add(miFileExit);
+
+   //Help menu
+   var miHelp = new ToolStripMenuItem();
+   miHelp.Text = "&Help";
+   menu.Items.Add(miHelp);
+
+   // Help\About menu item
+   var miHelpAbout = new ToolStripMenuItem();
+   miHelpAbout.Text = "About";
+   miHelp.DropDownItems.Add(miHelpAbout);
 }
 ----
 
-CAUTION: If the clicked button's `DialogResult` is set then the `Click` event automatically sets the form's `DialogResult` to the button's value. When the event handlers finish executing then if the form's `DialogResult` property is set then the form automatically closes.
+Notice in the example the use of the ampersand (`&`).
+This is an accelerator key. 
+Under older versions of Windows the letter is shown with an underscore.
+In newer versions of Windows the user must, by default, press the `Alt` key to see them.
+
+When the menu is active, pressing the corresponding accelerator key automatically expands or clicks the corresponding menu item.
+For the top level menu the user must press `Alt` + the accelerator to get the menu to pop up.
+
+CAUTION: There is no protection around having duplicate accelerators. Windows will use the first one it finds.
+
+== Using the Control
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.menustrip[MenuStrip] control generally just acts as a container for menu items and therefore does not need any code.
+
+When a user clicks a menu item then the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripitem.click[Click] event is raised. 
+Handle this event to react to the user clicking the menu item.
+
+.Menu Click Example
+[source,csharp]
+----
+//miFileExit.Click += OnFileExit;
+void OnFileExit ( object sender, EventArgs e )
+{   
+   if (ConfirmExit())
+      Close();
+}
+----
 
 == Customizing the Control
 
-context menu
-menu images
-shortcut keys
-drop downs
+=== Menu Images
+
+A menu item can have an image to help convey the meaning of the item. 
+To add an image to a menu item set the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripitem.image[Image] property on the item.
+
+When setting an image the following properties may also need to be adjusted.
+
+.Menu Item Image Properties
+|===
+| Property | Purpose
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripitem.imagealign[ImageAlign] | The alignment of the image relative to the item.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripitem.displaystyle[DisplayStyle] | Determines if the image, text or both are displayed for the item.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripitem.textalign[TextAlign] | The alignment of the text relative to the item.
+|===
+
+The following example sets the image to a custom graphics and hides the text.
+
+.Menu Item Image Example
+[source,csharp]
+----
+miFileSave.Image = Bitmap.FromFile("save.png");
+miFileSave.DisplayStyle = ToolStripItemDisplay.Image;
+----
+
+=== Shortcut Keys
+
+Being able to navigate using the keyboard is important for many users. 
+Menus can be overly complex so it is often a good idea to provide shortcut
+keys that the user can press to quickly select the command.
+
+Each menu item can be assigned a shortcut key using the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripmenuitem.shortcutkeys[ShortcutKeys] property.
+This property is set to the key, and optional modifiers, that must be pressed to activate the menu item.
+If the user presses the shortcut key while the form containing the menu is shown then the menu item is automatically clicked.
+
+By default setting the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripmenuitem.shortcutkeys[ShortcutKeys] property also shows the shortcut key in the menu.
+To disable this set the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripmenuitem.showshortcutkeys[ShowShortcutKeys] property to `false`.
+
+.Showing a Shortcut Key
+[source,csharp]
+----
+miHelpAbout.ShortcutKeys = Keys.F1;
+----
+
+=== Non-Standard Menu Items
+
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.menustrip[MenuStrip] derives from https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstrip[ToolStrip] which provides almost all the functionality of the control. 
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstrip[ToolStrip] is used to display toolbars.
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstrip[ToolStrip] contains a collection of https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripitem[ToolStripItem] items.
+Out of the box the following items are supported.
+
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripbutton[ToolStripButton] - Displays a button.
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripdropdownitem[ToolStripDropDownItem] - Displays a combo box.
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstriplabel[ToolStripLabel] - Displays a label.
+- https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripseparator[ToolStripSeparator] - Displays a horizontal separator.
+
+Any https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripitem[ToolStripItem] derived type can be placed onto a https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstrip[ToolStrip] and, by extension, https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.menustrip[MenuStrip].
+
+== Context Menus
+
+A context menu can be shown using the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.contextmenustrip[ContextMenuStrip] class.
+It works like https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.menustrip[MenuStrip] but limited to a temporary menu.
 
 == See Also
 
@@ -71,3 +166,4 @@ link:readme.adoc[Windows Forms] +
 link:controls.adoc[Controls] +
 https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.contextmenustrip[ContextMenuStrip Class] +
 https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.menustrip[MenuStrip Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.toolstripitem[ToolStripItem Class] +

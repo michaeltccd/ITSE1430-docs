@@ -10,7 +10,7 @@ Use the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.linklab
 
 == Setting Up the Control
 
-The only property that needs to be set on the control is https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.buttonbase.text[Text].
+The only property that needs to be set on the control is https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.text[Text].
 
 .Label Setup Example
 [source,csharp]

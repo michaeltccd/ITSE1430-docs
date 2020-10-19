@@ -1,70 +1,247 @@
 = ListBox Control
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
 The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox[ListBox] class allows the user to select from a list of items.
-
-???
+The list of items is always shown, unlike the link:controls-listbox.adoc[listbox].
+The list can support single or multiple selection.
 
 == Setting Up the Control
 
-To use a button place it onto the form.
+To use a listbox place it onto the form.
 
 The following properties are most commonly set as part of the control.
 
 .Common Button Properties
 |===
 | Property | Purpose
-| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.button.dialogresult[DialogResult] | Sets the result to use when the button is clicked and the parent form is closed.
-| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.buttonbase.text[Text] | Sets the text on the button.
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.datasource[DataSource] | Used for data binding (see below).
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.displaymember[DisplayMember] | Used for data binding (see below).
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.dropdownstyle[DropDownStyle] | Determines how the list is rendered (see below).
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.items[Items] | Used for data binding (see below).
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selectedindex[SelectedIndex] | Gets the index of the selected item (see below).
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selecteditem[SelectedItem] | Gets the selected item (see below).
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selectedtext[SelectedText] | Gets the text of the selected item (see below).
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selectedvalue[SelectedValue] | Gets the value of the selected item (see below).
+| https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.valuemember[ValueMember] | Used for data binding (see below).
 |===
 
-.Button Setup Example
+.Listbox Setup Example
 [source,csharp]
 ----
 void Configure ()
 {
-   Button saveButton = new SaveButton();
-   saveButton.Text = "Save";
-   saveButton.DialogResult = DialogResult.OK;
+   Listbox cbStates = new listbox();
+   cbStates.Items.Add("Alabama");
+   cbStates.Items.Add("Alaska");
 }
 ----
 
 NOTE: Normally setup is done through the designer.
 
-== Using the Control
+Unlike the other controls the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.text[Text] property is not used for this control.
+Instead items must be added to the control so they can be selected.
 
-To use the control handle the https://docs.microsoft.com/en-us/dotnet/api/system.windows.control.click[Click] event.
+== Data Binding
 
-.Button Click Example
+To use the control items must be added to its list, generally known as data binding.
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.items[Items] property is a collection of objects. 
+Any object can be added to the collection although normally a single type is used.
+The control calls the https://docs.microsoft.com/en-us/dotnet/api/system.object.tostring[ToString] method on the object, by default, to get the textual representation.
+
+Data binding can be done either declaratively, through the designer, or programmatically in code depending upon need.
+Additionally the control supports data binding using either simple or complex binding.
+
+=== Declarative Data Binding
+
+Declarative binding is the easiest and is done using the designer. 
+Use either the smart tag on the control or edit the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.items[Items] property to bring up the `Items Editor`.
+In the editor enter the list of strings to show in the control, each on their own line.
+
+The designer will add each string to the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.items[Items] property.
+
+In many cases the bound data is instances of complex types. 
+In this case the designer is not going to work.
+Instead the data needs to be bound programmatically and to do that there are two different ways depending upon the data being bound.
+
+=== Binding Using Items
+
+The first approach is to continue to use the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.items[Items] property.
+This is the simplest approach but limited.
+Since https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.items[Items] is a collection of objects any data can be added to it.
+In order to display the data properly ensure the https://docs.microsoft.com/en-us/dotnet/api/system.object.tostring[ToString] method on the instance returns a user-friendly string.
+
+.Data Binding with Items
 [source,csharp]
 ----
-//btnSave.Clicked += OnSave;
-void OnSave ( object sender, EventArgs e )
-{   
-   if (DataIsValid())
-   {
-      DialogResult = btnSave.DialogResult;
-      Close();
-   };
+//Assume a class called State with a Name property and ToString returns the Name
 
-   //Ignore the click
-   DialogResult = DialogResult.None;
+//Option 1: Add one at a time if a transformation is needed
+foreach (var state in states)
+   cbStates.Items.Add(state);
+
+//Option 2: Add them all at once
+cbStates.Items.AddRange(states);
+----
+
+CAUTION: Ensure the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.items[Items] property is empty before adding items otherwise the items will be duplicated.
+
+=== Binding Using a Data Source
+
+The second approach to data binding is to use the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.datasource[DataSource] property.
+This is the most advanced approach with some limitations but provides the best flexibility.
+
+CAUTION: If both https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.datasource[DataSource] and https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.items[Items] is set then https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.datasource[DataSource] will override whatever is in https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.items[Items].
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.datasource[DataSource] property requires an array or list of objects.
+At runtime if the object being assigned to the property does not implement the appropriate interfaces then a runtime error occurs.
+
+.Data Binding with DataSource
+[source,csharp]
+----
+cbStates.DataSource = states;
+cbStates.DisplayMember = nameof(Employee.Name);
+cbStates.ValueMember = nameof(Employee.Id);
+----
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.datasource[DataSource] property provides the values to choose from but since a complex object is often used the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.displaymember[DisplayMember] and https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.valuemember[ValueMember] properties are also generally set.
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.displaymember[DisplayMember] property specifies the name of the property that is used to show the textual value in the list. In the above example it would be the `Name` property. This eliminates the need for a custom https://docs.microsoft.com/en-us/dotnet/api/system.object.tostring[ToString] method.
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.valuemember[ValueMember] property specifies the name of the property that is used for the value of the item. This is useful if you want to use a value different than the instance itself. In the above example the `Id` property is the value of the list item.
+
+NOTE: Normally a https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.bindingsource[BindingSource] is used instead of an array or list directly. This has many benefits but is beyond the scope of this course.
+
+== Getting or Setting the Selected Item
+
+Once data is bound to the control then code can get or set the currently selected item, if any, from the list.
+How this is done depends upon how the data is bound.
+
+=== SelectedIndex Property
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selectedindex[SelectedIndex] property specifies the zero-based index of the selected item, if any.
+It works in all cases but when using https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.datasource[DataSource] it may not be possible to map the index back to a value.
+
+.Using SelectedIndex
+[source,csharp]
+----
+Employee GetSelectedItem ()
+{
+   var index = cbStates.SelectedIndex;
+   if (index < 0)
+      return null;
+
+   //Not safe...
+   var states = cbStates.DataSource as State[];
+
+   return states != null ? states[index] : null;
 }
 ----
 
-CAUTION: If the clicked button's `DialogResult` is set then the `Click` event automatically sets the form's `DialogResult` to the button's value. When the event handlers finish executing then if the form's `DialogResult` property is set then the form automatically closes.
+=== SelectedItem Property
+
+If the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.items[Items] property was used to bind the data then the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selecteditem[SelectedItem] property can be used to retrieve or set it.
+
+.Using SelectedItem
+[source,csharp]
+----
+Employee GetSelectedItem ()
+{
+   return cbStates.SelectedItem as State;
+}
+----
+
+NOTE: When setting the property it is set by finding the corresponding item in the control using the equality rules of the type.
+
+=== SelectedValue Property
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selectedvalue[SelectedValue] property is only useful when using https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.datasource[DataSource]. 
+The value matches the property of the selected item as defined by https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.valuemember[ValueMember]
+
+.Using SelectedValue
+[source,csharp]
+----
+Employee GetSelectedItem ()
+{
+   var value = cbStates.SelectedValue;
+   if (value != null &&)
+   {
+      var id = (int)value;
+
+      return FindState(cbStates, id);
+   };
+
+   return null;
+}
+----
+
+== Responding to Selection Changes
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selectedindexchanged[SelectedIndexChanged] event notifies code when the selected item has changed.
+It is raised whether the data is changed programmatically or by the user.
+
+.ListBox SelectedIndexChanged Example
+[source,csharp]
+----
+//cbStates.SelectedIndexChanged += OnStateSelected;
+void OnStateSelected ( object sender, EventArgs e )
+{   
+   var state = GetSelectedItem();
+   if (state != null)
+      EnableOptions();
+}
+----
 
 == Customizing the Control
 
-sorting
-selection
-multi select
+=== Sorting
+
+By default items are shown in the order they were added. 
+When working with a list of items it is helpful to instead sort the item.
+This can be done using the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.sorted[Sorted] property.
+When set to `true` the items are sorted before they are rendered.
+
+.Sorting Items
+[source,csharp]
+----
+void PopulateList ( State[] states )
+{
+   cbStates.Items.AddRange(states);
+
+   //Normally set in the designer
+   cbStates.Sorted = true;
+}
+----
+
+CAUTION: Sorting items in the control is slow. Every time an item is added the items are resorted. Consider sorting the list before adding it to the control instead.
+
+=== Multiple Selections
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox[ListBox] class supports multiple selection including using the `Shift` and `Control` keys to select ranges of items.
+To enable multiple selection set the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selectionmode[SelectionMode] property to https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.selectionmode[SelectionMode.MultiSimple] or https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.selectionmode[SelectionMode.MultiExtended].
+
+.Multiple Selection Support
+[source,csharp]
+----
+void PopulateList ( State[] states )
+{   
+   cbStates.Items.AddRange(states);
+
+   //Normally set in the designer
+   cbStates.SelectionMode = SelectionMode.MultiExtended
+}
+----
+
+When a https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox[ListBox] supports multiple selection it is no longer sufficient to use the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selecteditem[SelectedItem] or https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selectedindex[SelectedIndex] properties.
+Instead using the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selecteditems[SelectedItems] and https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox.selectedindices[SelectedIndices], respectively.
+
+The only difference between the properties is that the former properties only return a single value while the latter properties return a list of items or indices.
 
 == See Also
 
 link:readme.adoc[Windows Forms] +
 link:controls.adoc[Controls] +
-https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox[ListBox Class] +
 link:controls-combobox.adoc[ComboBox Control] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.bindingsource[BindingSource] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listbox[ListBox Class] +

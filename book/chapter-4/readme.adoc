@@ -26,7 +26,6 @@ The topics to be covered include:
 ** link:controls-label.adoc[Label]
 ** link:controls-listbox.adoc[ListBox]
 ** link:controls-menu.adoc[MenuStrip]
-** link:controls-radiobutton.adoc[RadioButton]
 ** link:controls-textbox.adoc[TextBox]
 * [Child Windows]
 ** [MessageBox]
