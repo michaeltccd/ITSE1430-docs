@@ -1,0 +1,140 @@
+= Child Forms
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+Most applications have a single main window (form). 
+The main window shows the user the primary information for the application.
+Any data collection or additional information is shown using child forms.
+
+Main Form::
+   The main window of the application. The main window normally has a menu and shows up in the taskbar.
+Child Form::
+   Any form that is not the main form. Generally does not show up in the taskbar but otherwise behaves like the main form.
+Parent Form::
+   Any form that is the parent of another form. The main window is normally the parent form of all child forms.
+
+NOTE: There is no difference between the main form and a child form other than how it is shown. Any form can be a main or child form.
+
+In the special case of a simple confirmation or informational form then consider using the https://docs.microsoft.com/en-us/dotnet/api/system.windows.messagebox[MessageBox] class instead.
+
+== Showing a Child Form
+
+To show a child form it first must be created and configured.
+Once that is completed then the form can be shown.
+
+To show a child use either the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.showdialog[ShowDialog] or https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.show[Show] methods.
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.showdialog[ShowDialog] method shows the form modal.
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.show[Show] method shows the form modeless.
+
+Modal::
+   Form is shown and must be closed before interacting with the parent form.
+Modeless::
+   Form is shown and user may interact with either the parent or child form interchangeably.
+
+=== Modal Child
+
+Modal forms are most useful for forcing the user to provide or confirm information before being allowed to continue. Examples include deleting an item, closing a window before changes have been saved or opening a new document.
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.showdialog[ShowDialog] method is a blocking call.
+Until the method returns the child form is shown to the user and they are limited to interacting only with it.
+
+.Showing a Modal Form
+[source,csharp]
+----
+var form = new OpenForm();
+form.ShowDialog(this);
+----
+
+The method accepts an optional parameter that is the parent form.
+This should always be set to the form that is currently executing the code so the appropriate parent-child relationship is set up.
+
+When the method returns it returns the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.dialogresult[DialogResult] from the form.
+The returned value is determined by the child form and is generally set by the child form using the corresponding button's https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.button.dialogresult[DialogResult] property.
+
+.Responding to a Child Form
+[source,csharp]
+----
+var form = new OpenForm();
+if (form.ShowDialog(this) == DialogResult.OK)
+{
+   var filename = form.SelectedFileName;
+};
+----
+
+NOTE: The return type is limited to https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.dialogresult[DialogResult] so any data that must be passed back to the parent form must be done using public properties.
+
+=== Modeless Child
+
+Forcing a user to interact with a child form can break the flow of work so modeless forms are preferable when displaying extra information that may be useful to the user or providing an alternative UI for collecting information.
+The tool windows in Visual Studio are examples of modeless windows.
+
+To show a child form modeless use the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.show[Show] method.
+The method requires the parent form.
+The method has no return value and does not block.
+The child form is shown to the user along with the main form.
+The user can interact with either form.
+Because there is no management of the lifetime of the child form the parent and child must communicate using other means such as events or by using shared objects, if interactions are needed.
+
+.Showing a Modeless Form
+[source,csharp]
+----
+var form = new OutputForm();
+form.Show(this);
+
+//Both forms are now visible
+----
+
+The main window does not get notified if the child form closes.
+If this is needed then the easiest approach is to have the parent form listen for the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.closed[Closed] event.
+
+.Showing a Modeless Form
+[source,csharp]
+----
+var form = new OutputForm();
+form.Show(this);
+miShowOutput.Enabled = false;
+
+//Handle the close event and enable the menu item again
+form.Closed += OnOutputClosed;
+----
+
+NOTE: Parent forms are responsible for tracking the visibilty of a child form. If only once instance of a child form should be shown at any one time then the parent form must enforce this manually.
+
+== About Form
+
+An about box is a common requirement in an application.
+While the form can be built manually Visual Studio ships with a basic about box template.
+
+To add an about box to a project do the following.
+
+. Right click the Windows Forms project.
+. Select `Add \ New Item`.
+. In the `Add New Item` dialog find the `About Box` template.
+. Adjust the file name and click `OK` to add it to the project.
+
+The generated file displays a custom form that can be used as an about box.
+
+=== Customizations
+
+The information shown in the form is customizable.
+Most of the data comes from the assembly's metadata.
+
+To change the assembly metadata do the following.
+
+. Right click the Windows Forms project.
+. Select `Properties` to bring up the properties document. This is not the `Properties` window.
+. Depending upon the project type go to either the `Packages` tab or the `Application` tab and then `Assembly Information`.
+. In the information form set the fields accordingly.
+  - Product - The name of the product.
+  - Company - The name of the company.
+  - Version - The version of the product.
+
+== See Also
+
+link:readme.adoc[Windows Forms] +
+link:message-box.adoc[MessageBox] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.button[Button Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.dialogresult[DialogResult Enumeration] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form[Form Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.messagebox[MessageBox Class] +

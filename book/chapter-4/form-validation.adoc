@@ -1,0 +1,31 @@
+= Form Validation
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+== Control Validation
+
+Validating
+Validated
+
+== Form Validation
+
+autovalidate - focus
+ValidateChildren
+
+== Cancelling Validation
+
+Focus
+validation changes
+
+== Error Provider
+
+Properties window
+GetError/SetError
+
+Clearing errors
+
+== See Also
+link:readme.adoc[Windows Forms] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control[Control Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form[Form Class] +

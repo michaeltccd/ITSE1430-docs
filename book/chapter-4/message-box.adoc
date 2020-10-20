@@ -1,0 +1,80 @@
+= Message Box
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0 
+:toc:
+
+It is common in applications to display confirmation or error messages.
+Windows has a built in UI for handling these types of messages.
+In Windows Forms the https://docs.microsoft.com/en-us/dotnet/api/system.windows.messagebox[MessageBox Class] displays this UI.
+
+The class has a single method https://docs.microsoft.com/en-us/dotnet/api/system.windows.messagebox.show[Show] that displays the message box.
+The message box is always shown modally and returns back https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.dialogresult[DialogResult] for the button the user clicked.
+
+.Show a Message Box
+[source,csharp]
+----
+bool ShowConfirmation ( string message, string title )
+{
+   if (MessageBox.Show(this, message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+      return true;
+
+   return false;
+}
+----
+
+NOTE: This class cannot be instantiated. Call the method directly on the type.
+
+As can be seen in the example https://docs.microsoft.com/en-us/dotnet/api/system.windows.messagebox.show[Show] has a lot of parameters and there are many overloads.
+In the simplest overload pass the message to be shown. The other values will default.
+
+.Simple Message Box
+[source,csharp]
+----
+void ShowMessage ( string message )
+{
+   MessageBox.Show(message);
+}
+----
+
+In parameter order the following values can be set.
+
+.MessageBox Show Parameters
+|===
+| Parameter | Purpose
+| owner | The parent form. Optional but always first.
+| message | The message to show. Always required.
+| title | The title of the message box.
+| button | The optional buttons to show. The default is `OK`.
+| icon | The optional icon to show.
+|===
+
+`button` is the enumerated type https://docs.microsoft.com/en-us/dotnet/api/system.windows.messageboxbutton[MessageBoxButton] and contains a combination of the various buttons allowed including `OK`, `Cancel`, `Yes`, `No` and `Retry`. 
+Not surprisingly these line up with the possible values of https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.dialogresult[DialogResult].
+The buttons cannot be customized beyond the supported combinations.
+
+`icon` is the enumerated type https://docs.microsoft.com/en-us/dotnet/api/system.windows.messageboximage[MessageBoxImage] and allows a single, standard Windows icon to be shown such as an error, warning or help.
+
+== Task Dialogs
+
+Starting in Windows Vista there is a more modern UI for showing messages using the https://docs.microsoft.com/en-us/windows/win32/controls/task-dialogs[TaskDialog] library.
+This library allows for commands, links, buttons and other more modern features.
+Unfortunately it comes with extra complexity and can be overkill for simple messages.
+The original goal was to replace the legacy message box but most applications have not switched over because it is more complex.
+
+Support for https://docs.microsoft.com/en-us/windows/win32/controls/task-dialogs[TaskDialog] depends on the platform.
+
+.NET Framework 4.x::
+   Not formally support. Microsoft used to provide a library called `Win32 Api Code Pack` that added support for it, and other Vista controls. Unfortunately they no longer manage it.
+.NET Core::
+   Not formally supported.
+.NET 5::
+   Formally https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.taskdialog[supported].
+
+== See Also
+
+link:readme.adoc[Windows Forms] +
+link:child-forms.adoc[Child Forms] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.dialogresult[DialogResult Enumeration] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.messagebox[MessageBox Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.taskdialog[.NET 5 TaskDialog Class] +
+https://docs.microsoft.com/en-us/windows/win32/controls/task-dialogs[Win32 TaskDialog] +
