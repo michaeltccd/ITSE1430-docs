@@ -1,31 +1,180 @@
 = Form Validation
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
+
+As a general rule of thumb the UI should enforce as much of the per-control validation rules as possible.
+In all cases, however, the business layer should enforce all validation rules of an object.
+This is important because UIs can change and a UI may inadvertently skip validation altogether.
+Ensuring the business layer also does validation helps prevent bad data from getting into the system.
+
+Windows Forms has limited support for validating controls.
+It has sufficient support to display basic validation information to the user.
+If a more advanced UI validation is desired then a third party library is needed.
 
 == Control Validation
 
-Validating
-Validated
+At the lowest level is control validation.
+Control validation is used to ensure that any data provided by the user into a single control is valid.
+Common things to validate during control validation include:
 
-== Form Validation
+- Fields that are required
+- Ranges of values
+- Formatting of values
 
-autovalidate - focus
-ValidateChildren
+To validate a control use the control's https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.validating[Validating] event.
 
-== Cancelling Validation
+.Validating Example
+[source,csharp]
+----
+//txtName.Validating += OnValidateName;
+private void OnValidateName ( object sender, CancelEventArgs e )
+{
+   var control = sender as Control;
 
-Focus
-validation changes
+   if (String.IsNullOrEmpty(contro.Text))
+   {
+      errorMessage = "Name is required";
+      e.Cancel = true;
+   };
+}
+----
+
+NOTE: The event is normally configured in the designer.
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.validating[Validating] event accepts the standard https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.canceleventargs[CancelEventArgs] argument type.
+By default a contro is considered valid.
+To indicate the control is not valid then set the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.canceleventargs.cancel[Cancel] property to `true`.
+After the event handlers are called, if this property is `true`, then the control is considered invalid.
+
+There is also a post event https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.validated[Validated] but this event occurs after validating the control. 
+It is generally best used when changing one control requires revalidating other controls, for example when working with range values. 
+
+== How Validation Works
+
+To understand the limitations of control validation it is first necessary to understand how validation works. Imagine a form that has a `Name` textbox and an `OK` button. Assume that the textbox has input focus. Validation is triggered when the textbox loses focus to the button. In other words a control is validated only when it is about to be deactivated.
+
+When a control has focus it is receiving input from the user. When the user navigates away from the control Windows raises the following events.
+
+. https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.enter[Enter] on New
+. https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.gotfocus[GotFocus] on New
+. https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.leave[Leave] on Old
+. https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.validating[Validating] on Old
+. https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.validated[Validated] on Old
+. https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.lostfocus[LostFocus]  On Old
+
+`New` refers to the new control getting focus. `Old` refers to the old control losing focus.
+
+CAUTION: The order is slightly different depending upon whether the mouse or keyboard is used.
+
+If the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.validating[Validating] event is canelled then the remaining events are not raised.
 
 == Error Provider
 
-Properties window
-GetError/SetError
+When a validation error is detected it is important to notify the user. While an application could display a message box or similiar UI this is generally obtrusive. It is preferable to change the UI in some way to indicate the control is invalid. The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.errorprovider[ErrorProvider] component can be used for this.
 
-Clearing errors
+NOTE: The error provider is the only built in error notification for Windows Forms but other approaches may also be used from third party libraries.
+
+To use https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.errorprovider[ErrorProvider] drag and drop it onto the form. It is a component and appears in the component area of the form. 
+
+By itself it does nothing. To use the component it is necessary to programmatically set the error for a control, generally during validation. To set the error use the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.errorprovider.seterror[SetError] method. This method requires the control to associate the error with and the error message.
+
+.Validation with Error Provider
+[source,csharp]
+----
+//txtName.Validating += OnValidateName;
+private void OnValidateName ( object sender, CancelEventArgs e )
+{
+   var control = sender as Control;
+
+   if (String.IsNullOrEmpty(contro.Text))
+   {
+      errorProvider.SetError(control, "Name is required");
+      e.Cancel = true;
+   } else
+   {
+      errorProvider.SetError(control, "");
+   };
+}
+----
+
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.errorprovider[ErrorProvider] uses a dictionary to map error messages to a control. If a control has an error message then the component shows an error icon next to the control. The icon has a tooltip that shows the error message.
+
+To remove the error icon call the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.errorprovider.seterror[SetError] method again with an empty string.
+
+CAUTION: Do not use the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.errorprovider.clear[Clear] mtthod because this will remove all errors from all controls.
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.errorprovider[ErrorProvider] component has a few customizations including whether to blink the icon when it is first set and the icon to use. For anything more advanced a custom component is needed.
+
+When in the designer and the `Properties` window is open you may notice a new property on controls called `Error on ...`. https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.errorprovider[ErrorProvider] is an example of an extender control. The designer enumerates the methods of the component and any `GetX\SetS` methods are treated as extension properties. An extension property is exposed as a property on all other controls in the designer. Behind the scenes the designer calls the appropriate method when the value is set in the `Properties` window.
+
+CAUTION: Do not set error messages in the designer. Doing so will cause the control to show as invalid to the user even when it is not. Only set the error mesage programmatically.
+
+== Form Validation
+
+Because validation occurs only if a control has focus it is limited to cases where the user actually enters data into the control. In general control validation is used to detect or prevent the user from entering bad data into a single control. For validation across controls form validation must be used.
+
+To validate all the controls on a form call the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.validatechildren[ValidateChildren] method. This method enumerates the controls on the form and triggers validation for each control. It is most often called when attempting to close the form in response to an affirmative button.
+
+.Form Validation
+[source,csharp]
+----
+//btnSave.Click += OnSave;
+private void OnSave ( object sender, EventArgs e )
+{
+   if (!ValidateChildren())   
+   {
+      //Cancel the request
+      this.DialogResult = DialogResult.None;
+      return;
+   };
+
+   //Save the changes and close
+}
+----
+
+== Auto Focus Validation
+
+One problem with form validation is that it has to be explicitly called, generally in response to a button click. However by default if a control is invalid then the user cannot leave the control. This is controlled by the https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form.autovalidate[AutoValidate] property on the form.
+
+The default is to prevent the user from exiting a control that is invalid. Some times this is a good thing, but often it is unexpected. To allow the user to leave an invalid control change the property to https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.autovalidate[AutoValidate.EnableAllowFocusChange].
+
+.Allow Focus Change
+[source,csharp]
+----
+//Done at the form level
+this.AutoValidate = AutoValidate.EnableAllowFocusChange;
+----
+
+NOTE: This is generally set in the designer.
+
+== Cancelling Validation
+
+As mentioned earlier, it is the control gaining focus that determines whether validation is triggered, not the control losing it. This makes sense if you consider the case of a cancel button. Normally a control should validate itself but if the user clicks a cancel button then the form should simply close without validation. But the only way to know whether to check validation is to know which control is being interacted with. 
+
+To disable validation when a control gets focus set the target control's https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.causesvalidation[CauseValidation] property to `false`.
+
+.Disable Validation
+[source,csharp]
+----
+btnCancel.CausesValidation = false;
+----
+
+NOTE: The property is set on the control that should be able to get focus without triggering validation (e.g. cancel buttons)
+
+A word of warning about this property. Because validation only occurs on a control that is losing focus, controls with this property set to `false` can be used to circumvent validation. Imagine the following scenario.
+
+. User is on a textbox.
+. User enters invalid data such that the control is not valid.
+. User clicks a cancel button that has validation disabled. No validation is performed.
+. User clicks an OK button that normally triggers validation. The cancel button has no validation so no validation is run.
+
+It is very important that the form also do validation when an affirmative button is clicked.
 
 == See Also
 link:readme.adoc[Windows Forms] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.canceleventargs[CancelEventArgs Class] +
 https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control[Control Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.errorprovider[ErrorProvider Class] +
 https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.form[Form Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.validating[Control.Validating Event] +

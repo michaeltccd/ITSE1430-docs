@@ -1,6 +1,6 @@
 = Chapter 4: Windows Forms
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 
 This chapter will cover the https://docs.microsoft.com/en-us/dotnet/desktop/winforms[Windows Forms] framework (winforms). 
 Winforms is a .NET framework for building graphical user interfaces (GUIs) in Windows. 
@@ -31,6 +31,3 @@ The topics to be covered include:
 ** link:message-box.adoc[MessageBox]
 * link:form-layout.adoc[Form Layout]
 * link:form-validation.adoc[Validation]
-** [Control Validation]
-** [Form Validation]
-** [ErrorProvider]
