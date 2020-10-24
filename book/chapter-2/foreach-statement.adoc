@@ -1,0 +1,83 @@
+= Foreach Statement
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The `foreach` statement is a looping statement. Unlike the other looping constructs it does not specify any conditions.
+Instead the `foreach` loop iterates through a list of items provided by the expression.
+
+.Foreach Syntax
+----
+foreach-statement ::= foreach ([var] id in E) S;
+----
+
+The `foreach` statement iterates through each item in `E`. 
+Each time through the loop the `id` variable is set to the current item in `E`.
+In most cases the `id` variable is declared as part of the loop so it can be reused in other loops later.
+
+.Foreach Statement
+[source,csharp]
+----
+string[] courses = GetCourses();
+foreach (string course in courses)
+{
+   Console.WriteLine(course);
+};
+----
+
+The `foreach` statement is cleaner than the equivalent link:for-statement.adoc[For] or link:while-statement.adoc[While] statements in both syntax and complexity.
+Instead of managing which element the loop is on the `foreach` statement handles this behind the scenes allowing the code to focus on what should happen for each item.
+
+NOTE: The `foreach` statement only works with lists of items such as link:..\chapter-6\array.adoc[arrays].
+
+== Limitations
+
+Besides the limitation on the expression there are a few other limitations to be aware of.
+
+. The loop variant is readonly.
+. The list of items cannot change for the life of the enumeration.
+
+The `id` variable is considered readonly for the iteration of the loop.
+If the variable needs to be changed for some reason then use a temporary variable instead.
+
+The bigger limitation is that the list of items being enumerated cannot change (e.g. added or removed) while the enumeration is in progress.
+If the underlying list of items changes then an error will occur when the `foreach` statement requests the next item.
+The rationale for this is that it can introduce non-deterministic behavior if the underlying list was allowed to change.
+In the best case an item would be skipped. In the worse an item might be iterated multiple times.
+
+If it is necessary to change the underlying list of items then consider enumerating the list of items first to identify the items to remove or add and 
+then use a separate loop to modify the original list.
+
+.Updating Items with Foreach
+[source,csharp]
+----
+//First loop identifies students to remove
+foreach (var student in students)
+{
+   if (ShouldStudentBeDropped(student))
+      studentsToDrop.Add(student);
+}
+
+//Second loop updates the original list by using a separate list of students to remove
+foreach (var student in studentsToDrop)
+{
+   students.Remove(student);
+}
+----
+
+CAUTION: In some languages it is common to use the link:for-statement.adoc[For] statement to loop through and remove items. Do not do this as it is error prone and unclear.
+
+== When to Use the Foreach Statement
+
+Use the `foreach` statement under the following conditions.
+
+- Looping through the items in a list of items, such as an array.
+- The list is not being changed.
+- The index, if an array, is not needed.
+
+== See Also
+
+link:control-flow-statements.adoc[Control Flow Statements] +
+link:break-statement.adoc[Break Statement] +
+link:continue-statement.adoc[Continue Statement] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/foreach-in[C# Foreach Statement] +

@@ -23,8 +23,9 @@ for (int index = 0; index < 10; ++index)
 };
 ----
 
-link:control-flow-statements.adoc[Control Fliow Statements] +
+link:control-flow-statements.adoc[Control Flow Statements] +
 link:break-statement.adoc[Continue Statement] +
 link:for-statement.adoc[For Statement] +
 link:do-statement.adoc[Do While Statement] +
 link:while-statement.adoc[While Statement] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/continue[C# Continue Statement] +

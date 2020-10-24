@@ -365,6 +365,7 @@ CAUTION: Do not use nullable value types unless it is absolutely needed.
 
 == See Also
 
+link:readme.adoc[Common Type System] +
 https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/new-operator[New Operator] +
 https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types[Nullable Value Types] +
 https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/null[Null] +

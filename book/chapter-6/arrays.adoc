@@ -1,0 +1,287 @@
+= Arrays
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+An array is a list of values of the same type.
+Every language defines an array as a contiguous block of values because the values are allocated all together.
+This provides memory and runtime performance benefits while simplifying the code needed to use an array.
+
+The individual values in an array are called `elements`.
+Within an array all elements must be of the same base type.
+All arrays have a fixed length that generally cannot be changed.
+The array can be treated as a single object or the elements may be accessed individually.
+
+== Array as a Type
+
+Arrays are first class citizens in C#\.NET.
+Arrays can be used anywhere a type is allowed including as fields, parameters and return types.
+
+NOTE: Arrays cannot be used as a base type.
+
+Arrays are link:..\chapter-5\ref-vs-value-types.adoc[reference types] and start out as `null`.
+All arrays derive from the base type https://docs.microsoft.com/en-us/dotnet/api/system.array[Array].
+The base class provides some common functionality for arrays including:
+
+- Copying one array to another
+- Finding an element in an array.
+- Enumerating array elements.
+- Resizing an array.
+
+== Declaring an Array
+
+All arrays in C# are open arrays meaning the size of the array, the number of rows, is not relevant to the type.
+
+.Declaring an Array
+[source,csharp]
+----
+int[] grades;   // Array of grades
+
+Student[] students;  //Array of students
+
+string[] names;   //Array of names
+----
+
+The array indicator is part of the type so `grades` is an array of `int` values, `students` is an array of `Student` objects and `names` is an array of strings.
+
+CAUTION: In some languages, like C++ an array is equivalent to a pointer. This is not true with C#. An array is a single object and behaves like all other reference types.
+
+== Creating an Array
+
+To create an array use the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/new-operator[New] operator.
+The only difference between an array and a regular, scalar, type is that the size of the array must be specified.
+The size indicates the number of rows in the array.
+
+.Creating an Array
+[source,csharp]
+----
+int[] grades = new int[10];   // Allow for 10 values
+----
+
+The array size may be any integral expression that is greater than or equal to 0.
+
+NOTE: [C++] The integral expression can be calculated at runtime and does not need to be a compile time constant.
+
+The array's size is fixed at the point of creation and cannot be changed without creating a new array.
+An array variable can be set to a new array by simple assignment.
+This is because arrays are reference types and follow reference equality.
+
+.Reassign Array
+[source,csharp]
+----
+student[] students = GetAllStudents();
+
+students = GetPassingStudents();
+----
+
+=== Empty Arrays
+
+Like strings, `null` arrays can be hard to deal with. 
+Therefore C# allows an array to be empty.
+Empty arrays are generally used as the return value of methods that would otherwise return back a `null` array.
+
+.Empty Array
+[source,csharp]
+----
+Student[] FindStudents ( string name )
+{
+   return new Student[0];
+}
+----
+
+=== Getting Array Length
+
+To determine how many elements are in the array use the https://docs.microsoft.com/en-us/dotnet/api/system.array.length[Length] property.
+This information is available on all arrays. 
+Therefore it is not necessary to pass a "size" parameter around with an array like is common in languages like C++.
+
+.Determine Array Length
+[source,csharp]
+----
+void PrintSize ( int[] values )
+{   
+   Console.WriteLine(values?.Length ?? 0);
+}
+----
+
+== Accessing Elements
+
+To access the elements of the array use the index operator.
+Array indice are zero-based.
+The maximum index allowed on an array is its size minus 1 so an array that is declared to have 10 elements has indice from 0 to 9.
+
+.Accessing Elements
+[source,csharp]
+----
+string[] names = GetStudentNames();
+
+//Read the name from the first element
+string studentName = names[0];
+
+//Set the second element's value
+names[1] = "Sue";
+----
+
+If an attempt is made to exceed the array bounds then a runtime error occurs.
+Unlike other languages C# always does bounds checking on arrays.
+
+.Bounds Checking
+[source,csharp]
+----
+string[] names = new string[10];
+names[10] = "Crash";  //Will generate a runtime error
+----
+
+== Enumerating Arrays
+
+To enumerate an array use the link:..\chapter-2\foreach-statement.adoc[Foreach] statement.
+
+.Enumerating an Array
+[source,csharp]
+----
+string[] names = GetStudentNames();
+foreach (var name in names)
+   Console.WriteLine(name);
+----
+
+In the rare case you need the index information then use the link:..\chapter-2\for-statement.adoc[For] statement instead.
+
+.Enumerating with For Statement
+[source,csharp]
+----
+string[] names = new string[10];
+for (var index = 0; index < names.Length; ++index)
+   Console.WriteLine(names[index]);
+----
+
+NOTE: Notice that the loop starts at 0 and uses less than to ensure it does not exceed the bounds of the array.
+
+== Initializing an Array
+
+While an array is a reference type the elements it contains do not have to be.
+If an array has value type elements then they are zero-initialized like all value types are.
+Reference types will be initialized to `null`.
+
+To initialize the elements of an array use a link:..\chapter-2\for-statement.adoc[For] statement or equivalent to initialize them.
+
+.Initialize an Array
+[source,csharp]
+----
+int[] numbers = new int[100];
+for (var index = 0; index < numbers.Length; ++numbers)
+   numbers[index] = index;
+----
+
+== Copying and Resizing Arrays
+
+Arrays can be copied using the https://docs.microsoft.com/en-us/dotnet/api/system.array.copy[Array.Copy] method.
+This method has overloads that allow for copying whole or parts of an array into another array.
+
+.Copy Array
+[source,csharp]
+----
+string[] Backup ( string[] values )
+{
+   var newValues = new string[values.Length];
+
+   Array.Copy(values, newValues, values.Length);
+
+   return newValues;
+}
+----
+
+CAUTION: The method copies the element values. Reference type elements will not be cloned.
+
+To resize an array use the https://docs.microsoft.com/en-us/dotnet/api/system.array.resize[Array.Resize] method.
+
+.Resize Array
+[source,csharp]
+----
+void AddRoom ( ref string[] values, int increaseSize )
+{
+   var newSize = values.Length + increaseSize;
+
+   Array.Resize(ref values, newSize);
+}
+----
+
+== Two-Dimensional Arrays
+
+Two-dimensional arrays can be implemented using one of two approaches: rectangular or jagged.
+
+=== Rectangular Arrays
+
+A rectangular array looks like a table. 
+Every row has the same number of columns.
+This is the easiest approach to use but can waste memory if rows
+are of variable size.
+Imagine a two-dimensional array where the students represented the rows and the courses were the columns.
+With a rectangular array all courses would need to be stored in the array so if there were 100 courses but each student only took an average of 4 then 96 of the columns would be empty.
+
+In C# a rectangular array is declared by using a comma in the array size.
+
+.Declaring a Rectangular Array
+[source,csharp]
+----
+Day[,] calendar = new Day[12,31];  //Array of 12 rows with 31 columns in each row
+----
+
+Because a rectangular array has the same number of columns in each row it is easy to work with.
+
+.Enumerating a Rectangular Array
+[source,csharp]
+----
+foreach (var day in calendar)
+   Console.WriteLine(day);
+----
+
+In the above example all elements are enumerated from all rows and columns.
+More often you need to enumerate the rows and then the columns.
+
+.Enumerating with For
+[source,csharp]
+----
+var colCount = calendar.GetLength(1);
+for (var row = 0; row < calendar.Length; ++row)
+   for (var col = 0; col < colCount; ++col)
+      Console.WriteLine(calendar[row, col]);
+----
+
+=== Jagged Arrays
+
+Sometimes it is better to let each row have a variable number of columns.
+This is known as a jagged array.
+Jagged arrays are more efficient on memory but are harder to work with.
+C# also supports this type of array.
+
+.Declaring a Jagged Array
+[source,csharp]
+----
+Day[][] calendar = new Day[12][];
+calendar[0] = new Day[31];
+calendar[1] = new Day[28];
+...
+----
+
+Each element of the main array is itself an array.
+Besides the memory benefit each array row can be treated as a standalone array.
+But all this requires more code to work with.
+
+.Enumerating with For
+[source,csharp]
+----
+for (var row = 0; row < calendar.Length; ++row)
+   for (var col = 0; col < calendar[row].Length; ++col)
+      Console.WriteLine(calendar[row, col]);
+----
+
+== Multidimensional Arrays
+
+C# supports more than two dimensions but that is beyond the scope of this course.
+
+== See Also
+
+link:readme.adoc[Collections] +
+link:..\chapter-2\foreach-statement.adoc[Foreach Statement] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/arrays/[C# Arrays] +
+https://docs.microsoft.com/en-us/dotnet/api/system.array[Array Class] +

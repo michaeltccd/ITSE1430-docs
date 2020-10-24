@@ -93,10 +93,11 @@ Use the `for` loop under the following conditions.
 
 == See Also
 
-link:control-flow-statements.adoc[Control Fliow Statements] +
+link:control-flow-statements.adoc[Control Flow Statements] +
 link:break-statement.adoc[Break Statement] +
 link:continue-statement.adoc[Continue Statement] +
 link:do-statement.adoc[Do While Statement] +
 link:for-statement.adoc[For Statement] +
 link:while-statement.adoc[While Statement] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/for[C# For Statement] +
 

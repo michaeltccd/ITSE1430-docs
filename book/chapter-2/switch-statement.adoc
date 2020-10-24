@@ -132,6 +132,7 @@ To avoid issues the general guideline for multiple statements in C# are:
 
 == See Also
 
-link:control-flow-statements.adoc[Control Fliow Statements] +
+link:control-flow-statements.adoc[Control Flow Statements] +
 link:break-statement.adoc[Break Statement] +
 link:if-statement.adoc[If Statement] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/switch[C# Switch Statement] +

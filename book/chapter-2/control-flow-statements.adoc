@@ -13,9 +13,7 @@ Decision statements, sometimes called conditional staetments, allow code to be e
 In C# there are two decision statements: link:if-statement.adoc[if] and the more complex link:switch-statement.adoc[switch].
 
 Looping statements keep executing the same set of statements until some condition is met. C# has the link:while-statement.adoc[while], link:do-statement.adoc[do while], 
-link:for-statement.adoc[for] and `foreach` statements.
-
-NOTE: The `foreach` statement is used when working with lists of items and will be discussed later.
+link:for-statement.adoc[for] and link:foreach-statement.adoc[foreach] statements.
 
 When discussing looping statements the term `loop variant` will be used.
 
@@ -30,6 +28,7 @@ link:break-statement.adoc[Break Statement] +
 link:continue-statement.adoc[Continue Statement] +
 link:do-statement.adoc[Do While Statement] +
 link:for-statement.adoc[For Statement] +
+link:foreach-statement.adoc[Foreach Statement] +
 link:if-statement.adoc[If Statement] +
 link:switch-statement.adoc[Switch Statement] +
 link:while-statement.adoc[While Statement] +

@@ -114,5 +114,6 @@ if (IsPassing)
 
 == See Also
 
-link:control-flow-statements.adoc[Control Fliow Statements] +
+link:control-flow-statements.adoc[Control Flow Statements] +
 link:switch-statement.adoc[Switch Statement] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/if-else[C# If-Else Statement] +
