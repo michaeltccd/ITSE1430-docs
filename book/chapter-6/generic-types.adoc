@@ -1,0 +1,270 @@
+= Generic Types
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+A generic algorithm is an algorithm whose implementation is unaffected by the underlying type it is being applied to.
+An example of a generic algorithm might be a sorting algorithm such as quick sort or bubble sort.
+The algorithm does not change depending upon whether you are working with a string, int or a custom type.
+Provided two values can be compared the sorting algorithm will work.
+
+A generic type contains one or more generic algorithms and is an easy way to encapsulate the generic functionality into a type.
+An example of a generic type is the link:list.adoc[List] class.
+Storing an array of values, searching, sorting and other features of the class are independent of the actual type being stored. 
+Whether a string, int or custom type is being used the implementations stay the same.
+
+== Benefits of a Generic Type
+
+The biggest benefit of a generic type is implementation reuse without having to create new or derived types.
+Another benefit of generic types is type safety.
+Imagine trying to implement a dynamically resizing array.
+Outside the declaration of the array the implementation for adding, removing and enumerating elements is the same.
+Here is a simple example of what a version for integers might look like.
+
+NOTE: For purposes of example assume the integer values must be greater than 0.
+
+.Integer Resizing Array
+[source,csharp]
+----
+public class ResizingArray 
+{
+   void Add ( int value )
+   {   
+      //Find an open element
+      for (var index = 0; index < _items.Length; ++index)
+      {
+         //If available then use it
+         if (_items[index] == 0)
+         {
+            _items[index] = value;
+            return;
+         };
+      };
+
+      //Did not find one so resize
+      var lastIndex = _items.Length;
+      ResizeArray(lastIndex + 10);
+
+      //Insert in new array
+      _items[lastIndex] = value;
+   }
+
+   int[] _items = new int[];
+}
+----
+
+Now imagine if a `string` were used. 
+The above code would need to change as follows:
+
+- Array would change to `string[]`
+- `Add` method would accept a `string`
+- `if` logic would need to use string equality
+
+If the code was applied to any type then the above changes would be needed.
+This is an ideal candidate for a generic type.
+
+== Declaring a Generic Type
+
+Creating a generic type is similar to creating any other class.
+The only difference is that the type information must be normalized.
+
+When creating a generic type it is necessary to identify what parts of the implementation are "type agnostic" and what parts are not.
+Given the earlier example the `Add` method's `value` parameter along with the array field are type agnostic.
+However the integer used for the index is the same irrelevant of underlying array type being used.
+
+Each type agnostic reference is converted to a `type parameter`.
+A type parameter is a parameter that is used, when declaring the type, to store the type that can be replaced later when the generic type is used.
+Instead of a hard coded type in the implementation the type parameter is used instead. 
+It acts as a placeholder for the final type later.
+By convention a single type parameter is called `T`. 
+If a generic type has multiple type parameters then each type parameter begins with `T` followed by a description of the type parameter such as `TKey` for a key or `TValue` for a value.
+
+.Generic Resizing Array
+[source,csharp]
+----
+//T represents the type that will be stored in the array
+public class ResizingArray<T>
+{
+   //T is used to represent the type of the value to be added
+   void Add ( T value )
+   {   
+      //Find an open element
+      for (var index = 0; index < _items.Length; ++index)
+      {
+         //If available then use it
+         if (_items[index].Equals(default))
+         {
+            _items[index] = value;
+            return;
+         };
+      };
+
+      //Did not find one so resize
+      var lastIndex = _items.Length;
+      ResizeArray(lastIndex + 10);
+
+      //Insert in new array
+      _items[lastIndex] = value;
+   }
+
+   //The array is an array of T
+   T[] _items = new T[];
+}
+----
+
+As can be seen, each place the original type was used is replaced with the typeholder `T` instead.
+The type parameter is also included in the type name because it is part of the type name and the same base name can be used for several different type implementations.
+
+When compiled the type is compiled normally but the compiler generates placeholder code for where the type parameter is used.
+In fact all reference types use the same implementation.
+The compiler generates the equivalent of an `object` implementation and then enforces type safety at compile time.
+
+== Using Generic Types
+
+Using a generic type is the same as using any other type except each type parameter must be given a type value.
+A generic type is an open type meaning it cannot be created directly as the type parameter is missing.
+In fact an open type cannot be used at all, as return type or parameter, unless the referencing code is itself a generic type.
+
+To create an instance of the generic type use the type name with the type parameter(s) i between the less-than greater-than signs.
+
+.Use a Generic Type
+[source,csharp]
+----
+var students = new List<Student>();
+----
+
+`students` is a list of `Student`.
+Because the type is generic it is not possible to accidentally add a non `Student` object to the list nor is it necessary to do any type casting.
+If you look at the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.add[Add] method it accepts a parameter of type `Student`.
+If you look at the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.remove[Remove] method it does the same thing.
+
+This is why generic types are preferred over general types that use `object`.
+The type safety of generic types cuts down on compile and runtime issues.
+
+== Generic Methods
+
+Sometimes an entire type does not need to be generic but a method does.
+Methods can be defined as generic as well.
+In this case the method must be called with a type parameter but inside the method it can use the type parameter provided the algorithm is generic.
+
+.Generic Method
+[source,csharp]
+----
+public void PrintList<T> ( List<T> items )
+{
+   foreach (var item in items)
+      Console.WriteLine(item);
+}
+----
+
+In this example a generic method can print the contents of any list because it accepts a generic type and is a generic method.
+Generic methods are useful when a full generic type is not needed.
+To call the generic method specify the type parameter.
+
+.Calling a Generic Method
+[source,csharp]
+----
+var students = new List<Student>();
+...
+
+PrintList<Student>(students);
+----
+
+With newer versions of C# type inferencing allows the compiler to infer the type of the generic parameter based upon its usage as a parameter to the method.
+The earlier example can be simplified down.
+
+.Calling a Generic Method with Inferencing
+[source,csharp]
+----
+var students = new List<Student>();
+...
+
+//Compiler infers that students is List<Student> and therefore only
+//the PrintList<Student> overload would work
+PrintList(students);
+----
+
+NOTE: If a compiler error occurs indicating the type cannot be inferred then just specify the type in the type parameter of the method.
+
+== Generic Constraints
+
+One downside to generic types and methods is that any type can be specified.
+Since there is no way to know what type will ultimately be used code inside a generic type or method is limited to the functionality provided by `Object`.
+This is overly limiting for a variety of reasons.
+
+- Only a few methods are available.
+- Cannot create an instance of the type.
+- Type may or may not support `null`.
+
+Because of this type parameters may have constraints.
+
+.Generic Constraint Syntax
+----
+generic-type-declaration ::= type-declaration where type-parameter : constraints
+generic-method-declaration ::= method-declaration where type-parameter : constraints
+constraints ::= constraint { , constraint }*
+constraint ::= T | new() | class | struct
+----
+
+A constraint limits what types are allowed for the type parameter.
+The constraint is enforced at the point the type is used in a generic type.
+If the type being used for the parameter does not meet the constraints then a compiler error occurs.
+
+.Generic Type with Constraint
+[source,csharp]
+----
+//T represents the type that will be stored in the array
+public class ResizingArray<T> where T : IEquatable<T>
+{
+   //T is used to represent the type of the value to be added
+   void Add ( T value )
+   {   
+      //Find an open element
+      for (var index = 0; index < _items.Length; ++index)
+      {
+         //If available then use it
+         if (_items[index].Equals(default))
+         {
+            _items[index] = value;
+            return;
+         };
+      };
+
+      //Did not find one so resize
+      var lastIndex = _items.Length;
+      ResizeArray(lastIndex + 10);
+
+      //Insert in new array
+      _items[lastIndex] = value;
+   }
+
+   //The array is an array of T
+   T[] _items = new T[];
+}
+----
+
+In the above example only types implementing `IEquatable<T>` can be used as the type parameter.
+
+.Generic Method with Constraint
+
+public T Clone<T> ( T value ) where T: ICloneable
+{
+   return (T)value.Clone();
+}
+
+The following constraints are currently allowed on type parameters.
+
+.Generic Constraints
+|===
+| Constraint | Description
+| `new()` | Must have a default constructor
+| `class` | Must be a reference type
+| `struct` | Must be non-nullable
+| T | Must be of type `T` or a derived type
+|===
+
+== See Also
+
+link:readme.adoc[Collections] +
+link:list.adoc[List Class] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/generics[C# Generics] +

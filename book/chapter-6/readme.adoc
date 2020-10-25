@@ -14,7 +14,12 @@ The topics to be covered include:
 == Table of Contents
 
 * link:arrays.adoc[Arrays]
-* [List Class]
+* link:list.adoc[List Class]
+* link:generic-types.adoc[Generic Types]
 * link:..\..\archives\interfaces\interfaces.adoc[Interfaces] (Archive)
-* [Generic Types]
+** [IComparer]
+** [IEnumerable and IEnumerator]
+** [IEqualityComparer]
+** [IEquatable]
+** [IValidatableObject]
 * [Abstract Class]

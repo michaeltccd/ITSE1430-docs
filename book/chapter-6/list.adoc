@@ -1,0 +1,148 @@
+= List Class
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[List] class provides a dynamically resizing array for use in .NET applications.
+It is easier to use while providing similar performance to an array.
+
+.Creating a List
+[source,csharp]
+----
+private List<Student> _students = new List<Student>();
+----
+
+NOTE: The https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[List] class is defined in the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic[System.Collections.Generic] namespace.
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[List] class is a link:generic-types.adoc[generic type].
+As discussed later, a generic type provides a set of functionality that is independent of the type it is applied to. 
+In the case of https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[List] any type can be stored in it using the same implementation.
+The type to store is specified between the less-than greater-than symbols.
+The type is part of the formal name so in the earlier example `students` is a `list of Student objects`.
+
+== Manipulating a List
+
+=== Adding an Item
+
+Working with a list is simple.
+To add an item to the list use the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.add[Add] method.
+
+.Adding an Item
+[source,csharp]
+----
+Student AddStudent ( string name )
+{
+   var student = new Student(name);
+   
+   _students.Add(student);
+   return student;
+}
+----
+
+Internally the type manages the array containing the items.
+It is an efficient implementation that strives for performance with minimal memory overhead.
+
+To add mutiple items at once use the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.addrange[AddRange] method.
+
+.Adding Multiple Items
+[source,csharp]
+---
+void AddStudents ( Student[] students )
+{
+   _students.AddRange(students);
+}
+---
+
+Adding multiple items at once allows for the list to be expanded only once, if needed.
+
+=== Removing an Item
+
+To remove an item use the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.remove[Remove] method.
+
+.Removing an Item
+[source,csharp]
+----
+void RemoveStudent ( Student student )
+{
+   //Remove a student
+   _students.Remove(student);
+}
+----
+
+CAUTION: Removing a method uses equality so the object being removed must be in the list otherwise the remove will not work.
+
+To remove all items from the list then use the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.clear[Clear] method.
+
+.Empty a List
+[source,csharp]
+----
+void RemoveAllStudents ()
+{
+   _students.Clear();
+}
+----
+
+== Enumerating a List
+
+https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[List] provides the same core functionality as an array and can be enumerated using either the link:..\chapter-2\foreach-statement.adoc[Foreach] or link:..\chapter-2\for-statement.adoc[For] statements.
+
+.Enumerating a List
+[source,csharp]
+----
+void DisplayStudents ()
+{
+   foreach (var student in _students)
+      DisplayStudent(student);
+}
+----
+
+To determine how many items are currently in the list use the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.count[Count] property.
+This property works the same as the `Length` array property.
+
+NOTE: The https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.count[Count] property returns the number of items being used and not the actual size of the underlying array.
+
+== Working with Lists
+
+Besides manipulating and enumerating lists the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[List] class provides a lot more functionality.
+The following is just a sampling.
+
+- Searching for an item using the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.binarysearch[BinarySearch] or https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.Find[Find] methods.
+- Sorting the list using the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.sort[Sort] method.
+- Reversing the list using the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.reverse[Reverse] method.
+
+== Other Collection Types
+
+https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[List] is the most common collection type available but there are others as well.
+
+- https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2[Dictionary] class for storing key-value pairs.
+- https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1[HashSet] class for storing keys with sets of values.
+- https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.queue-1[Queue] class for using a FIFO structure.
+- https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.stack-1[Stack] class for using a LIFO structure.
+
+=== Collection<T> vs List<T>
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.collection-1[Collection] class is almost identical to the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[List] class.
+They implement all the same functionality.
+Historically the `List` type was a low-level structure used for implementation details and the `Collection` type added additional functionality on top and was designed for public usage.
+Now these two types are interchangeable.
+
+For historical reasons it is recommended to use the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[List] class for private fields and variables and the https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.collection-1[Collection] type for public facing collections of items.
+
+=== ArrayList
+
+Before generics were added to the language it was necessary to implement a custom collection manually to ensure type safety when adding items to the collection.
+In some cases this was too much effort or any type would work so the https://docs.microsoft.com/en-us/dotnet/api/system.collections.arraylist[ArrayList] class was available.
+This class was an array of `object` instances allowing anything to be stored.
+Naturally this makes it a lot harder to use because any value can be stored and retrieving values requires type casting.
+Some old code in the framework still uses this type for backwards compatibility purposes.
+When working with such code use care to ensure the objects being set or retrieved are of the expected type.
+
+WARNING: DO NOT use https://docs.microsoft.com/en-us/dotnet/api/system.collections.arraylist[ArrayList] in code.
+
+== See Also
+
+link:readme.adoc[Collections] +
+link:..\chapter-2\foreach-statement.adoc[Foreach Statement] +
+link:generic-types.adoc[Generic Types] +
+https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[.NET List Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic[System.Collections.Generics Namespace] +
