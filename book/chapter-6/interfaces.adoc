@@ -1,0 +1,386 @@
+= Interfaces
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+https://en.wikipedia.org/wiki/Design_by_contract[Contract-based programming] is a paradigm in which dependent code communicates through contracts instead of formal types.
+A contract is simply an abstraction between different blocks of code.
+The contract identifies the functionality available.
+One block of code implements the functionality to match the contract.
+Other blocks of code can then use the contract without regards for how it is implemented.
+Contracts decouple the usage of functionality from its implementation and is a key building block for creating complex applications.
+
+.Contract Programming
+----
+ResizeShape ( Shape shape, int newWidth, int newHeight )   
+begin
+   shape.Select()
+   shape.Resize(newWidth, newHeight)
+end
+----
+
+In the above code the actual implementation of `Select` and `Resize` are not important.
+The calling code relies on the fact that the functionality is available, not how they are implemented.
+
+The benefits of contract based programming include:
+
+- Decoupling the usage of a contract from the implementation of it.
+- Avoiding implementation details from leaking through the code.
+- Parallel development between the usage and implementation of a contract.
+
+There are disadvantages as well.
+
+- Adds complexity to implementations.
+- Can be hard to define an interface that properly encapsulates the implementation details.
+- Makes diagnosing issues harder because of the decoupling.
+- Implementations must behave almost identically to avoid unexpected issues at runtime.
+
+== .NET Interfaces
+
+An https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/interfaces/[interface] is the contract in .NET.
+An interface provides a list of functionality, but no implementation.
+Calling code can use the interface to perform its work without regards for how the interface is implemented.
+Conversely code can implement an interface, providing the implementation of the contract, and then be used anywhere the interface is requested.
+
+CAUTION: While contract based programming is still a good architectural choice, the use of interfaces as the contract may not be the best approach.
+
+== Common Interfaces
+
+\.NET ships with many interfaces and there are many more in most third party libraries. The following are just a few of the more common interfaces.
+
+.Common Interfaces
+|===
+| Interface | Purpose
+| link:interface-icloneable.adoc[ICloneable] | Provides support for copying an object.
+| link:interface-icomparable.adoc[IComparable<T>] | Provides support for ordering instances.
+| link:interface-icomparer.adoc[IComparer<T>] | Provides support for how objects are compared.
+| link:interface-idisposable.adoc[IDisposable] | Provides support for explicit clean up of resources.
+| link:interface-ienumerable.adoc[IEnumerable<T>] | Provides support for enumerating items.
+| link:interface-iequatable.adoc[IEquatable<T>] | Provides support for equality.
+| link:interface-ivalidatableobject.adoc[IValidatableObject] | Provides support for validation.
+|===
+
+NOTE: Interfaces in .NET starts with an "I" and are then Pascal cased like other types.
+
+== Working with Interfaces
+
+Interfaces in .NET are treated as regular types.
+Therefore any place a type can be used an interface can be used instead, except for the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/new-operator[new] operator.
+
+.Using Interfaces as Parameters and Return Types
+[source,csharp]
+----
+IEnumerable<Student> SortStudents ( IEnumerable<T> students, IComparer<string> comparer )
+{
+   var sortedList = new List<Student>();
+
+   //Copy students into new list
+   sortedList.AddRange(students);
+
+   //Sort
+   sortedList.Sort(comparer);
+   
+   // List<T> implements IEnumerable<T>
+   return sortedList;
+}
+----
+
+In this method there are no references to a particular implementation of any interface, other than `List`.
+This method will work properly if the calling code uses a simple string comparison or a complex one. 
+The implementation is not relevant and therefore the code is decoupled.
+
+NOTE: Prefer to use interfaces, that are already defined, when writing code instead of coding to explicit types unless a specific implementation is needed.
+
+=== Creating Instances of Interfaces
+
+An interface is an abstraction and therefore cannot be instantiated directly.
+To create an instance of an interface it is necessary to create an instance of a type that implements the interface.
+
+.Creating an Interface Instance
+[source,csharp]
+----
+//StringComparer implements IComparer<string>
+IComparer<string> comparer = new StringComparer();
+
+var students = SortStudents(students, comparer);
+----
+
+=== Type Compatibility
+
+For C#, type compatibility rules specify that a type `C` can be treated as an interface `I` if `C` implements the interface directly or indirectly through a base type. 
+
+In the above example `StringComparer` implements the interface and therefore can be treated as an `IComparer<string>`.
+
+NOTE: In some languages type equivalence allows for any type to be compatible with another type if both types provide the same members. Javascript is an example of such a language.
+
+=== Detecting an Interface
+
+Sometimes it is not possible to use an interface directly as a parameter.
+In these cases type casting can also be used because of the type compatibility rules of C#.
+
+.Type Casting with an Interface
+[source,csharp]
+----
+void OnClick ( Shape shape )
+{
+   if (shape is ISelectable selectable)
+      selectable.Select();
+}
+----
+
+== Implementing Interfaces
+
+While using an interface is common sometimes it is necessary to also implement an interface and this requires more work.
+For purposes of this discussion assume the following interfaces are defined.
+
+.Sample Interfaces
+----
+ISelectable
+   void Select ()
+
+IResizable
+   void Resize ( int width, int height )
+----
+
+Implementing an interface requires an existing value or reference type.
+The interface is specified using the same syntax as a base type but it is important to note that an interface is not a base type.
+
+.Indicating a Type Implements an Interface
+[source,csharp]
+----
+public class Rectangle : IResizable, ISelectable
+{   
+}
+----
+
+In the above example `Rectangle` is implementing two interfaces.
+A type may implement any number of interfaces.
+
+NOTE: Value types may implement interfaces as well.
+
+When a type implements an interface the compiler enforces that all members of the interface are defined on the type.
+Specifically each member of the interface must also be a public member, with identical signature, on the type.
+
+NOTE: In Visual Studio you can right click an interface in the type declaration and have the IDE auto generate the interface members to save some time.
+
+The implementation may look something like this.
+
+.Implementing an Interface Implicitly
+[source,csharp]
+----
+public class Rectangle : IResizable, ISelectable
+{   
+   //IResizable Members
+   public void Resize ( int width, int height ) { }
+
+   //ISelectable Members
+   public void Select () { }
+}
+----
+
+NOTE: The parameter names are not important in the implementation.
+
+Once a type implements all the members of the interface then it will compile.
+
+=== Member Binding
+
+In order for interfaces to work at runtime it is necessary for the compiler to generate the same kind of late binding code it does for virtual methods.
+At the point of compilation the compiler must ensure that each interface member is at the same offset, location, that all the other implementations are. 
+If it doesn't then at runtime the interface member will not be found.
+
+This is complicated by the fact that a single type may implement multiple interfaces.
+Imagine the following offsets.
+
+.Member Offset
+|===
+| Type | Member | Offset
+| IResizable | Resize | 0
+| ISelectable | Select | 0
+| Rectangle | Resize | 0
+| | Select | 1
+|===
+
+As you can see there is an overlap between the types such that offsets do not line up.
+But if they don't line up then the runtime will call the wrong method.
+To alleviate this problem remember that link:..\chapter-3\inheritance.adoc[base types] are actually nested objects at runtime. 
+When a base type is used in code then the runtime is using the nested base object's bindings so it properly finds the offset to the virtual member.
+
+Interfaces work the same way.
+The compiler generates a, logical, interface object inside the implementing type for each implemented interface.
+Of course since interfaces are not creatable it really just creates the v-table infrastructure instead. 
+Within the v-table, which is ordered as required by the interface, the compiler inserts a reference to the actual method to call.
+Therefore when the runtime requests an interface member the v-table directs it to the correct offset on the implementing type instead.
+
+=== Implicit Implementation
+
+The earlier implementation code was an example of an "implicit" interface implementation.
+This is the normal approach and should be used in most cases.
+
+At compilation the compiler implicitly "hooks up" the public members to the interface members.
+The compiler enumerates the members of the interface to produce the v-table.
+For each interface member it looks for a matching public member with the same signature, as mentioned earlier.
+If it finds one then it implicitly sets the interface member to the public member.
+If it does not find a match then it is a compiler error.
+The compiler is doing the heavy lifting of matching type members to interface members.
+
+=== Explicit Implementation
+
+While implicit implementations are preferred sometimes it is necessary to use "explicit" implementations instead.
+This is often caused by conflicts with other members or interfaces or for hiding a member.
+
+To explicitly implement an interface member do the following.
+
+- Remove any access modifier on the member.
+- Include the interface name on the member name.
+
+.Implementing an Interface Explicitly
+[source,csharp]
+----
+public class Rectangle : IResizable, ISelectable
+{   
+   //IResizable Members
+   void IResizable.Resize ( int width, int height ) { }
+
+   //ISelectable Members
+   void ISelectable.Select () { }
+}
+----
+
+NOTE: In most cases only some of the members are explicitly implemented and the rest use implicit implementations.
+
+==== Resolving Member Conflicts
+
+The most common use for explicit is because of conflicts either with other public members or other implemented interfaces.
+Imagine a type implementing interfaces A and B.
+Both interfaces have the same method but with different return types.
+Overloading does not work here because the return type is not part of overload resolution.
+The only way to declare both methods is to explicitly implement at least one of the methods.
+A similar situation occurs if the type already implements a method and an interface requires an implementation that differs in some way and overloading is not allowed.
+
+==== Hiding Interface Members
+
+The other case for explicit implementations is for hiding members.
+A type may want to implement an interface but not expose all that functionality to callers.
+With implicit implementations the members must be public and are, therefore, callable by anyone.
+But explicit implementations use private members so the members are not callable on the type but are still accessible using the interface.
+Hence the interface members can be hidden unless called as an interface.
+
+The best example of this is the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[List<T>] class.
+This type implements https://docs.microsoft.com/en-us/dotnet/api/system.collections.ilist[IList] for compatibility reasons.
+That interface has a property called https://docs.microsoft.com/en-us/dotnet/api/system.collections.ilist.isfixedsize[FixedSize] that was originally designed to distinguish between fixed size lists like arrays and resizable ones. 
+However this property was really never useful and has been deprecated.
+But an interface cannot be changed without breaking existing code so the property cannot be removed.
+At the same time there is no use in this property so it is hidden from the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[List<T>] class but still accessible when called using the https://docs.microsoft.com/en-us/dotnet/api/system.collections.ilist[IList] interface.
+
+.Explicit Implementation with List<T>
+[source,csharp]
+----
+public class List<T> : ..., IList
+{
+   //IList Members - visible from interface, not from type
+   bool IList.IsFixedSize { get; }
+}
+
+List<string> list = new List<string>();
+
+//Compiler error, no such member
+//var isFixedSize = list.IsFixedSize;
+
+//Allowed, interface member
+var isFixedSize = (list as IList).IsFixedSize;
+----
+
+CAUTION: Only use explicit implementations when necessary.
+
+== Declaring Interfaces
+
+Declaring an interface is the hardest part of interfaces.
+It is an art more than a science.
+A well-defined interface is flexible enough to allow for any number of implementations without limiting how they work.
+At the same time an interface must be constrained enough that using it is easy for consuming code and the implementations do not vary so wildly that consuming code has to understand how they.
+
+CAUTION: In general it is recommended that an interface be created only once at least two implementations are needed. This allows for a more clear picture of what should be in the interface without the implementation leaking through.
+
+An interface declaration looks similar to a regular class except for the following.
+
+- Keyword `interface` is used instead of `class`
+- No accessibility is allowed on the members
+- No implementation members are allowed such as constructors and fields
+
+.Declaring an Interface
+[source,csharp]
+----
+public interface ISelectable
+{
+   void Select ();
+}
+----
+
+Interfaces are generally feature based and have very few members.
+A feature based interface exposes just the functionality needed for a feature, such as selection or resizing.
+Unlike typical classes interfaces are designed to be composed.
+Because a single type may implement any number of interfaces a type can pick and choose the features it supports by implementing the corresponding interfaces.
+
+In the earlier example the `ISelectable` interface supports selection. 
+While it is possible to also include a `Resize` method not everything that is selectable may support resizing.
+
+NOTE: In general it is preferable to use many small, composable interfaces over a single large interface.
+
+=== Immutability
+
+Interfaces, as contracts, are immutable once publicly exposed.
+Adding, changing or removing any members would break any existing consuming or implementing code.
+Therefore an interface cannot be changed once it is released.
+
+In cases where an interface must be changed create a new interface that extends the existing interface.
+
+=== Default Implementations
+
+Starting in C# 8 an interface may provide a https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/proposals/csharp-8.0/default-interface-methods[default implementation] of a member.
+This will not be covered in this course.
+
+== Interfaces and Inheritance
+
+Interfaces do not participate in the type hierarchy of a type.
+A type is said to "implement" an interface, not "derive from" it.
+
+It is important to understand this because of the implications it has.
+
+A type:
+
+- may have a single base type but may implement any number of interfaces
+- is a subclass of its base type but is type compatible with any interface it implements
+- may be a reference or value type to implement interfaces but only a class for inheritance
+- inherits from link:..\chapter-5\object.adoc[object] but an interface does not
+
+While an interface does not impact the type hierarchy of a type an interface can extend another interface. 
+
+.Extending an Interface
+[source,csharp]
+----
+public interface I2DShape
+{}
+
+public interface I3DShape : I2DShape
+{}
+----
+
+This looks very similar to inheritance and is often used with that terminology but this isn't correct.
+In the example above `I3DShape` extends `I2DShape`.
+Any type that implements `I3DShape` must also implement `I2DShape`.
+
+This is most useful for making changes to an existing interface.
+
+== See Also
+
+link:readme.adoc[Collections] +
+link:abstract-classes.adoc[Abstract Classes] +
+link:interface-icloneable.adoc[ICloneable Interface] +
+link:interface-icomparable.adoc[IComparable<T> Interface] +
+link:interface-icomparer.adoc[IComparer<T> Interface] +
+link:interface-idisposable.adoc[IDisposable Interface] +
+link:interface-ienumerable.adoc[IEnumerable<T> Interface] +
+link:interface-iequatable.adoc[IEquatable<T> Interface] +
+link:interface-ivalidatableobject.adoc[IValidatableObject Interface] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/interfaces/[.NET Interfaces] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/interface[C# Interface] +

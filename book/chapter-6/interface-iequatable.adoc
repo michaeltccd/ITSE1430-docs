@@ -1,0 +1,20 @@
+= IEquatable<T> Interface
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.iequatable-1[IEquatable<T>] interface is used to determine if two instances of a type are equal.
+
+== Using the Interface 
+
+== Implementing the Interface
+
+== IEquatable vs IEqualityComparer<T>
+
+using on other types
+
+== See Also
+
+link:readme.adoc[Collections] +
+link:interfaces.adoc[Interfaces] +
+https://docs.microsoft.com/en-us/dotnet/api/system.iequatable-1[.NET IEquatable<T> Interface] +

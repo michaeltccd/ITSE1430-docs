@@ -1,0 +1,20 @@
+= IValidatableObject Interface
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.ivalidatableobject interface is used to provide validation at the object level.
+It is often used to ensure an instance is valid before it is used in a method.
+
+NOTE: This interface is defined in the https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations[System.ComponentModel.DataAnnotations] namespace and may require the corresponding assembly be referenced in the project.
+
+== Using the Interface 
+
+== Implementing the Interface
+
+== See Also
+
+link:readme.adoc[Collections] +
+link:interfaces.adoc[Interfaces] +
+https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.ivalidatableobject[.NET IValidatableObject Interface] +
+https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validator[.NET Validator Class] +

@@ -10,16 +10,18 @@ The topics to be covered include:
 * Lists and Collections
 * Generic Types
 * Interfaces
+* Abstract Classes
 
 == Table of Contents
 
 * link:arrays.adoc[Arrays]
 * link:list.adoc[List Class]
 * link:generic-types.adoc[Generic Types]
-* link:..\..\archives\interfaces\interfaces.adoc[Interfaces] (Archive)
-** [IComparer]
-** [IEnumerable and IEnumerator]
-** [IEqualityComparer]
-** [IEquatable]
-** [IValidatableObject]
-* [Abstract Class]
+* link:interfaces.adoc[Interfaces]
+** link:interface-icloneable.adoc[ICloneable Interface]
+** link:interface-icomparable.adoc[IComparable<T> Interface]
+** link:interface-icomparer.adoc[IComparer<T> Interface]
+** link:interface-idisposable.adoc[IDisposable Interface]
+** link:interface-iequatable.adoc[IEquatable<T> Interface]
+** link:interface-ivalidatableobject.adoc[IValidatableObject<T> Interface]
+* link:abstract-classes.adoc[Abstract Classes]

@@ -1,0 +1,131 @@
+= IComparable<T> Interface
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.icomparable-1[IComparable<T>] interface is the generic version of the https://docs.microsoft.com/en-us/dotnet/api/system.icomparable[IComparable] interface.
+These interfaces are used to define ordering between objects.
+
+CAUTION: Do not use this interface for determining object equality. The interface is only for ordering and does not indicate equality of objects.
+
+== Using the Interface 
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.icomparable-1[IComparable<T>] interface is used whenever there is a need to compare two objects for sorting purposes.
+
+.Using IComparable<T>
+[source,csharp]
+public bool IsGreaterThan<T> ( IComparable<T> left, IComparable<T> right )
+{
+   return left.CompareTo(right) > 0;
+}
+
+NOTE: All the primitive types implement this interface.
+
+== Implementing the Interface
+
+The interface is generally defined on types that need to be sortable. 
+
+NOTE: link:interface-icomparer.adoc[IComparer] is a similar interface. Refer to the documentation for the differences between these two interfaces.
+
+The interface has a single method https://docs.microsoft.com/en-us/dotnet/api/system.icomparable-1.compareto[CompareTo] that returns an integral value indicating how the first and second parameters compare.
+
+.CompareTo Return Value
+|===
+| Return Value | Description
+| < 0 | `left` is less than `right`
+| == 0 | `left` and `right` are equivalent for ordering
+| > 0 | `left` is greater than `right`
+|===
+
+.Implementing IComparable<T>
+[source,csharp]
+----
+public class Student : IComparable<Student>
+{
+   public string Name { get; set; }
+
+   public int CompareTo ( Student other )
+   {
+      //This is always greater than null
+      if (other == null)
+         return 1;
+
+      //Compare the names (ignoring case of Name being null)
+      return Name.CompareTo(other.Name);
+   }
+
+   int IComparable.CompareTo ( object value )
+   {
+      return this.CompareTo(value as Student);
+   }
+}
+
+//Usage
+var students = GetStudents();
+var studentA = students[0];
+var studentB = students[1];
+
+if (studentA.CompareTo(studentB) >= 0)
+   Console.WriteLine(studentA);
+else
+   Console.WriteLine(studentB);
+----
+
+Notice that the non-generic https://docs.microsoft.com/en-us/dotnet/api/system.icomparable[IComparable] interface method `CompareTo` must also be implemented.
+In this case an explicit implementation is used so general users of `Student` would not accidentally use the non-generic version.
+
+== Comparing Against Other Types
+
+Notice in the usage comparison only worked against the same type.
+Because this is an interface it is possible to implement comparison to other types as well, such as strings.
+This sometimes make it easier to consume the interface.
+
+.Implementing IComparable<T> for Other Types
+[source,csharp]
+----
+public class Student : IComparable<Student>, IComparable<string>
+{
+   public string Name { get; set; }
+
+   public int CompareTo ( Student other )
+   {
+      //This is always greater than null
+      if (other == null)
+         return 1;
+
+      //Compare the names (ignoring case of Name being null)
+      return Name.CompareTo(other.Name);
+   }
+
+   public int CompareTo ( string other )
+   {
+      return Name.CompareTo(other);
+   }
+
+   int IComparable.CompareTo ( object value )
+   {
+      if (value is Student student)
+         return this.CompareTo(student);
+      else if (value is string name)
+         return this.CompareTo(name);
+
+      return 1;
+   }
+}
+
+//Usage
+var students = GetStudents();
+var studentA = students[0];
+
+if (studentA.CompareTo("M") < 0)
+   Console.WriteLine("First Half of Alphabet");
+else
+   Console.WriteLine("Last Half of Alphabet");
+----
+
+== See Also
+
+link:readme.adoc[Collections] +
+link:interfaces.adoc[Interfaces] +
+link:interface-icomparer.adoc[IComparer<T> Interface] +
+https://docs.microsoft.com/en-us/dotnet/api/system.icomparable-1[.NET IComparable<T> Interface] +

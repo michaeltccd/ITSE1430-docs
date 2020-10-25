@@ -1,0 +1,45 @@
+= IComparer<T> Interface
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.icomparer-1[IComparer<T>] interface is the generic version of the https://docs.microsoft.com/en-us/dotnet/api/system.collections.icomparer[IComparer] interface.
+These interfaces are used to define how ordering is determined when comparing objects.
+
+NOTE: https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.icomparer-1[IComparer<T>] is defined in the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic[System.Collections.Generic] namespace. Be sure to import the namespace before using it.
+
+== Using the Interface
+
+This interface is similar to the link:interface-icomparable.adoc[IComparable<T>] interface but whereas the former interface is used for comparing an instance to another instance of the same, or different, type; the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.icomparer-1[IComparer<T>] interface is used for determining how the objects are compared.
+
+The best example of this interface is the https://docs.microsoft.com/en-us/dotnet/api/system.stringcomparer[StringComparer] class.
+By default strings can be compared because `string` implements link:interface-icomparable.adoc[IComparable<T>]. 
+But that comparison is case sensitive and it is not always desirable to do that.
+The https://docs.microsoft.com/en-us/dotnet/api/system.stringcomparer[StringComparer] class provides different comparison rules for comparing strings including case sensitive and insensitive.
+
+.StringComparer Example
+[source,csharp]
+----
+public IEnumerable<Student> Sort ( IEnumerable<Student> students, bool ignoreCase )
+{
+   IComparer<string> comparer = ignoreCase ? StringComparer.CurrentCultureIgnoreCase : StringComparer.CurrentCulture;
+
+   var sorted = new List<Student();
+   sorted.AddRange(students);
+
+   sorted.Sort(comparer);
+
+   return sorted;
+}
+----
+
+== Implementing the Interface
+
+It is rare that this interface will need to be implemented.
+
+== See Also
+
+link:readme.adoc[Collections] +
+link:interfaces.adoc[Interfaces] +
+link:interface-icomparable.adoc[IComparable<T> Interface] +
+https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.icomparer-1[.NET IComparer<T> Interface] +

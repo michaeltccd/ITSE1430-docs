@@ -1,0 +1,19 @@
+= IDispoable Interface
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.idisposable[IDisposable] interface is used to identify a type that must be explicitly cleaned up when no longer needed.
+It is primarily used for types that interact with unmanaged resources.
+
+== Using the Interface 
+
+== Implementing the Interface
+
+== See Also
+
+link to using
+
+link:readme.adoc[Collections] +
+link:interfaces.adoc[Interfaces] +
+https://docs.microsoft.com/en-us/dotnet/api/system.idisposable[.NET IDisposable Interface] +

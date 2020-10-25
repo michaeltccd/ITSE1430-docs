@@ -1,0 +1,11 @@
+= Abstract Classes
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+interface vs abstract class
+
+== See Also
+
+link:readme.adoc[Collections] +
+link:interfaces.adoc[Interfaces] +

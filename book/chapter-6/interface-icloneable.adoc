@@ -1,0 +1,107 @@
+= ICloneable Interface
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.icloneable[ICloneable] interface is one of the older interfaces in .NET.
+It was provided to allow copying (cloning) an object.
+There are many times in code where a copy of an object is needed.
+For value types simple assignment works but for reference types it does not.
+Copying a value requires an understand of the underlying data stored in a type and therefore cannot be auto-generated.
+
+== Using the Interface
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.icloneable[ICloneable] interface exposes a single method https://docs.microsoft.com/en-us/dotnet/api/system.icloneable.clone[Clone] to clone an object.
+
+.Cloning an Object
+[source,csharp]
+----
+T Clone<T> ( T value ) where T: ICloneable
+{   
+   return (T)value?.Clone();
+}
+----
+
+The method makes a copy of the given value.
+
+== Implementing the Interface
+
+Implementing the method is generally straightforward.
+
+- Create a new instance of the type.
+- Copy the field values from the source to the target instance.
+
+.Implementing Clone
+[source,csharp]
+----
+public class Rectangle : ICloneable
+{
+   public int Width { get; set; }
+   public int Height { get; set; }
+
+   public object Clone ()
+   {
+      return new Rectangle() { Width = Width, Height = Height };
+   }
+}
+----
+
+== Interface Issues
+
+There are several issues with this interface.
+
+=== Shallow vs Deep Copy
+
+The first issue is that it is unclear whether a clone is a shallow or deep copy.
+
+Deep Copy::
+   Copying the entire object including copying any child objects.
+Shallow Copy::
+   Copying the primitive fields but using the same reference child objects.
+
+It is up to the implementation to decided. 
+Because this is very important to how the interface may be used it almost makes the interface useless.
+
+For example an application may want to implement an undo feature by keeping a copy of an object prior to making some changes.
+If the changes are undone later then the copy made before the changes can be used instead of the, now modified, object.
+But if that object has child objects then a shallow copy would have had both the original and modified instances using the same object resulting in potential issues.
+
+Note that it is also incorrect to always implement deep copy because this can be expensive and code may assume that the child objects are the same, such as a shared graphics object.
+
+=== Type Safety
+
+The second issue with this interface is that it was added before generics were supported so irrelevant of the type there is always a typecast to convert the copied object from `object` back to the desired type.
+
+For value types this involves boxing which is expensive.
+
+== Modern Cloning Interface
+
+To resolve both of these issues many libraries define a generic interface that supports shallow vs deep copy.
+
+.Modern Cloning Interface
+[source,csharp]
+----
+public interface ICloneable<T> : ICloneable
+{
+   T Clone ( bool deepCopy );
+}
+----
+
+This interface allows the caller to determine whether a deep or shallow copy is needed. 
+Furthermore it returns the strongly typed result eliminating a type cast.
+
+NOTE: This is not provided by the .NET Framework at this time.
+
+In theory this solves the problems of the original interface but it introduces some potential problems of its own.
+
+- What if a child object does not support shallow or deep cloning?
+- What if this interface is defined on a base type and called on a derived type?
+
+There are no easy answers to these questions.
+Sometimes the interface documentation specifies the restrictions on its usage and leave it up to the callers and implementors to enforce.
+
+== See Also
+
+link:readme.adoc[Collections] +
+link:interfaces.adoc[Interfaces] +
+https://docs.microsoft.com/en-us/dotnet/api/system.icloneable[.NET ICloneable Interface] +
