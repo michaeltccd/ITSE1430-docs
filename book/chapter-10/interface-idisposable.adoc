@@ -8,12 +8,14 @@ It is primarily used for types that interact with unmanaged resources.
 
 == Using the Interface 
 
+In general the interface is not used directly
+
 == Implementing the Interface
 
 == See Also
 
 link to using
 
-link:readme.adoc[Collections] +
-link:interfaces.adoc[Interfaces] +
+link:readme.adoc[File IO] +
+link:..\chapter-6\interfaces.adoc[Interfaces] +
 https://docs.microsoft.com/en-us/dotnet/api/system.idisposable[.NET IDisposable Interface] +

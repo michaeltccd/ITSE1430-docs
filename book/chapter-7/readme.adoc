@@ -6,6 +6,6 @@ This chapter will cover advanced class concepts.
 
 == Table of Contents
 
-* Abstract classes
+* link:abstract-classes.adoc[Abstract classes]
 * Static classes
 * Extension methods

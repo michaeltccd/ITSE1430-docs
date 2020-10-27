@@ -7,5 +7,5 @@ interface vs abstract class
 
 == See Also
 
-link:readme.adoc[Collections] +
-link:interfaces.adoc[Interfaces] +
+link:readme.adoc[Advanced Types] +
+link:..\chapter-6\interfaces.adoc[Interfaces] +

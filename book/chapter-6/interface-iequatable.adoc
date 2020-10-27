@@ -7,14 +7,133 @@ The https://docs.microsoft.com/en-us/dotnet/api/system.iequatable-1[IEquatable<T
 
 == Using the Interface 
 
+In general you do not use this interface directly.
+It is used by collection types to determine equality of instances.
+
+The interface allows types to be compared for equality.
+By default reference types compare using reference equality and value types use value equality as discussed in the section link:..\chapter-5\ref-vs-value-types.adoc[Reference vs Value Types].
+
+The interface has a single https://docs.microsoft.com/en-us/dotnet/api/system.iequatable-1.equals[Equals] method that determines if the target instance is equal to the given value.
+
+.IEquatable<T> Example
+[source,csharp]
+----
+public bool Exists<T> ( IEnumerable<T> items, T target ) where T: IEquatable<T>
+{
+   foreach (var item in items)
+      if (target.Equals(item))
+         return true;
+
+   return false;
+}
+----
+
+== Testing for Equality
+
+There are a number of rules that must be followed to ensure 
+a consistent behavior in the runtime when testing for equality.
+There are a variety of ways to do equality testing.
+
+.Testing for Equality
+[source,csharp]
+----
+//Object.Equals method
+left.Equals(right);
+
+//C# operator==
+left == right
+
+//IEquatable<T> method
+left.Equals(right);
+
+//Object.ReferenceEquals
+Object.ReferenceEquals(left, right);
+
+left.GetHasCode() == right.GetHashCode();
+----
+
+It is critical that all the above equality tests behave the same, except https://docs.microsoft.com/en-us/dotnet/api/system.object.referenceequals[Object.ReferenceEquals].
+
+The following rules apply to equality testing.
+
+. A equals A (self equality)
+. If A is equal to B then B is equal to A (transitive equality)
+. If A is equal to B then it must remain equal to B for the life of A (immutable)
+
+All the above approaches must ensure a consistent result because each approach may be used in different situations.
+https://docs.microsoft.com/en-us/dotnet/api/system.object.referenceequals[Object.ReferenceEquals] is the only method that cannot be overridden, because it is not virtual, and tests that two instances refer to the same object.
+
+Refer to https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/statements-expressions-operators/equality-comparisons[Equality Comparisons] for more information.
+
 == Implementing the Interface
+
+Implementing this interface is difficult to do correctly given the requirements for equality.
+
+WARNING: Do not implement this interface unless you have a very good understanding of equality, can guarantee immutability of the instances and you also implement the other equality members. Failure to do so can result in unexpected behavior.
+
+=== Value Types
+
+Value types do not implement the https://docs.microsoft.com/en-us/dotnet/api/system.iequatable-1[IEquatable<T>] interface but they do override the https://docs.microsoft.com/en-us/dotnet/api/system.object.equals[Object.Equals] and https://docs.microsoft.com/en-us/dotnet/api/system.object.gethashcode[Object.GetHashCode] methods.
+The default implementation compares each of the field values for equality, value equality.
+The implementation requires that the fields be immutable and it is inefficient.
+
+The interface should be implemented on value types.
+
+.Value Type Implementation
+[source,csharp]
+----
+public struct Name : IEquatable<Name>
+{
+   public Name ( string first, string last ) : this()
+   {
+      FirstName = first;
+      LastName = last;
+   }
+
+   //Immutable so no setters
+   public string FirstName 
+   { 
+      get { return _first ?? ""; }      
+   }
+   public string LastName 
+   { 
+      get { return _last ?? ""; }
+   }
+
+   //Object methods to override
+   public override bool Equals ( object value )
+   {
+      if (value == null)
+         return false;
+
+      ??
+   }
+
+   private readonly string _first, _last;
+}
+----
+
+NOTE: When creating a value type implement the https://docs.microsoft.com/en-us/dotnet/api/system.iequatable-1[IEquatable<T>] interface.
+
+=== Reference Types
+
+reference type
+
+reference equals
+null
+equals and boxing
+==
 
 == IEquatable vs IEqualityComparer<T>
 
 using on other types
 
+vs Equals
+
 == See Also
 
 link:readme.adoc[Collections] +
 link:interfaces.adoc[Interfaces] +
+link:..\chapter-5\ref-vs-value-types.adoc[Reference vs Value Types] +
 https://docs.microsoft.com/en-us/dotnet/api/system.iequatable-1[.NET IEquatable<T> Interface] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/statements-expressions-operators/equality-comparisons[Equality Comparisons] +

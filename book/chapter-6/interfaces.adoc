@@ -54,7 +54,6 @@ CAUTION: While contract based programming is still a good architectural choice, 
 | link:interface-icloneable.adoc[ICloneable] | Provides support for copying an object.
 | link:interface-icomparable.adoc[IComparable<T>] | Provides support for ordering instances.
 | link:interface-icomparer.adoc[IComparer<T>] | Provides support for how objects are compared.
-| link:interface-idisposable.adoc[IDisposable] | Provides support for explicit clean up of resources.
 | link:interface-ienumerable.adoc[IEnumerable<T>] | Provides support for enumerating items.
 | link:interface-iequatable.adoc[IEquatable<T>] | Provides support for equality.
 | link:interface-ivalidatableobject.adoc[IValidatableObject] | Provides support for validation.
@@ -374,11 +373,9 @@ This is most useful for making changes to an existing interface.
 == See Also
 
 link:readme.adoc[Collections] +
-link:abstract-classes.adoc[Abstract Classes] +
 link:interface-icloneable.adoc[ICloneable Interface] +
 link:interface-icomparable.adoc[IComparable<T> Interface] +
 link:interface-icomparer.adoc[IComparer<T> Interface] +
-link:interface-idisposable.adoc[IDisposable Interface] +
 link:interface-ienumerable.adoc[IEnumerable<T> Interface] +
 link:interface-iequatable.adoc[IEquatable<T> Interface] +
 link:interface-ivalidatableobject.adoc[IValidatableObject Interface] +
