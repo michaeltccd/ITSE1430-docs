@@ -1,16 +1,114 @@
 = IValidatableObject Interface
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
-The https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.ivalidatableobject interface is used to provide validation at the object level.
+The https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.ivalidatableobject[IValidatableObject] interface is used to provide validation at the object level.
 It is often used to ensure an instance is valid before it is used in a method.
 
 NOTE: This interface is defined in the https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations[System.ComponentModel.DataAnnotations] namespace and may require the corresponding assembly be referenced in the project.
 
 == Using the Interface 
 
+In general this interface is not used directly.
+There is more to validation then simply the https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.ivalidatableobject[IValidatableObject] interface. 
+To ensure the object is fully valid use the https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validator[Validator] class instead.
+
+This class has several different methods depending on how the code needs to be validated.
+
+NOTE: The https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validator[Validator] class accepts any object for validation. The interface is only one way to validate objects and is not required.
+
+=== Safe Validation
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validator.tryvalidateobject[TryValidateObject] method returns `true` if an object is valid or `false` otherwise.
+The actual errors are added to the list of results that must be passed as a parameter.
+
+.TryValidateObject Method
+[source,csharp]
+----
+var results = new List<ValidationResult>();
+var context = new ValidationContext(instance);
+if (!Validator.TryValidateObject(instance, context, results, true))
+{
+   foreach (var result in results)
+      Console.WriteLine(result.ErrorMessage);
+}
+----
+
+Notice the https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validationcontext[ValidationContext] parameter that must also be specified.
+This is for advanced scenarios and the data it is created with should generally match the object being passed as the first parameter to the method.
+
+The last parameter indicates whether full validation should be done or partial.
+With partial validation the method will stop looking for errors after it identifies the object is not valid.
+
+=== Error Validation
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validator.validateobject[ValidateObject] method looks and behaves similar to the https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validator.tryvalidateobject[TryValidateObject] method accept it does not return any value.
+If validation fails then an error occurs which the calling code has to handle.
+
+.ValidateObject Method
+[source,csharp]
+----
+var context = new ValidationContext(instance);
+Validator.ValidateObject(instance, context, true);
+
+//Will not get to this line if validation fails.
+----
+
+=== Custom Validator
+
+The complexity of setting up a https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validationcontext[ValidationContext] and having to create a list to store the results in can add complexity to simple validation.
+In this case a helper method may be more useful.
+
+.Custom Validator
+[source,csharp]
+----
+public class ObjectValidator
+{
+   private ObjectValidator() {}
+
+   public bool TryValidateFullObject ( object value, out IEnumerable<ValidationResult> results )
+   {
+      results = new List<ValidationResult>();
+
+      var context = new ValidationContext(value);
+      
+      return Validator.TryValidateObject(value, context, results, true);
+   }
+
+   public void ValidateFullObject ( object value )
+   {
+      var context = new ValidationContext(value);
+
+      Validator.ValidateObject(value, context, true);
+   }
+}
+----
+
+This is not more efficient than the earlier code, it is just cleaner.
+
+NOTE: This is a good candidate for a static class.
+
 == Implementing the Interface
+
+Implementing the interface requires implementing the https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.ivalidatableobject.validate[Validate] method.
+
+.Implementing IValidatableObject
+[source,csharp]
+----
+public class MyData : IValidatableObject
+{
+   public string Name { get; set; }
+
+   public IEnumerable<ValidationResult> Validate ( ValidationContext context )
+   {
+      if (String.IsNullOrEmpty(Name))
+         yield return new ValidationResult("Name is required", new[] { nameof(Name) });
+   }
+}
+----
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validationresult[ValidationResult] class requires the error message and an optional list of members that the message applies to.
 
 == See Also
 

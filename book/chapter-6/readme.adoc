@@ -1,6 +1,6 @@
 = Chapter 6: Collections
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 
 This chapter will cover collections in .NET.
 

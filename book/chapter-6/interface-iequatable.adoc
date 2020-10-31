@@ -1,6 +1,6 @@
 = IEquatable<T> Interface
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
 The https://docs.microsoft.com/en-us/dotnet/api/system.iequatable-1[IEquatable<T>] interface is used to determine if two instances of a type are equal.
@@ -100,13 +100,33 @@ public struct Name : IEquatable<Name>
       get { return _last ?? ""; }
    }
 
+   public bool Equals ( Name value )
+   {
+      return FirstName == value.FirstName && LastName == value.LastName;
+   }
+
    //Object methods to override
    public override bool Equals ( object value )
    {
       if (value == null)
          return false;
 
-      ??
+      return Equals((Name)value);
+   }
+
+   public override int GetHashCode ( )
+   {
+      return FirstName.GetHashCode() | LastName.GetHashCode();
+   }
+
+   public static bool operator== ( Name left, Name right )
+   {
+      return left.Equals(right);
+   }
+
+   public static bool operator!= ( Name left, Name right )
+   {
+      return !left.Equals(right);
    }
 
    private readonly string _first, _last;
@@ -117,18 +137,37 @@ NOTE: When creating a value type implement the https://docs.microsoft.com/en-us/
 
 === Reference Types
 
-reference type
+Reference types do not implement any of the above methods by default and they generally should not.
+The default implementation for reference types is the correct, efficient implementation.
 
-reference equals
-null
-equals and boxing
-==
+If you do implement these methods then take note of the following issues.
 
-== IEquatable vs IEqualityComparer<T>
+- You cannot compare anything to `null` otherwise it will cause an infinite loop.
+- Two values pointing to the same instance must always be equal.
+- As already mentioned equality is for the life of the values and cannot change based upon fields within the data.
 
-using on other types
+=== All Methods
 
-vs Equals
+In the value type implementation notice that the following functionality was implemented for equality.
+It is necessary to implement all these to ensure equality works right.
+
+- https://docs.microsoft.com/en-us/dotnet/api/system.iequatable-1.equals[IEquatable<T>.Equals] method
+- https://docs.microsoft.com/en-us/dotnet/api/system.object.equals[Object.Equals] method
+- https://docs.microsoft.com/en-us/dotnet/api/system.object.gethashcode[Object.GetHashCode] 
+method
+- https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/equality-operators[C# equality operator]
+- https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/equality-operators[C# inequality operator]
+
+The C# operators are only used in languages that support the operators and they do not automatically call the appropriate method.
+If you implement one you have to implement both.
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.object.gethashcode[Object.GetHashCode] 
+method has to return a, generally unique, integer value for the given value. 
+This value is used in things like dictionaries.
+
+Finally notice in the value type implementation that the type is immutable. 
+If a type is mutable then it cannot use any fields for equality that can change.
+Once two values are equal they must remain equal for the life of the instances.
 
 == See Also
 
