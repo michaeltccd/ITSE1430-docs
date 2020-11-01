@@ -1,11 +1,85 @@
 = Abstract Classes
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
-interface vs abstract class
+link:..\chapter-6\interfaces.adoc[Interfaces] provide a way to abstract an implementation away from its usage but interfaces have limitations.
+
+- Immutable once made public.
+- Cannot provide a default implementation.
+- Harder to implement properly.
+
+In many cases it is better to provide a base implementation and allow derived types to provide implementations only for those members that cannot be generalized.
+This is where an abstract class becomes useful.
+
+An abstract class contains one or more members that are abstract.
+An abstract member is a declared member that has no implementation.
+An abstract member must be implemented by a derived type.
+
+.Abstract Class Example
+[source,csharp]
+----
+public abstract class Shape
+{
+   public void Resize ( int width, int height )
+   {
+      Select();
+      OnResize(width, height);  
+   }
+
+   public virtual void Select ( )
+   {}
+
+   protected abstract void OnResize ( int width, int height );
+}
+----
+
+An abstract class is identified by the keyword `abstract` before the `class` keyword.
+C# requires that any class containing an abstract member be explicitly marked abstract as well to avoid issues.
+
+NOTE: An abstract class does not need to have any abstract members.
+
+== Abstract vs Virtual Members
+
+An abstract member is a link:..\chapter-3\inheritance.adoc[virtual] member.
+To override the member in a derived type the same `override` keyword is used.
+
+The difference between the two keywords is that a virtual member provides a default ipmlementation that can be overridden, but does not have to be.
+An abstract member must be overridden and cannot contain an implementation.
+
+== Abstract Class vs Interface
+
+An abstract class in which all members are abstract is an interface.
+Abstract classes and interfaces have many overlaps and can often be used interchangeably.
+Like an interface an abstract class can be used anywhere a type is needed except as part of the `new` expression.
+Abstract classes cannot be instantiated because they are missing part of the implementation.
+
+It is common practice when creating an interface to also define an abstract class that provides a default implementation for those members that can be implemented, if any.
+
+.Abstract Class and Interface
+[source,csharp]
+----
+public interface ISelectable
+{
+   void Select();
+}
+
+public abstract class Selectable : ISelectable
+{
+   public abstract void Select ();
+}
+----
+
+When determining whether to use an interface or abstract class always prefer an abstract class. 
+Consider using an interface only when one of the following conditions are met:
+
+- Must be available on value types.
+- Must be available on a type that has a required base type already.
+- There is no case where a default implementation would make sense.
 
 == See Also
 
 link:readme.adoc[Advanced Types] +
+link:..\chapter-3\inheritance.adoc[Inheritance] +
 link:..\chapter-6\interfaces.adoc[Interfaces] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/abstract[C# Abstract] +
