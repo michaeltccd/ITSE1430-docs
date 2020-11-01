@@ -20,5 +20,7 @@ The topics to be covered include:
 ** link:interface-icloneable.adoc[ICloneable Interface]
 ** link:interface-icomparable.adoc[IComparable<T> Interface]
 ** link:interface-icomparer.adoc[IComparer<T> Interface]
+** link:interface-ienumerable.adoc[IEnumerable Interface]
 ** link:interface-iequatable.adoc[IEquatable<T> Interface]
 ** link:interface-ivalidatableobject.adoc[IValidatableObject<T> Interface]
+* link:initializers.adoc[Initializers]

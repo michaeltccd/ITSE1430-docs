@@ -1,0 +1,102 @@
+= Initializers
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+When creating an object the following pattern is often seen.
+
+.Creating an Object
+[source,csharp]
+----
+var student = new Student();
+student.FirstName = "Sue";
+student.LastName = "Rogers";
+student.IsFullTime = true;
+----
+
+While valid this is a lot of code just to initialize an object.
+It is obvious from the code that the new object is being initialized.
+Yet there is boilerplate code required to ensure the correct object is initialized.
+If the object is renamed then all the references need to be named.
+Even worse is that the object creation is an expression but the property setters are statements and therefore this cannot be done as part of a larger expression.
+
+== Object Initializers
+
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/object-and-collection-initializers[Object initializer syntax] is provided in C# to simplify this common pattern.
+
+.Object Initializer Syntax
+----
+object-initializer-expression ::= new T() { id = value , {id = value ,}* }
+----
+
+The process for converting from the full syntax to object initializer is straightforwards.
+
+- Put curly braces after the `new` expression around all the property setters.
+- Remove the instance name from the left side of the assignment.
+- Replace the semicolon with a comma.
+
+NOTE: A comma may optionally appear at the end of the expression before the closing brace. It is ignored by the compiler.
+
+.Creating an Object
+[source,csharp]
+----
+var student = new Student() {
+   FirstName = "Sue",
+   LastName = "Rogers",
+   IsFullTime = true,
+};
+----
+
+WARNING: Failing to replace the semicolon at the end of each line can cause cascading compiler errors.
+
+There are limitations of the syntax.
+
+. Only works with the `new` operator.
+. Can only set properties that have setters.
+. Cannot set nested properties without creating a new object.
+. Cannot use earlier property values in later ones.
+
+== Collection Initializers
+
+Where object initializer syntax becomes particularly useful is when creating collections of items such as link:arrays.adoc[arrays] and link:list.adoc[lists].
+When creating these collections use the collection initializer syntax.
+
+.Collection Initializer Syntax
+----
+collection-initializer-expression ::= new T() { E, {E ,}* }
+array-initializer-expression ::= new [T] [] { E, {E ,}* }
+----
+
+The syntax is similar to object initializer syntax except inside the curly braces can be any expression that is compatible with the collection type.
+
+.Creating a List
+[source,csharp]
+----
+var student = new List<Student>() {
+   student1,
+   student2,
+   new Student() { FirstName = "Sue", LastName = "Rogers" }
+};
+----
+
+Notice the object initializer syntax can be used in combination with the collection initializer syntax.
+For arrays the syntax is identical.
+The array type is optional if the compiler can infer the type given the expressions provided.
+
+.Creating an Array
+[source,csharp]
+----
+//Array of Student
+var student = new [] {
+   student1,
+   student2,
+   new Student() { FirstName = "Sue", LastName = "Rogers" }
+};
+----
+
+== See Also
+
+link:readme.adoc[Collections] +
+link:arrays.adoc[Arrays] +
+link:list.adoc[List Class] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/object-and-collection-initializers[C# Object and Collection Initializers] +

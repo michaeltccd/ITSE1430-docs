@@ -1,0 +1,154 @@
+= IEnumerable<T> Interface
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[IEnumerable<T>] interface is the generic version of the https://docs.microsoft.com/en-us/dotnet/api/system.collections.ienumerable[IEnumerable] interface.
+These interfaces are used to enumerate sets of items.
+
+NOTE: https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[IEnumerable<T>] is defined in the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic[System.Collections.Generic] namespace. Be sure to import the namespace before using it.
+
+== Using the Interface
+
+This interface is implemented by all types that provide a set of values including link:arrays.adoc[arrays] and link:list.adoc[List<T>].
+It is one of the most heavily used interfaces in all of .NET.
+
+In most cases the interface is used automatically by simply using the link:..\chapter-2\foreach-statement.adoc[foreach] statement.
+
+.Foreach with Interface
+[source,csharp]
+----
+IEnumerable<Student> students = GetStudents();
+foreach (var student in students)
+{    
+}
+----
+
+NOTE: The link:..\chapter-2\foreach-statement.adoc[foreach] loop does not technically require the interface, it just supports it if implemented.
+
+In the rare cases where a link:..\chapter-2\foreach-statement.adoc[foreach] loop will not work then the interface can be used directly.
+
+.Interface without Foreach
+[source,csharp]
+----
+IEnumerable<Student> students = GetStudents();
+IEnumerator<Student> enumor = students.GetEnumerator();
+while (enumor.MoveNext())
+{
+   Student student = enmor.Current;
+   ...
+}
+----
+
+NOTE: The above code is equivalent to what the link:..\chapter-2\foreach-statement.adoc[foreach] loop generates.
+
+=== IEnumerable vs IEnumerator
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[IEnumerable<T>] and https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1[IEnumerator<T>] interfaces work together to provide enumeration support.
+The https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[IEnumerable<T>] interface is implemented on collection types and has a single method that returns the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1[IEnumerator<T>] object to use to actually enumerate the items.
+the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1[IEnumerator<T>] interface provides the functionality needed to enumerate through items.
+
+Breaking up the interfaces allow collection types to return an object that is responsible for enumeration rather than putting that into the collection type itself.
+It also allows custom enumerations to be defined without impacting the base type.
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1[IEnumerator<T>] interface starts by referring to the beginning of the collection, before any items are read. 
+Each call to the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1.movenext[MoveNext] method moves to the next item in the collection, if any.
+As long as the method returns `true` then the next item is available using the the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1.current[Current] property.
+
+== Implementing the Interface
+
+NOTE: It is rare to implement the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[IEnumerable<T>] interface directly on a type.
+
+To implement the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[IEnumerable<T>] interface it is just necessary to implement the https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1.getenumerator[GetEnumerator].
+
+.Implementing IEnumerable<T>
+[source,csharp]
+----
+public class StudentList : IEnumerable<Student>
+{
+   public IEnumerator<Student> GetEnumerator
+   {
+      return _students.GetEnumerator();
+   }
+
+   private readonly List<Student> _students = new List<Student>();
+}
+----
+
+The method must return an https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1[IEnumerator<T>] instance to enumerate the collection.
+In almost all cases the returned instance is from an existing collection type.
+
+If it is not possible to use an existing collection type then a custom implementation of
+https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1[IEnumerator<T>] is needed.
+This is almost always implemented using a nested type.
+
+== Returning IEnumerable<T>
+
+As mentioned earlier it is rare to actually implement https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[IEnumerable<T>] directly but it is common to return the interface from methods.
+In this case the underlying collection type is almost always returned directly.
+
+.Method Returning IEnumerable<T>
+[source,csharp]
+----
+public class Course
+{
+   public IEnumerable<Student> GetStudents ()
+   {
+      return _students;
+   }
+
+   private readonly List<Student> _students = new List<Student>();
+}
+----
+
+=== Iterators
+
+In some cases there is no underlying collection or only a subset should be returned.
+In this case C# supports using an iterator instead.
+
+.Iterator Example
+[source,csharp]
+----
+public class Course
+{
+   public IEnumerable<Student> GetPassingStudents ()
+   {
+      foreach (var student in _students)
+         if (student.IsPassing)
+            yield return student;
+   }
+
+   private readonly List<Student> _students = new List<Student>();
+}
+----
+
+Notice the `yield` keyword before the return statement.
+This is an iterator.
+
+Using an iterator causes the compiler to rewrite the function into a reentrant function or coroutine in some languages.
+Normally when a function call ends the local variables are cleared.
+If the function is called again then execution starts at the beginning of the function.
+A reetrant function does not behave this way.
+Before the function returns the current state of the stack is captured including the last executed line.
+When the function is called again the previous state is restored and the function resumes from where it left off.
+
+While it is an implementation detail of how the compiler does this it can be imagined that everything before the first `yield` is executed when the function is first called.
+When it is called again, using the same object, it resumes on the line after the `yield`.
+In the above example the `foreach` and `if` statements run on the first call to the method.
+On the second call the function resumes after the `yield return` which is the bottom of the `foreach` so it loops around and gets the next student.
+This repeats until there are no more students.
+
+Iterators eliminate the need for creating custom https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[IEnumerable<T>] implementations for trivial cases like this.
+There are some restrictions on using iterators.
+
+. All `return` statements must be `yield return`. It is not permitted to mix regular `return` and `yield return` statements in the same method.
+. Iterators only work in methods that return https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[IEnumerable<T>].
+
+== See Also
+
+link:readme.adoc[Collections] +
+link:..\chapter-2\foreach-statement.adoc[Foreach Statement] +
+link:interfaces.adoc[Interfaces] +
+https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1[.NET IEnumerable<T> Interface] +
+https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1[.NET IEnumerator<T> Interface] +
+https://docs.microsoft.com/en-us/dotnet/csharp/iterators[C# Iterators] +

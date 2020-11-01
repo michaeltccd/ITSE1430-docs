@@ -1,0 +1,9 @@
+= Static Classes
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+== See Also
+
+link:readme.adoc[Advanced Types] +
+link:extension-methods.adoc[Extension Methods] +

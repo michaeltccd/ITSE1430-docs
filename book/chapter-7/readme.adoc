@@ -2,10 +2,10 @@
 Michael Taylor <michael.taylor@tccd.edu>
 v0.1
 
-This chapter will cover advanced class concepts.
+This chapter will cover some advanced concepts on types.
 
 == Table of Contents
 
-* link:abstract-classes.adoc[Abstract classes]
-* Static classes
-* Extension methods
+* link:abstract-classes.adoc[Abstract Classes]
+* link:static-classes.adoc[Static Classes]
+* link:extension-methods.adoc[Extension Methods]
