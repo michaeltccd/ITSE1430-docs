@@ -1,9 +1,118 @@
 = Extension Methods
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
+
+There are many cases where it is useful to extend a type with new functionality.
+For many types inheritance can be used if the type is not owned or by simply adding members to the type if it is owned.
+But there are cases where inheritance either isn't ideal or won't work.
+
+- Value types cannot be inherited from.
+- Interfaces cannot have implementations.
+- Inheritance cannot be used if the functionality is needed on a base type.
+
+In these cases an https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods[extension method] may be a better option. 
+An extension method extends an existing type with new functionality.
+In many ways it is like inheritance except it does not modify the type hierarchy nor does it have any special access to a type.
+
+== Creating an Extension Method
+
+The first step is to create a static method that takes the extended type as a parameter.
+If the functionality cannot be encapsulated in a static method then it cannot be an extension method.
+
+.Static Method Example
+[source,csharp]
+----
+public static class SeedDatabase
+{
+   public static void Seed ( IDatabase database )
+   {
+      database.Add(...);
+      database.Add(...);
+   }
+}
+----
+
+Then follow these steps.
+
+. Ensure the containing class is static and `public` or `internal`.
+. Add the keyword `this` to the first parameter.
+. (Preferred) Change the first parameter to `source`.
+
+.Extension Method Example
+[source,csharp]
+----
+//Must be public/internal and static
+public static class SeedDatabase
+{
+   //First parameter must be preceded by `this`
+   //Prefer calling parameter `source
+   public static void Seed ( this IDatabase source )
+   {
+      source.Add(...);
+      source.Add(...);
+   }
+}
+----
+
+NOTE: Only methods are supported as extensions at this time.
+
+The first parameter is always the extended type.
+The keyword `this` is to help the compiler distinguish between a static method and an extension method.
+Any number of additional parameters may be included after the first parameter.
+
+WARNING: Do not check for `null` on the first parameter. If it is `null` then the runtime will naturally fail the call.
+
+== Calling an Extension Method
+
+An extension method is called just like an instance method, not a static method.
+
+.Calling an Extension Method
+[source,csharp]
+----
+IDatabase database = new MyDatabase();
+database.Seed();
+----
+
+Notice in the above example that the method looks like an instance method.
+Furthermore the containing type is not needed.
+
+Extension methods modify the lookup rules for methods.
+If the method name matches an instance method then the instance method is used.
+For each of the static classes defined in the current namespace, if there are any extension methods accepting the instance type as a first parameter then the extension method is included in the possible list of available methods to call.
+For any imported namespaces look for additional extension methods.
+
+Instance methods always take precedence over extension methods. 
+The compiler will not generate an ambiguity because extension methods only apply if no instance methods match.
+
+NOTE: Overloading works with extension methods so an extension method can match an instance method provided it has a different signature.
+
+Extension methods are compile time features.
+The compiler rewrites the call to a regular call to the static method.
+Therefore there is no runtime overhead for an extension method.
+
+.Equivalent Code for Extension Method
+[source,csharp]
+----
+IDatabase database = new MyDatabase();
+//This, compiles to...
+//database.Seed();
+SeedDatabase.Seed(database);
+----
+
+== Guidelines for Extension Methods
+
+- DO NOT extend core types unless the functionality is truly generic.
+- DO put extension methods in their own namespace so they can be opted in.
+- PREFER inheritance or opening the type over extension methods.
+- DO NOT add extension methods that are better suited as static methods.
+- DO NOT check for `null` on the first parameter. 
+
+Do not convert all static methods to extension methods. 
+A general rule of thumb is that if an instance method would be used if the type could be extended then it is a candidate for an extension method.
 
 == See Also
 
 link:readme.adoc[Advanced Types] +
 link:static-classes.adoc[Static Classes] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods[C# Extension Methods] +

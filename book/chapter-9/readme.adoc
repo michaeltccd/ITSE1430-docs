@@ -1,12 +1,16 @@
-= Chapter 9: Error Handling
+= Chapter 9: File IO
 Michael Taylor <michael.taylor@tccd.edu>
 v0.1
 
-This chapter will cover reporting and handling errors.
+This chapter will cover using the file system.
 
 == Table of Contents
 
-* link:..\..\archives\error-handling\exceptions.adoc[Exceptions] (Archive)
-* link:..\..\archives\error-handling\throwing-exceptions.adoc[Raising Errors] (Archive)
-* link:..\..\archives\io\try-catch.adoc[Try Catch] (Archive)
-* link:..\..\archives\error-handling\handling-exceptions.adoc[Error Handling] (Archive)
+* link:..\..\archives\io\files.adoc[File Class] (Archive)
+* [Directory Class]
+* link:..\..\archives\io\try-finally.adoc[IDisposable Interface] (Archive)
+* * link:..\..\archives\io\using-statement.adoc[Using Statement] (Archive)
+* [Reading and Writing]
+** [Buffered]
+** link:..\..\archives\io\stream-io.adoc[Streams] (Archive)
+* link:..\..\archives\io\files.adoc[Path Class] (Archive)

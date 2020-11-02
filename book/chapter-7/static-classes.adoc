@@ -1,10 +1,157 @@
 = Static Classes
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
+All members of a type are either static or instance members.
+
+Instance Member::
+   Member that must be called on an instance of a type and can access any instance data.
+Static Member::
+   Member that must be called on the type and can only access static members.
+
+== Instance Members
+
+An instance member is declared as a regular member.
+Within an instance member the code has access to the instance it is called on with the link:../chapter-3/members.adoc[this] parameter.
+While not generally used directly the link:../chapter-3/members.adoc[this] parameter gives the member, which is being run from an execute-only block of memory, access to the per-instance data defined by the type.
+
+.Creating and Instance Member
+[source,csharp]
+----
+public class SeedDatabase
+{
+   public void Seed ( IDatabase database )
+   {
+      database.Add(...);
+      database.Add(...);
+   }
+}
+----
+
+An instance field is allocated in the memory for the instance when it is created. 
+Each instance has its own copy of the field.
+Instance methods are shared across all instances by using the link:../chapter-3/members.adoc[this] parameter to give the method access to the instance it is being called on.
+
+To call an instance member the member must be preceded by a valid instance followed by the member access (`.`) operator. 
+Calling an instance member on a `null` value results in an error.
+
+.Calling an Instance Member
+[source,csharp]
+----
+var database = new SomeDatabase();
+new SeedDatabase().Seed(database);
+----
+
+Most members on a type are instance members and allow the type to encapsulate any needed data in fields.
+
+== Static Members
+
+A static member is declared on the type but it is preceded by the keyword `static`.
+Static members are shared by all instances of a type.
+They are equivalent to global functions or variables in other languages.
+
+Because static members are shared there is only a single copy of any static fields in memory.
+Static methods have a single copy as well but since they are static they do not get the link:../chapter-3/members.adoc[this] parameter. 
+Static members of a type can only access other static members of the type.
+There is no instance data.
+
+.Creating a Static Member
+[source,csharp]
+----
+public class SeedDatabase
+{
+   public static void Seed ( IDatabase database )
+   {
+      database.Add(...);
+      database.Add(...);
+   }   
+}
+----
+
+NOTE: Do not create static members just to avoid instance members. If a type needs instance data then use a regular instance member.
+
+Because static members do not require an instance they are called on the type name directly rather than an instance.
+
+.Calling a Static Member
+[source,csharp]
+----
+SeedDatabase.Seed(database);
+----
+
+The benefit of a static member, besides the simplified calling syntax, is that the call is slightly faster at runtime.
+
+NOTE: In C# it is illegal to call a static member on an instance. This avoids any unexpected behavior.
+
+== Static Classes
+
+A static class is a class that contains only static members.
+When all members of a class are static then it is often beneficial to mark the entire class as static.
+A static class cannot be instantiated nor does it have any constructors.
+This helps identify the type as only providing static functionality.
+To make a class static precede it with the `static` kewyword.
+
+.Creating a Static Class
+[source,csharp]
+----
+public static class SeedDatabase
+{
+   public static void Seed ( IDatabase database )
+   {
+      database.Add(...);
+      database.Add(...);
+   }   
+}
+
+//Illegal
+var instance = new SeedDatabase();
+----
+
+NOTE: If a class is intended to have instance members later than it is not necessary to have a static class.
+
+== Static Fields
+
+While most static members are methods it is possible to also have static properties and fields.
+This is most useful when sharing a single instance of a class, often called a singleton.
+
+.Declaring a Singleton
+[source,csharp]
+----
+public class AppConfiguration
+{
+   //Make private so instances cannot be created
+   private AppConfiguration()
+   { }
+
+   //Expose the only instance
+   public static AppConfiguration Instance { get; } new AppConfiguration();
+}
+----
+
+WARNING: Be very careful when exposing a settable property as static. It can cause expected runtime behavior.
+
+In some cases a public field may be static.
+The only time it makes sense for a field to be static is if it is read only and exposing a predefined instance of a class.
+The earlier example could be rewritten to use a static field.
+
+.Creating a Static Field
+[source,csharp]
+----
+public class AppConfiguration
+{
+   //Make private so instances cannot be created
+   private AppConfiguration()
+   { }
+
+   //Expose the only instance
+   public static readonly AppConfiguration Instance = new AppConfiguration();
+}
+----
+
+CAUTION: Do not use static fields as global variables and never make them writable.
 
 == See Also
 
 link:readme.adoc[Advanced Types] +
 link:extension-methods.adoc[Extension Methods] +
+link:../chapter-3/members.adoc[this Parameter] +

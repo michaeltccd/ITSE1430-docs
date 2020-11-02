@@ -1,0 +1,67 @@
+= Throwing Exceptions
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+To report an error in code you must raise, or throw, an link:exceptions.adoc[exception]. Raising an exception notifies any callers higher in the call stack that an error has occurred and allows the caller to handle the error, if possible.
+
+== Throw Statement
+
+To throw an exception you use the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/throw[throw] expression.
+
+.Throwing an Exception
+[source,csharp]
+----
+throw new Exception("Failed");
+----
+
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/throw[throw] requires an expression of type https://docs.microsoft.com/en-us/dotnet/api/system.exception[Exception]. In most cases the expression is a new instance but the exception could come from elsewhere, such as the return value of a method.
+
+When the statement executes the exception is raised. The current method stops executing and the runtime begins error handling as discussed in link:handling-exceptions.adoc[Handling Exceptions]. The remainder of the method will not execute.
+
+The exception information is set at the point the exception is thrown.
+
+== Throw Expression
+
+Starting with C# 7.x the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/throw[throw] statement can also be treated as an expression. This allows you to throw an exception as part of an expression. A common case is when checking the return value of a method.
+
+.Using a Throw Expression
+[source,csharp]
+----
+//Pre-7.x C#
+var result = GetResult();
+if (result == null)
+   throw new Exception("Method returned null");
+
+//7.x+ C#
+var result = GetResult() ?? throw new Exception("Method returned null");
+----
+
+The null coalescing operator evaluates the expression on the left. 
+If it is `null` then the exception on the right is thrown.
+
+== How Exception Handling Works
+
+When an exception is thrown the following steps are taken.
+
+. The current method stops executing.
+. The https://docs.microsoft.com/en-us/dotnet/api/system.exception.stacktrace[StackTrace] of the exception is updated to match the location where the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/throw[throw]  statement was executed.
+. An appropriate exception handler is located, if any.
+. The call stack is unwound until the method containing the exception handler is reached, if any.
+. Execute continues inside the exception handler, if any.
+
+This is known as a first-chance exception. The application is given a chance to handle the exception. To locate an exception handler the runtime does the following.
+
+. Starting with the current stack frame see if the code is wrapped in a link:try-catch.adoc[try catch] block. If it is then determine if the `catch` block can handle the exception. If the `catch` block can handle the exception is becomes the exception handler for the exception.
+. If the current stack frame cannot handle the exception (either because it does not have a link:try-catch.adoc[try catch] or the `catch` blocks do not handle the exception) then move back to the previous stack frame and repeat the process.
+. If the runtime gets to the root of the call stack then it is done.
+
+If no exception handler is found then the exception becomes an unhandled exception (second-chance exception). When an unhandled exception occurs and a debugger is attached then the debugger gets notified. In a debugger like Visual Studio the debugger will break into the code and let you see the status of the application. Outside a debugger the program will terminate. In Windows the Windows Error Reporting (WER) tool runs and records the process information and error and then displays an error to the user before terminating the application.
+
+## See Also
+
+link:readme.adoc[Error Handling] +
+link:exceptions.adoc[Exceptions] +
+link:handling-exceptions.adoc[Handling Exceptions] +
+link:try-catch.adoc[Try-Catch-Finally Statement]  +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/throw[C# Throw Statement] +

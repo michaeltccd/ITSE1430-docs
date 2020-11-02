@@ -9,3 +9,7 @@ This chapter will cover some advanced concepts on types.
 * link:abstract-classes.adoc[Abstract Classes]
 * link:static-classes.adoc[Static Classes]
 * link:extension-methods.adoc[Extension Methods]
+* [LINQ]
+* [Lambda Expressions]
+* [Expression Bodies]
+* [Anonymous Types]

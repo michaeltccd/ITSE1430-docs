@@ -1,13 +1,12 @@
-= Chapter 8: LINQ
+= Chapter 8: Error Handling
 Michael Taylor <michael.taylor@tccd.edu>
 v0.1
 
-This chapter will cover Language Integrated Natural Queries (LINQ).
+This chapter will cover reporting and handling errors.
 
 == Table of Contents
 
-* LINQ
-* Lambda Expressions
-* Expression Bodies
-* Anonymous Types
-
+* link:exceptions.adoc[Exceptions]
+* link:handling-exceptions.adoc[Handling Exceptions]
+* link:try-catch-finally.adoc[Try-Catch-Finally Statement]
+* link:raising-exceptions.adoc[Raising Exceptions]
