@@ -58,7 +58,7 @@ This is known as a first-chance exception. The application is given a chance to 
 
 If no exception handler is found then the exception becomes an unhandled exception (second-chance exception). When an unhandled exception occurs and a debugger is attached then the debugger gets notified. In a debugger like Visual Studio the debugger will break into the code and let you see the status of the application. Outside a debugger the program will terminate. In Windows the Windows Error Reporting (WER) tool runs and records the process information and error and then displays an error to the user before terminating the application.
 
-## See Also
+== See Also
 
 link:readme.adoc[Error Handling] +
 link:exceptions.adoc[Exceptions] +

@@ -1,134 +1,198 @@
 = Handling Exceptions
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
 It is important for applications to handle errors that they can recover from. This provides a better user experience and allows for applications to be more resilient to unexpected errors. C# provides the link:try-catch.adoc[try-catch] block to support error handling.
 
-Refer to link:throwing-exceptions.adoc[Throwing Exceptions] for more information on how exception handlers are located.
+NOTE: Refer to link:throwing-exceptions.adoc[Throwing Exceptions] for more information on how exception handlers are located.
 
-TODO: Move try-catch to separate file, just cover basics of handling, rethrowing and wrapping
+== When to Handle Errors
 
-## Simple Handling
+Handling exceptions is important for the following reasons.
 
-The simple syntax for a `try-catch` in C# looks like this.
+- Attempting to recover from errors that are intermittent (e.g. network outages).
+- Reporting user errors so the user can take corrective action (e.g. attempting to open a file that does not exist).
+- Attempting an alternative approach when a primary solution does not work (e.g. falling back to a central location when a cached copy of data is not available).
 
-.Try-Catch Syntax
-```csharp
-try 
-{
-   //Statements to attempt to run
-} catch
-{
-   //Statements to run if an error occurs
-}
-```
+At the same time there are many cases where errors should not be handled.
+While it is often not good for an application to just crash it does provide important information to the user and the developer.
+In some cases crashing is safer than allowing the code to continue.
+Some examples of when error should be allowed to crash the program.
 
-The `try` block contains the code to try and execute. The `catch` block contains the code used to handle any errors that occur. In this example the caller is trying to update some data in the database. If any errors occur the program will display an error to the user.
+- Errors that would cause corruption of data if the program continues.
+- Errors that would allow a user to have more access to data than they should normally get.
+- Errors that cannot be recovered from (e.g. attempting to write to a non-existent drive).
+
+Refer to the section link:try-catch.adoc[Try-Catch] for the syntax of handling exceptions.
+
+== Handling Exceptions
+
+To handle an exception wrap the code in a link:try-catch.adoc[Try-Catch] block.
 
 .Using a Try-Catch
-```csharp
+[source,csharp]
+----
 try
-{
-   UpdateDatabase();
-} catch
-{
-   DisplayError("Update failed");
-};
-```
-
-Only the code inside the `try` block is protected. If any errors occur then the remainder of the code in the `try` block is skipped and the code in the `catch` block is executed. After the `catch` block executes then the code after the `try-catch` runs. The code in the `try` block will not resume execution. Therefore it is important to limit how much code is inside the `try` block.
-
-One problem with the above code is that it does not report anything useful to the user. The link:exceptions.adoc[Exception] object that the runtime created is not accessible. To get access to it we need to store the exception into a temporary variable.
-
-.Getting Exception In Catch Block
-```csharp
-try 
 {
    UpdateDatabase();
 } catch (Exception e)
 {
    DisplayError(e.Message);
+};
+----
+
+Only the code inside the `try` block is protected. If any errors occur then the remainder of the code in the `try` block is skipped and the code in the `catch` block is executed. After the `catch` block executes then the code after the `try-catch` runs. The code in the `try` block will not resume execution. Therefore it is important to limit how much code is inside the `try` block.
+
+If multiple `catch` blocks are defined then the runtime evaluates them top down.
+Only a single `catch` block will execute.
+
+=== Looking For an Exception Handler
+
+When an exception is thrown the runtime temporarily suspends the current function.
+The exception is known as a "first-chance exception" because this is the first chance code has to handle it.
+
+NOTE: If a debugger is attached it gets notified of the exception. Depending upon the debugger settings the debugger may pause the code and notify the user or it may let the runtime continue exception handling.
+
+The runtime begins the process of looking for an exception handler, a `catch` block, that can handle the exception.
+The runtime first looks to see if the called code is in a `try` block.
+If it is then then the runtime moves to the defined `catch` blocks looking for the first block that can handle the exception.
+
+If no `catch` block can be found in the current function or if the current function has not wrapped the call in a `try` block then the runtime moves back to the calling function.
+The runtime keeps walking the stack backwards until it finds a matching `catch` block, if any.
+
+.Walking the Stack
+[source,csharp]
+----
+void A ()
+{
+   try
+   {
+      B()
+   } catch (InvalidOperationException e)
+   {};
 }
-```
 
-The variable `e` contains the `Exception` instance for the life of the `catch` block. Code can use this to retrieve information from the exception, such as the message.
-
-NOTE: `Message` is a programmer-friendly message and should generally not be displayed to the end user. Most applications convert the exception to a user-friendly equivalent.
-
-## Handling Multiple Types
-
-In the simple syntax the `catch` block was handling all errors that could occur. In a more realistic example an application may handle one set of errors different from another, or not at all. Fortunately you can have multiple `catch` blocks with a single `try` block.
-
-.Catching Multiple Exceptions
-```csharp
-try 
+void B ()
 {
-   UpdateDatabase();
-} catch (InvalidOperationException e)
-{
-   //Handler for this type of exception
-} catch (ArgumentException e)
-{
-   //Handler for this type of exception
-} catch (Exception e)  //Optional
-{
-   //Handler for any other exceptions
+   C();
 }
-```
 
-Using multiple `catch` blocks allows an application to handle different types of errors differently which is exactly what the exception type is for. When the runtime is looking for a handler it walks the `catch` blocks from top to bottom until it finds a type that the current error is compatible with. Only a single `catch` block will execute for each error so any shared error handling needs to be contained in a helper method.
+void C ()
+{
+   try
+   {
+      D();   
+   } catch (ArgumentException e)
+   {};
+}
 
-If the runtime does not find any `catch` block that matches the error then it is the same as if no `catch` blocks existed and the runtime continues looking for a handler further up the call stack. To ensure all exceptions are caught make the last block catch any exception. 
+void D()
+{
+   //throw new InvalidOperationException();
+   //throw new ArgumentException();
+}
+----
 
-CAUTION: Only handle errors that it can recover from. It is considered bad practice to silently handle exceptions.
+If the above example, if `D` throws an `InvalidOperationException` then the runtime does the following:
 
-NOTE: Only one catch block will execute per exception.
+. No `try` block in `D` so move back to `C`
+. `C` has wrapped the call in a `try` so look for a `catch` block that handles `InvalidOperationException`
+. `C` has no matching `catch` block so move back to `B`
+. `B` has no `try` block so move back to `A`
+. `A` has a `try` block so look for a matching `catch` block that handles `InvalidOperationException`
+. `A` has a `catch` block so unwind the stack to `A`
+. Resume execution in the `catch` block of `A`
 
-NOTE: Catch blocks are evaluated top down until a matching type is found.
+However if `D` throws an `ArgumentException` then the flow is a little different.
 
-## Rethrowing an Exception
+. No `try` block in `D` so move back to `C`
+. `C` has wrapped the call in a `try` so look for a `catch` block that handles `InvalidOperationException`
+. `C` has a `catch` block so unwind the stack to `C`
+. Resume execution in the `catch` block of `C`
 
-Sometimes while handling an exception an application determines that it cannot handle the exception. As far as the runtime is concerned, once a `catch` block starts executing the exception is handled. To notify the runtime that the exception is not handled you may do one of the following inside the `catch` block.
+=== Unwinding the Stack
+
+Once the runtime has found a handler it unwinds the stack.
+Unwinding the stack causes the runtime to pop off all the function calls back to the function containing the handler to be called.
+All local variables are removed and any link:try-finally.adoc[finally] statements are executed.
+This is equivalent to if the function had returned normally.
+
+Once the stack is unwound then the runtime executes the appropriate `catch` block.
+
+== Unhandled Exceptions
+
+If the runtime fails to find a handler for an exception then it becomes an unhandled exception. 
+Unhandled exceptions cause a runtime error that crashes the program.
+If a debugger is attached it will break into the code and alter the user.
+This is known as a "second chance exception". 
+This is the second, and last, chance to handle the exception although in almost all cases it is fatal.
+
+== Rethrowing an Exception
+
+Sometimes while handling an exception an application determines that it cannot handle the exception. As far as the runtime is concerned, once a `catch` block starts executing, the exception is handled.
+To notify the runtime that the exception is not handled rethrow the exception inside the `catch` block.
+To rethrow the exception use the link:throwing-exceptions.adoc[throw] statement without an expression.
+The runtime will start looking for a handler again without modifying the original exception that was thrown.
 
 .Rethrowing an Exception
-```csharp
-catch (Exception e)
+[source,csharp]
+----
+try
 {
-    throw;   // 1
+   //Do something
+} catch (Exception e)
+{
+    //Log an error
 
-    throw e;  // 2
-}
-```
+    //Rethrow the exception
+    throw;
+};
+----
 
-The first usage is preferred and is known as "rethrowing the exception". In this case the original exception is marked as unhandled and the runtime continues looking for a handler. The stack trace of the exception remains intact and later handlers cannot tell that the exception was initially handled. This is the preferred approach when a `catch` block just needs to record that an exception occurred, via logging.
+Rethrowing an exception effectively hides the original `catch` block.
+There is no way to know that another handler has already run.
 
-The second usage is actually no different than using `throw` anywhere in code. A brand new exception is thrown. In the example the original exception is thrown again. The stack trace is updated to point to the `catch` block as the source and the runtime then starts looking for handlers again. This usage is most appropriate when code needs to "rewrite" an exception. The most common case is to wrap an existing exception in another exception. In this example the calling code is wrapping all exceptions in a generic `InvalidOperationException` to hide the implementation details.
+CAUTION: Never rethrow an exception by passing the exception object as the expression for the `throw` statement.
+
+== Wrapping an Exception
+
+If an exception is thrown while handling an exception in a `catch` block then the original exception is lost.
+As far as the runtime is concerned this is a brand new exception and the process starts all over again.
+
+In most cases a handler would not do this but on occassion it is useful to wrap a more specific exception with a more generic one.
+This is most common when using derived types that may return implementation-specific exceptions.
+Wrapping an exception allows the calling code to have better control over what exceptions are thrown.
+
+To wrap an exception create a new exception and then throw it inside the `catch` block.
 
 .Wrapping an Exception
-```csharp
+[source,csharp]
+----
 try
 {
    UpdateDatabase();
 } catch (Exception e)
 {
+   //Wrap an exception
    throw new InvalidOperationException(e);
 };
-```
+----
 
-In this example the original exception becomes the inner exception of the new exception that is raised at this point. Lower level code that handles this exception will only see this exception but can look at the https://docs.microsoft.com/en-us/dotnet/api/system.exception.innerexception[InnerException] property of the exception to see what the original exception was.
+Because throwing an exception inside a `catch` block loses the original exception it is generally better to pass the original exception as the "inner exception" to the new exception.
+All the existing exception types have a constructor overload that accepts the original exception.
+This information is available to calling code but does not directly impact how the exception is handled.
+The inner exception is mainly used to provide diagnostic information for a developer to understand what went wrong.
 
-NOTE: Prefer using `throw` to `throw expression` except in the cases where you need to hide the original exception.
+== Unhandleable Exceptions
 
-## Errors While Handling Errors
+There are a couple of system exception that cannot be properly handled. 
+While it may be possible to use them in a `catch` block the exceptions are always considered fatal and will crash the program irrelevant of what a `catch` block does.
 
-Care must be taken to ensure the code in a `catch` block does not raise errors itself. If a `catch` block raises an error (either directly or indirectly) then the original exception will be lost. The runtime considers an exception "handled" as soon as it finds a `catch` block to handle the error. Therefore errors that occur inside the `catch` block are treated as brand new errors and the process starts all over again.
+The following are a few of the known exceptions in this category.
 
-The `catch` block should be as error resilient as possible. This generally means limiting the behavior of the code inside the block to the minimal amount of code and adding extra error checking to ensure it does not fail.
-
-## Cleaning Up
-
-In some cases resources must be cleaned up after code executes. In a normal flow we can just add the code as part of the sequential execution of the method. But in the case of exceptions this will not work. Refer to the section on link:../../csharp/try-finally.adoc[try-finally] for more information.
+- https://docs.microsoft.com/en-us/dotnet/api/system.outofmemoryexception[OutOfMemoryException]
+- https://docs.microsoft.com/en-us/dotnet/api/system.stackoverflowexception[StackOverflowException]
 
 ## See Also
 

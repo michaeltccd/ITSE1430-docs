@@ -88,7 +88,7 @@ Fatal exceptions can be handled but will most likely fail when being handled. In
 
 WARNING: Never throw a system exception in your code.
 
-## See Also
+== See Also
 
 link:readme.adoc[Error Handling] +
 link:handling-exceptions.adoc[Handling Exceptions] +

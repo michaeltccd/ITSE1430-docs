@@ -1,0 +1,124 @@
+= Try-Finally Statement
+v1.0
+:toc:
+
+The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-finally[try-finally] statement in C# is used to ensure resources are cleaned up even if an exception occurs.
+
+When working with shared resources, such as files or network connections, it is often necessary to clean up an object when you are done with it.
+Care must be taken to ensure the resource is cleaned up even in cases of errors.
+
+.Unsafe Resource Cleanup
+[source,csharp]
+----
+try
+{
+   var resource = GetSharedResource();
+   //Do work
+
+   //Not guaranteed to be called 
+   FreeResource(resource);
+} catch 
+{   
+};
+----
+
+The link:try-catch.adoc[try-catch] statement can be used to handle errors but cleaning up resources requires that the clean up code run in both the success and error paths.
+
+.Unsafe Resource Cleanup, Attempt 2
+[source,csharp]
+----
+SharedResource resource = null;
+try
+{
+   resource = GetSharedResource();
+   //Do work
+
+   //Not guaranteed to be called 
+   FreeResource(resource);
+} catch 
+{  
+   //Called if an error occurs 
+   FreeResource(resource);
+};
+----
+
+Notice here that the clean up must be in both places.
+Furthermore the shared resource must be declared outside the `try` block so it can be referenced in the `catch` block.
+
+A potential workaround is to clean up the resource outside the `try-catch` block.
+
+.Unsafe Resource Cleanup, Attempt 3
+[source,csharp]
+----
+SharedResource resource = null;
+try
+{
+   resource = GetSharedResource();
+   //Do work   
+} catch 
+{     
+};
+
+FreeResource(resource);
+----
+
+But this has its own issues.
+First the code would need to ensure the resource was allocated sufficiently such that it should be cleaned up.
+Secondly the cleanup is still not exception safe.
+If the `catch` block does not handle the exception that was thrown or, worse, it throws an exception while trying to handle the exception then the clean up code will not execute.
+
+== Try-Catch-Finally Statement
+
+To fix this code use the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch-finally[Try-Catch-Finally] statement instead.
+
+.Safe Resource Cleanup with Error Handling
+```csharp
+IResource resource = null;
+try
+{
+   resource = GetSharedResource();
+   //Do work
+} catch 
+{      
+   //Handle error
+} finally
+{
+   //Clean up resources
+   if (resource != null)
+      FreeResource(resource);
+}
+```
+
+The `finally` block is guaranteed to be executed whether the `try` block completes successfully or not.
+If no exception is thrown then it executes after the `try` block otherwise it executes after the `catch` block or when the stack is unwound.
+
+CAUTION: The `finally` block should ensure the resource is initialized before attempting to clean it up.
+
+== Try-Finally Statement
+
+In most cases a `try-catch-finally` is the appropriate option but in some cases it is just necessary to clean up a resource.
+In this case the `catch` block can be left off.
+
+.Safe Resource Cleanup
+```csharp
+IResource resource = null;
+try
+{
+   resource = GetSharedResource();
+   //Do work
+} finally
+{
+   //Clean up resources
+   if (resource != null)
+      FreeResource(resource);
+}
+```
+
+The behavior is the same other than the current block will not attempt to handle errors.
+
+## See Also
+
+link:readme.adoc[Error Handling] +
+link:handling-exceptions.adoc[Handling Exceptions] +
+link:try-catch.adoc[Try Catch Statement] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch-finally[C# Try-Catch-Finally Statement] +

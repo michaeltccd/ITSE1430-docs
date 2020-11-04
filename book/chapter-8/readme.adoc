@@ -1,6 +1,6 @@
 = Chapter 8: Error Handling
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 
 This chapter will cover reporting and handling errors.
 
@@ -8,5 +8,6 @@ This chapter will cover reporting and handling errors.
 
 * link:exceptions.adoc[Exceptions]
 * link:handling-exceptions.adoc[Handling Exceptions]
-* link:try-catch-finally.adoc[Try-Catch-Finally Statement]
+* link:try-catch.adoc[Try-Catch Statement]
+* link:try-finally.adoc[Try-Finally Statement]
 * link:raising-exceptions.adoc[Raising Exceptions]

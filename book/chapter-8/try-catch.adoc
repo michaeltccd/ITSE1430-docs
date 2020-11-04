@@ -1,100 +1,128 @@
-= Try-Catch-Finally Statement
-v0.1
+= Try-Catch Statement
+v1.0
 :toc:
 
-TBD: Should this just be syntax section with details pushed into other sections?
+The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch[try-catch] statement in C# is used to handle an exception that has occurred in code.
+To handle errors wrap the code that may fail in a https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch[try-catch] statement.
 
-# Try-Finally
-ITSE 1430 
-:toc:
+NOTE: Refer to link:throwing-exceptions.adoc[Throwing Exceptions] for information on how to throw an exception.
 
-The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-finally[try-finally] block is used to execute code when leaving a block, under any circumstances. 
+The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch[try-catch] statement has the following syntax.
 
-When working with code it is often necessary to clean up an object when you are done with it. Care must be taken to ensure the resource is cleaned up even in cases of link:../error-handling/exceptions.adoc[exceptions].
+.Try-Catch Syntax
+----
+try-catch-statement ::= try-block catch-conditional-block* [catch-block] ;
+try-block ::= try S
+catch-conditional-block ::= catch ( T id ) S
+catch-block ::= catch S
+catch-expression ::= ( T id )
+----
 
-.Unsafe Resource Cleanup
-```csharp
+== Simple Form
+
+The simplest https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch[try-catch] statement consists of the `try` and `catch` blocks.
+This is also known as a "catch all" because all exceptions are handled.
+
+.Simple Try-Catch Example
+[source,csharp]
+----
 try
 {
-   var resource = GetSharedResource();
-   //Do work
-
-   FreeResource(resource);
+   //Statements to try to execute
 } catch 
+{
+   //Statements to handle exceptions
+}
+----
+
+The statements inside the `try` block are executed.
+If any exception is thrown then the block immediately stops executing and control transitions to the `catch` block.
+The statements inside the `catch` block are executed.
+Execution then resumes after the `try-catch` statement.
+
+CAUTION: If an exception occurs no additional statements after the line causing the exception will execute inside the `try` block.
+
+If no exception is thrown by the end of the `try` block then execution resumes after the `catch` block.
+The statements inside the `catch` block are not executed.
+
+NOTE: This form of the `try-catch` should rarely be used.
+
+== Typed Try Catch
+
+The more common form of the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch[try-catch] statement specifies the type of exception to handle.
+
+.Typed Try-Catch Example
+[source,csharp]
+----
+try
+{
+   //Statements to try to execute
+} catch (FileNotFoundException e)
+{
+   //Statements to handle "file not found" exception
+}
+----
+
+In this form the `catch` block specifies the type of exception to handle.
+If an exception occurs and the exception is type compatible with the given type then the `catch` block is executed.
+If the exception does not match the type specified then the `catch` block is ignored.
+
+This is the most appropriate form of https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch[try-catch] because code should only handle exceptions that they can recover from. 
+The only way to know what exceptions are recoverable is to use the exception type.
+
+Multiple typed catch blocks are allowed allowing for handling different exceptions in different ways.
+
+.Multiple Typed Try-Catch Example
+[source,csharp]
+----
+try
+{
+   //Statements to try to execute
+} catch (FileNotFoundException e)
+{
+   //Statements to handle "file not found" exception
+} catch (IOException e)
+{
+   //General IO error
+}
+----
+
+When multiple catch blocks are present then the runtime works from top to bottom until it finds a compatible exception type.
+Only a single catch block will run.
+
+== Catch All Blocks
+
+The final `catch` block of `try-catch` can be untyped.
+This block is executed if no other `catch` block is executed and is most useful when logging unhandled exceptions before terminating the application.
+
+There are two different formats for this `catch` block.
+The less useful form is the original syntax shown.
+The more useful form uses https://docs.microsoft.com/en-us/dotnet/api/system.exception[Exception] as the exception type. 
+This gives the block access to the exception information.
+
+.Catch All Block
+[source,csharp]
+----
+try
+{
+   //Do something
+} catch (Exception e)  //Catch all with access to the exception information
+{
+} catch //Catch all but no access to the exception information
 {   
 };
-```
+----
 
-## Exception Safe Clean Up
+NOTE: Do not use both forms in the same `try-catch`. One is sufficient.
 
-This code is not "exception-safe" (safe to run even when an exception occurs). If an error occurs after the resource is allocated but before it is freed then the line containing the cleanup method will never run and we have a resource leak. To fix this we need to ensure the resource is cleaned up in both cases.
+== Exception Filters
 
-.Safe Resource Cleanup
-```csharp
-IResource resource = null;
-try
-{
-   resource = GetSharedResource();
-   //Do work
+C# also supports exception filters which allow for a function to filter exceptions.
+That is beyond the scope of this course.
 
-   FreeResource(resource);
-} catch 
-{   
-   //Handle error
-   if (resource != null)
-      FreeResource(resource);
-};
-```
-
-For a single method call this is OK but if the cleanup requires more code then we are repeating ourselves which is bad. Even worse is that this is still not exception safe. If the code in the `finally` block throws an exception then the resource is not going to cleaned up.
-
-## Try-Finally Block
-
-The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-finally[try-finally] block is designed for this situation. A `finally` block executes after the `try` block to allow the code to clean up any resources. A `finally` block is always guaranteed to execute irrelevant of whether the code completes successfully or not. This guarantee makes clean up exception safe.
-
-.Using a Try-Finally Block
-```csharp
-IResource resource = null;
-try
-{
-   resource = GetSharedResource();
-   //Do work   
-} finally
-{
-   if (resource != null)  
-      FreeResource(resource);
-};
-```
-
-Notice in this code we needed to hoist the `resource` variable outside the `try` block so it could be accessed in the `finally` block. We also need to ensure that the variable is valid before we use it. Code in the `finally` block should make no assumption that any code has executed before it runs. Lastly, just like the `catch` block, ensure the code in the `finally` block is resilient. Any error in this code is just like an error in a `catch` block. 
-
-NOTE: If an exception occurs then the `finally` block is executed just before the current stack frame is cleaned up. 
-
-## Try-Catch-Finally Block
-
-In some cases code might want to handle exceptions using a `try-catch` and still use a `finally` to clean up code. The `try-catch` block may include a `finally` block in this case. The `finally` block must be last and there can be only one.
-
-.Using a Try-Catch-Finally Block
-```csharp
-IResource resource = null;
-try
-{
-   resource = GetSharedResource();
-   //Do work   
-} catch 
-{   
-   //Handle error  
-} finally
-{
-   if (resource != null)  
-      FreeResource(resource);
-};
-```
-
-`finally` blocks are executed after either the `try` or `catch` block executes to completion. If no `catch` block executes (or fails) then the `finally` block is still executed.
-
-## See Also
+== See Also
 
 link:readme.adoc[Error Handling] +
 link:handling-exceptions.adoc[Handling Exceptions] +
-https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-finally[C# Try-Finally] +
+link:try-finally.adoc[Try Finally Statement] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch[C# Try-Catch Statement] +
