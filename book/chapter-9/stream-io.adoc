@@ -1,0 +1,163 @@
+= Stream IO
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+Streaming is the process of reading or writing data in pieces. A stream is a sequence of data. It can be anything from streams of characters to streams of bytes. Streams are used to normalize the underlying representation of data that differing implementations may use. By streaming data you can work around some of the limitations of buffered IO.
+
+- Only a portion of the data needs to be loaded in memory at any one time. This allows for arbitrarily large files to be read or written.
+- Overhead is generally low, compared to buffering, when reading and writing since the stream is just the underlying data.
+- Reduction in memory usage, compared to buffering, because the stream represents the raw data. Any conversion to more complex types is the responsibility of the application.
+
+NOTE: Buffered IO assumes all the data is loaded into memory. Streamed IO assumes only a subset of the data is loaded in memory. In most cases a hybrid approach is used for performance reasons. In the case of buffered IO the data is generally loaded on demand rather than all at once. Conversely with streamed IO it is likely that some of the data is buffered to improve throughput.
+
+## Stream Class
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.io.stream[Stream] abstract class encapsulates the core functionality that all streams may have. Each stream implementation is different so most of the functionality is provided by the underlying implementations. Here are some common members on the class and their purpose.
+
+.Stream Members
+|===
+| Member | Description
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.stream.canread[CanRead] | Determines if the stream can be read.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.stream.canseek[CanSeek] | Determines if the stream supports random access.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.stream.canwrite[CanWrite] | Determines if the stream can be written. 
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.stream.close[Close] | Cleans up the stream.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.stream.length[Length] | Determines the length of the stream, if possible.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.stream.read[Read] | Reads the stream, if supported.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.stream.seek[Seek] | Seeks somewhere in the stream, if supported.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.stream.write[Write] | Writes the stream, if supported.
+|===
+
+Because streams can vary so wildly code must be careful when accessing a stream to ensure they do not misuse the stream. Misusing a stream generally results in an exception.
+
+.Checking for Supported Operations
+```csharp
+public void CheckStream ( Stream stream )
+{
+   if (stream.CanRead)      
+      //Read stream
+
+   if (stream.CanWrite)
+      //Write stream
+
+   if (stream.CanSeek)
+      //Seek into stream
+}
+```
+
+## Examples of Streams
+
+.NET ships with quite a few different stream implementations. Each implementation provides a different set of functionality. 
+
+|===
+| Type | Usage
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.filestream[FileStream] | The underlying type used when reading and writing files.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.memorystream[MemoryStream] | An in-memory stream. This is the only stream you might create directly in code.
+| https://docs.microsoft.com/en-us/dotnet/api/system.net.sockets.networkstream[NetworkStream] | The underlying type used when reading or writing data across the network.
+|===
+
+It is rare that you will work directly with a derived stream type. Instead your code will generally use a `Stream` created by a method without regard for the type. Unless you need a specific type of stream AND typecasting is not an option then stick with `Stream`.
+
+.Opening a File Stream
+```csharp
+Stream stream = OpenFile("testfile.txt");
+```
+
+## Using a Stream
+
+Once a stream is open you can read from it using https://docs.microsoft.com/en-us/dotnet/api/system.io.stream.read[Read] and write to it using https://docs.microsoft.com/en-us/dotnet/api/system.io.stream.write[Write], assuming you have permissions.
+
+.Reading an Int32
+```csharp
+var buffer = new byte[1024];
+
+//Read an int
+int read = stream.Read(buffer, 0, 4);
+if (read == 4)
+{
+   var value = BitConverter.ToInt32(buffer, 0);
+};
+```
+
+When reading data you must ensure that all the data has been read before using it. `Read` returns the number of bytes read. Some streams, like `FileStream`, will always read exactly how much data you request (unless you run out of file). Other streams may not do this so you generally need to call `Read` in a loop until you get to the end of the stram or read all the data.
+
+.Reading a Stream Properly
+```csharp
+public int ReadInt32 ( Stream stream )
+{
+   var buffer = new byte[4];
+   var offset = 0;
+   var remaining = buffer.Length;
+
+   do
+   {
+      var read = stream.Read(buffer, offset, remaining);
+      if (read == 0)
+         throw new IOException("No more data");
+
+      offset += read;
+      remaining = buffer.Length - offset;         
+   } while (remaining > 0);
+
+   return BitConverter.ToInt32(buffer, 0);
+}
+```
+
+## Using Readers and Writers
+
+Streams are very low level. It is generally difficult to work with them directly. Instead we normally use a reader or writer.
+
+|===
+| Type | Purpose
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader[BinaryReader Class] | Reads binary data.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter[BinaryWriter Class] | Writes binary data.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.streamreader[StreamReader Class] | Reads string data.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.streamwriter[StreamWriter Class] | Writes string data. 
+|===
+
+Readers and writers provide helper methods over a stream to make it easier to read and write .NET types. They handle the boilerplate code needed to properly read/write a stream with conversion to the underlying format needed.
+
+.Reading a Stream Using StreamReader
+```csharp
+using (var reader = new StreamReader(stream))
+{
+   var id = reader.ReadInt32();
+   var price = reader.ReadDecimal();
+};
+```
+
+Notice that these types all require a `Stream` to work. Since the lifetime of the `Stream` must correspond to the lifetime of the reader/writer, the reader/writer takes ownership of the `Stream`. When the reader/writer is disposed the `Stream` will be disposed as well.
+
+Writing is just as easy.
+
+.Writing a Stream Using StreamWriter
+```csharp
+using (var writer = new StreamWriter(stream))
+{
+   writer.Write(10);    //Writes an int
+   writer.Write(8.75M); //Writes a decimal
+}
+```
+
+## Closing a Stream
+
+A stream represents a shared resource. It implements the https://docs.microsoft.com/en-us/dotnet/api/system.idisposable[IDisposable] interface and must be cleaned up. In general you should use the link:../../csharp/using-statement.adoc[using statement] to clean up the stream.
+
+.Cleaning Up a  Stream
+```csharp
+using (var stream = File.OpenRead("file.txt"))
+{
+  //Work with stream
+};
+```
+
+NOTE: When using readers and writers you only need to dispose of the reader/writer. It will automatically dispose the stream as well.
+
+== See Also
+
+https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader[BinaryReader Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter[BinaryWriter Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.io.streamreader[StreamReader Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.io.streamwriter[StreamWriter Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.io.stream[Stream Class] +
+link:../statements/using-statement.adoc[Using Statement]

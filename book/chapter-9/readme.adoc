@@ -9,8 +9,8 @@ This chapter will cover using the file system.
 * link:resource-management.adoc[Resource Management]
 ** link:interface-idisposable.adoc[IDisposable Interface]
 ** link:using-statement.adoc[Using Statement]
-* link:..\..\archives\io\files.adoc[File Class] (Archive)
+* link:files.adoc[File Class]
 ** [Buffered IO]
-** link:..\..\archives\io\stream-io.adoc[Stream IO] (Archive)
+** link:stream-io.adoc[Stream IO]
 * [Directory Class]
-* link:..\..\archives\io\files.adoc[Path Class] (Archive)
+* link:path.adoc[Path Class]
