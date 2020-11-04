@@ -1,0 +1,103 @@
+= Using Statement
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The link:../chapter-8/try-finally.adoc[Try-Finally] statement can be used to clean up resources, such as files or database connections, even in the case of exceptions but the syntax is a little complex.
+
+.Safe Resource Cleanup
+[source,csharp]
+----
+IResource resource = null;
+try
+{
+   resource = GetSharedResource();
+   //Do work
+} finally
+{
+   //Clean up resources
+   if (resource != null)
+      FreeResource(resource);
+}
+----
+
+There are several problems with this syntax.
+
+- The resource to be cleaned up must be hoisted outside the block. This can potentially introduce scoping issues.
+- Clean up code must handle the case where the resource was never initialized.
+- Within the same method variable names must be unique to avoid conflicts.
+
+The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement[using] statement is available in C# to address this concern. 
+
+NOTE: Do not confuse this with the `using` directive that generally appears at the top of a file and imports namespaces.*
+
+== Using Statement
+
+The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement[using] statement is a replacement for the link:../chapter-8/try-finally.adoc[try-finally] statement when the resource to be cleaned up implements the link:interface-idisposable.adoc[IDisposable] interface.
+
+The syntax is straightforward.
+
+.Using Statement Syntax
+[source,csharp]
+----
+using (expression)
+{
+   //Code
+};
+----
+
+`expression` must evaluated to an link:interface-idisposable.adoc[IDisposable] interface.
+The code inside the block is executed and, even if an error occurs, the object is disposed when done.
+It is equivalent to the following `try-finally` block.
+
+.Try-Finally Equivalent
+[source,csharp]
+----
+var resource = expression;
+try
+{
+   //Code
+} finally
+{  
+   if (resource != null) 
+      ;//Clean up resource
+}
+----
+
+Another advantage of the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement[using] statement besides the brevity is that it handles the case of the object not being initialized to begin with.
+
+It is most common to declare the resource and initialize it at once so the scope is limited to the statement.
+
+.Using Statement with Declaration
+[source,csharp]
+----
+using (var instance = new SomeType())
+{
+   //Code
+};
+----
+
+The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement[using] statement is always preferred over the link:../chapter-8/try-finally.adoc[try-finally] statement when using link:interface-idisposable.adoc[IDisposable].
+
+== Nested Using Statements
+
+The curly braces are not required for the statement. 
+In some cases a series of https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement[using] statements are needed. 
+In this case they can be nested one after the other and indentation is generally ignored.
+
+.Nested Resources
+[source,csharp]
+----
+using (var instance = new SomeType())
+using (var instance2 = new SomeType2())
+using (var instance3 = new SomeType3())
+{
+   //Code
+};
+----
+
+== See Also
+
+link:interface-idisposable.adoc[IDisposable Interface] +
+link:../chapter-8/try-finally.adoc[Try Finally] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement[C# Using Statement] +

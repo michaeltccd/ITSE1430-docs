@@ -1,0 +1,130 @@
+= Resource Management
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+When dealing with resources it is critical that the lifetime of the resource be managed properly. This section will discuss how to manage the lifetime of a resource.
+For purposes of this discussion a resource is anything that needs to have a well defined lifetime such as an open file, network connection or shared object.
+
+== Common Resource Scenarios
+
+There are several scenarios that can occur when dealing with these types of objects.
+
+=== Locally Scoped Resources
+
+The most common case is that a resource is only needed for a short period of time, a single method. This is where the link:using-statement[using] statement is used.
+This is the preferred approach to this common case.
+
+.Local Scope Lifetime
+[source, csharp]
+----
+using (reader = new StreamReader())
+{   
+};
+----
+
+NOTE: Prefer locally scoped resources whenever possible.
+
+=== Methods Returning Resources
+
+In some cases a method must return a resource.
+For example when opening a file for streamed input or output a stream resource is returned.
+
+.Resource Returing Method Lifetime
+[source, csharp]
+----
+using (var reader = File.OpenRead("data.dat"))
+{   
+};
+----
+
+In the case of a resource as a return value then wrap the return value in a link:using-statement[using] statement like a locally scoped resource.
+If the resource is going to be returned from the calling function then the link:using-statement[using] statement cannot be used but the function should ensure that the resource is cleaned up even in the case of exceptions.
+
+=== Resource Parameters
+
+Another common scenario is receiving a resource as a parameter.
+Called methods have no way of knowing how an argument is being used outside of the method and therefore should treat any resource as being "on loan".
+In other words a method should not clean up a resource that is passed to it as a parameter unless the method is explicitly related to cleaning up the resource.
+Instead the method should simply use the resource and not bother cleaning it up, even in the case of an exception.
+
+.Parameter Resource Lifetime
+[source,csharp]
+----
+int ReadInt32 ( Stream stream )
+{
+   //Read int
+}
+----
+
+This is necessary because in many cases the calling code has already wrapped the resource in a link:using-statement[using] statement.
+It would be unexpected if the resource was suddenly cleaned up because of a function call.
+
+.Calling ReadInt32
+[source,csharp]
+----
+using (var stream = File.OpenRead("data.dat"))
+{
+   var id = ReadInt32(stream);
+
+   //Stream should still be available
+}
+----
+
+=== Constructor Resources
+
+Things get more interesting when receiving a resource as a parameter to a constructor. Constructors involve the creation of an object.
+Any paramemters passed to a constructor are assumed to be owned by the constructor.
+Therefore any resource passed to the constructor becomes the responsibility of the new instance.
+This is known as https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization[resource acquisition is initialization], or RAII.
+
+In this scenario the lifetime of the resource is now tied to the lifetime of the new instance.
+https://docs.microsoft.com/en-us/dotnet/api/system.io.streamreader[StreamReader] is a great example of this.
+It receives a https://docs.microsoft.com/en-us/dotnet/api/system.io.stream[Stream] as a constructor parameter and it is responsible for the stream until it is cleaned up.
+
+.RAII
+[source, csharp]
+----
+using (var stream = File.OpenRead("data.dat"))
+using (var reader = new StreamReader(stream))
+{
+   //Stream is cleaned up by reader  
+};
+----
+
+In this particular case the `Stream` is still wrapped in a link:using-statement[using] statement because an exception could occur after the stream is created but before the `StreamReader` is, albeit rare.
+However when the stream is eventually cleaned up it will have already been cleaned up by the reader.
+
+CAUTION: If you create a type that receives an link:interface-idisposable.adoc[Disposable] object as a constructor parameter then you must follow the rules of RAII as well.
+
+== Cleaning Up Resources Multiple Times
+
+Disposable objects are responsible for ensuring they clean themselves up properly.
+After being disposed it is generally an error to try to use the object further.
+In most cases the https://docs.microsoft.com/en-us/dotnet/api/system.objectdisposedexception[ObjectDisposedException] will be thrown when trying to use an object after it is disposed. 
+
+In all cases disposing of an object that is already disposed should be harmless.
+Types that implement link:interface-idisposable.adoc[IDisposable] allow this method to be called more than once.
+They simply do nothing when called again.
+This unfortunately leads to poorly written code like this.
+
+.Disposing Multiple Times
+[source,csharp]
+----
+using (var stream = File.OpenRead("data.dat"))
+{   
+   stream.Close();    //Clean up 1, closes stream
+   stream.Dispose();  //Clean up 2, does nothing
+   stream = null;     //Does nothing since variable is about to go out of scope
+};  //Clean up 3, finally block executes
+----
+
+While this is harmless in most cases it is redundant. Code should not worry about cleanup when using the `using` statement.
+
+NOTE: Some types that implement `IDisposable` also provide a `IsDisposed` property to indicate they are disposed. In this case code can rely on this property but it is not universally implemented.
+
+== See Also
+
+link:readme.adoc[File IO] +
+link:interface-idisposable.adoc[IDisposable Interface] +
+link:using-statement.adoc[Using Statement] +

@@ -1,21 +1,112 @@
 = IDispoable Interface
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
 The https://docs.microsoft.com/en-us/dotnet/api/system.idisposable[IDisposable] interface is used to identify a type that must be explicitly cleaned up when no longer needed.
 It is primarily used for types that interact with unmanaged resources.
 
+Refer to the section link:resource-management.adoc[Resource Management] for more information on managing resources.
+
 == Using the Interface 
 
-In general the interface is not used directly
+To use the interface wrap it in a link:using-statement.adoc[using] statement.
+
+.Using IDisposable
+[source,csharp]
+----
+using (var disposableObject = new DisposableObject())
+{
+};
+----
 
 == Implementing the Interface
 
+Implement this interface only if any of the following conditions apply.
+
+- At least one field implements the https://docs.microsoft.com/en-us/dotnet/api/system.idisposable[IDisposable] interface.
+- At least one field is an unmanaged resource that requires explicitly being cleaned up.
+
+To implement the interface follow the https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose[disposable pattern].
+
+.Disposable Pattern
+[source,csharp]
+----
+public class DisposableObject : IDisposable
+{
+   //Called by the garbage collector
+   ~DisposableObject ()
+   {
+      Dispose(false);      
+   }
+
+   //Called by the using statement
+   public void Dispose ()
+   {
+      //Dispose of object
+      Dispose(true);
+
+      //Notify garbage collector so it will not attempt to clean up again
+      GC.SuppressFinalize(this);
+   }
+
+   //Provided for derived types to clean up their resources
+   protectcd virtual void Dispose ( bool disposing )
+   {
+      if (_disposed)
+         return;
+
+      //If manually being cleaned up
+      if (disposing)
+      {
+         //Clean up managed resources          
+      };
+
+      //Clean up unmanaged resources
+   }
+
+   private bool _disposed;
+}
+----
+
+It is strongly recommended that any reference type fields be set to `null` when disposing of managed resources. 
+This helps prevent accidentally disposing of objects multiple times and also helps to speed up the removal of the object from memory.
+
+CAUTION: Only clean up managed resources when `disposing` is `true` otherwise it may crash the program.
+
+== Garbage Collector and IDisposable
+
+Because https://docs.microsoft.com/en-us/dotnet/api/system.idisposable[IDisposable] must ensure cleanup the garbage collector treats types that implement this interface specially.
+When the garbage collector (GC) determines that an instance is no longer referenced it normally deletes the memory.
+If the instance implements https://docs.microsoft.com/en-us/dotnet/api/system.idisposable [IDisposable] then it instead adds it to the "Finalizer" queue.
+This queue is periodically cleaned out by the GC.
+The GC enumerates the instances in the queue and disposes of each object by calling its destructor.
+Once the instance is disposed then it is eligible to be cleaned up the next time the GC runs.
+
+Because of this a type that implements https://docs.microsoft.com/en-us/dotnet/api/system.idisposable[IDisposable] takes two passes in the GC to clean up.
+Since most code will properly clean up an instance using the link:using-statement.adoc[using] statement this becomes wasted effort.
+In the code given earlier, if the instance is explicitly disposed then the `GC.SuppressFinalize` method is called.
+This marks the instance as disposed so the GC can free the memory immediately instead of sending it to the Finalizer queue first.
+
+== Dispose vs Close
+
+In some cases a resource may expose an alternative method besides https://docs.microsoft.com/en-us/dotnet/api/system.idisposable.dispose[Dispose] to clean it up.
+This is often done when the resource has a logical name for clean up, for example `Close` on a file.
+
+In these cases either method may be called.
+Both methods should do the same thing.
+Generally the https://docs.microsoft.com/en-us/dotnet/api/system.idisposable.dispose[Dispose] method does the actual cleaning up and the alternative method simply calls it.
+
+== Disposing Multiple Times
+
+Even with the appropriate code in place it is possible for an instance to be disposed multiple times either by accident or on purpose.
+Implementations should always support being disposed multiple times.
+As demonstrated in the earlier code the easiest solution is to use a `_disposed` field to track whether the instance has been disposed or not.
+
 == See Also
 
-link to using
-
 link:readme.adoc[File IO] +
-link:..\chapter-6\interfaces.adoc[Interfaces] +
+link:interface-idisposable.adoc[IDisposable Interface] +
+link:using-statement.adoc[Using Statement] +
 https://docs.microsoft.com/en-us/dotnet/api/system.idisposable[.NET IDisposable Interface] +
+https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose[Disposable Pattern] +

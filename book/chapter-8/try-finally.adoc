@@ -72,7 +72,8 @@ If the `catch` block does not handle the exception that was thrown or, worse, it
 To fix this code use the https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch-finally[Try-Catch-Finally] statement instead.
 
 .Safe Resource Cleanup with Error Handling
-```csharp
+[source,csharp]
+----
 IResource resource = null;
 try
 {
@@ -87,7 +88,7 @@ try
    if (resource != null)
       FreeResource(resource);
 }
-```
+----
 
 The `finally` block is guaranteed to be executed whether the `try` block completes successfully or not.
 If no exception is thrown then it executes after the `try` block otherwise it executes after the `catch` block or when the stack is unwound.
@@ -100,7 +101,8 @@ In most cases a `try-catch-finally` is the appropriate option but in some cases 
 In this case the `catch` block can be left off.
 
 .Safe Resource Cleanup
-```csharp
+[source,csharp]
+----
 IResource resource = null;
 try
 {
@@ -112,7 +114,7 @@ try
    if (resource != null)
       FreeResource(resource);
 }
-```
+----
 
 The behavior is the same other than the current block will not attempt to handle errors.
 
