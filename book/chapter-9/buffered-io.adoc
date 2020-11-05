@@ -1,0 +1,70 @@
+= Buffered IO
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+## Buffered IO
+
+For simple cases a file can be read or written using the `File` class directly. This is generally referred to as buffered IO because the file is buffered in memory.
+
+For the most part text and binary files are read/written the same way but with different methods. Working with the data however can vary.
+
+### Text Files
+
+Reading text files can be done in one of two ways: as raw text or as lines. Reading the file as raw text is straightforward using the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.readalltext[ReadAllText] method.
+
+.Reading a Text File
+```csharp
+string content = File.ReadAllText("somefile.txt");
+```
+
+The entire contents of the file is loaded into the string. This includes any newline characters. This is great when you need to do searching and replacing on textual content (e.g. changing all occurrences of a string). To write the file as a raw string you use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.writealltext[WriteAllText] method.
+
+.Writing a Text File
+```csharp
+File.WriteAllText("newfile.txt", content);
+```
+
+There are no implied newline characters in the content so code is responsible for breaking up the text if newline characters are needed. To insert a newline character into a string use the https://docs.microsoft.com/en-us/dotnet/api/system.environment.newline[Environment.NewLine] value.
+
+In general we work with files as lines so it important to know where one line ends and another beings. `ReadAllText` puts the burden on the code for figuring this out. WHen you need to read lines of text use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.readalllines[ReadAllLines] method instead. This method returns each line as an element in an array.
+
+.Reading a Text File as Lines
+```csharp
+string[] lines = File.ReadAllLines("somefile.txt");
+foreach (var line in lines)
+{    
+};
+```
+
+To write out a text file as lines use the https://docs.microsoft.com/en-us/dotnet/api/system.
+io.file.writealllines[WriteAllLines] method. This method writes out each element of the array as a separate line.
+
+.Writing a Text File As Lines
+```csharp
+File.WriteAllLines("newfile.txt", newLines);
+```
+
+NOTE: End of line characters vary by platform. When reading files generated on the same platform this is generally not an issue. If a program must deal with files generated on other platforms it must properly handle varying end of line characters. `ReadAllLines` will handle this automatically.
+
+### Binary Files
+
+Reading and writing binary files using buffered IO is similar to text files. The biggest difference is you are working with byte arrays instead. The https://docs.microsoft.com/en-us/dotnet/api/system.io.file.readallbytes[ReadAllBytes] method reads all the binary data into a byte array.
+
+.Reading a Binary File
+```csharp
+var data = File.ReadAllBytes("somefile.dat");
+```
+
+Writing is similarly done with https://docs.microsoft.com/en-us/dotnet/api/system.io.file.writeallbytes[WriteAllBytes].
+
+.Writing a Binary File
+```csharp
+File.WriteAllBytes("newfile.dat", data);
+```
+
+The biggest challenge is converting the byte array to .NET types. This is beyond the scope of this section but you can use https://docs.microsoft.com/en-us/dotnet/api/system.bitconverter[BitConverter] to help with this process.
+
+== See Also
+
+link:readme.adoc[File IO] +

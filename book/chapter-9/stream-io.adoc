@@ -155,9 +155,10 @@ NOTE: When using readers and writers you only need to dispose of the reader/writ
 
 == See Also
 
+link:readme.adoc[File IO] +
+link:../statements/using-statement.adoc[Using Statement] +
 https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader[BinaryReader Class] +
 https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter[BinaryWriter Class] +
 https://docs.microsoft.com/en-us/dotnet/api/system.io.streamreader[StreamReader Class] +
 https://docs.microsoft.com/en-us/dotnet/api/system.io.streamwriter[StreamWriter Class] +
 https://docs.microsoft.com/en-us/dotnet/api/system.io.stream[Stream Class] +
-link:../statements/using-statement.adoc[Using Statement]

@@ -1,15 +1,84 @@
 = File Class
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
 Many programs need to read and write files. .NET has support for files (and directories) but its approach is a little different from most other languages. .NET breaks up file operations into several different classes depending upon what you want to do.
 
-## Working with Files
+== File Management
 
-To work with files you use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file[File] class. This class is defined in the `System.IO` namespace. It is a static class containing helper functions for working with files. This can include copying, renaming or deleting files.
+To manage files use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file[File] class.
+It is a static class containing helper functions for working with files. This can include copying, renaming or deleting files.
 
-## File Exceptions
+NOTE: The classes related to IO are in the https://docs.microsoft.com/en-us/dotnet/api/system.io[System.IO] namespace.
+
+==  Common File Operations
+
+=== Determine If a File Exists
+
+Use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.exists[File.Exists] method to determine if a file exists.
+
+.Determining if a file exists
+[source,csharp]
+----
+var filename = "Somefile.txt";
+if (File.Exists(filename))
+   ; //File exists
+----
+
+Most file operations will fail if a file does not exist.
+Use this method to check before attempting a file operation.
+
+CAUTION: Even when using this method it is possible for a file to be removed before the file operation occurs. Therefore you should always use error handling to recover from a missing file.
+
+=== Copy a File
+
+Use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.copy[File.Copy] method to copy a file from one location to another.
+
+.Copying a File
+[source,csharp]
+----
+var sourceFile = "SomeFile.txt";
+var targetFile = "NewFile.txt";
+
+File.Copy(sourceFile, targetFile);
+----
+
+If the target file already exists then the method fails. To overwrite an existing file use the overload accepting a `bool` or delete the file first.
+
+=== Delete a File
+
+Use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.delete[File.Delete] method to delete a file.
+
+.Deleting a File
+[source,csharp]
+----
+var filename = "SomeFile.txt";
+
+File.Delete(filename);
+----
+
+If the file is read only or locked then the method fails.
+
+=== Move a File
+
+Use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.move[File.Move] method to move or rename a file.
+
+.Moving a File
+[source,csharp]
+----
+var sourceFile = "SomeFile.txt";
+var targetFile = "NewFile.txt";
+
+File.Move(sourceFile, targetFile);
+----
+
+If the file already exists it will fail. Delete the file first.
+
+If you move a file across volumes (e.g. `C:\` to `D:\`) then it will normally work.
+If the source file is locked the file is copied instead.
+
+== File Exceptions
 
 For most file operations the call will fail if the file name is `null`, empty or an invalid path. In addition to the standard exceptions, the following exceptions are also commonly raised by file operations.
 
@@ -23,141 +92,45 @@ For most file operations the call will fail if the file name is `null`, empty or
 | https://docs.microsoft.com/en-us/dotnet/api/system.io.ioexception[IOException] | An error occurred trying to perform the operation. This is the base class for most of the other exceptions so list it last when using link:../error-handling/handling-exceptions.md)[try-catch] blocks.
 |===
 
-## Common File Operations
+== Reading and Writing Files
 
-### Determine If a File Exists
+When reading or writing a file a choice must be made on how to read the file.
 
-Use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.exists[File.Exists] method to determine if a file exists.
+Buffered::
+   The entire file, or a significant subset, is read into memory and processed.
+Streamed::
+   The file data is streamed into memory such that only a subset of the file is in memory at any one time.
 
-.Determining if a file exists
-```csharp
-var filename = "Somefile.txt";
-if (File.Exists(filename))
-   //File exists
-```
+There are plusses and minuses to both approaches.
+Refer to the section link:buffered-io.adoc[Buffered IO] for more information on buffered IO and link:stream-io.adoc[Stream IO] for more information on streaming.
 
-Most file operations will fail if a file does not exist. Use this method to check before attempting a file operation.
+=== Text and Binary Files
 
-CAUTION: Even when using this method it is possible for a file to be removed before the file operation occurs. Therefore you should always use error handling to recover from a missing file.
+When working with the contents of a file pay particular attention to whether it is a text or binary file.
+The framework does not attempt to translate binary files in any way.
+Binary files are simply streams of bytes.
 
-### Copy a File
+Text files are treated as chacters, of a variety of encoding schemes, and converted to strings.
+When working with a text file the file encoding must be specified.
+Selecting the wrong encoding can result in corrupt characters being read or written.
+By default the framework will attempt to figure out the encoding based upon the file contents.
+In reality if the file contains a Unicode marker at the beginning of the file then it is read as Unicode otherwise it is treated as Ansi.
 
-Use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.copy[File.Copy] method to copy a file from one location to another.
+Refer to https://docs.microsoft.com/en-us/dotnet/api/system.text.encoding[Encoding] in the .NET documentation for more information on encoding.
 
-.Copying a File
-```csharp
-var sourceFile = "SomeFile.txt";
-var targetFile = "NewFile.txt";
+== File Paths
 
-File.Copy(sourceFile, targetFile);
-```
-
-If the target file already exists then the method fails. To overwrite an existing file use the overload accepting a `boolean` or delete the file first.
-
-### Delete a File
-
-Use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.delete[File.Delete] method to delete a file.
-
-.Deleting a File
-```csharp
-var filename = "SomeFile.txt";
-
-File.Delete(filename);
-```
-
-If the file is read only or locked then the method fails.
-
-### Move a File
-
-Use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.move[File.Move] method to move or rename a file.
-
-.Moving a File
-```csharp
-var sourceFile = "SomeFile.txt";
-var targetFile = "NewFile.txt";
-
-File.Move(sourceFile, targetFile);
-```
-
-If the file already exists it will fail. Delete the file first.
-
-If you move a file across volumes (e.g. `C:\` to `D:\`) then it will normally work. If the source file is locked the file is copied instead.
-
-## Buffered IO
-
-For simple cases a file can be read or written using the `File` class directly. This is generally referred to as buffered IO because the file is buffered in memory.
-
-For the most part text and binary files are read/written the same way but with different methods. Working with the data however can vary.
-
-### Text Files
-
-Reading text files can be done in one of two ways: as raw text or as lines. Reading the file as raw text is straightforward using the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.readalltext[ReadAllText] method.
-
-.Reading a Text File
-```csharp
-string content = File.ReadAllText("somefile.txt");
-```
-
-The entire contents of the file is loaded into the string. This includes any newline characters. This is great when you need to do searching and replacing on textual content (e.g. changing all occurrences of a string). To write the file as a raw string you use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.writealltext[WriteAllText] method.
-
-.Writing a Text File
-```csharp
-File.WriteAllText("newfile.txt", content);
-```
-
-There are no implied newline characters in the content so code is responsible for breaking up the text if newline characters are needed. To insert a newline character into a string use the https://docs.microsoft.com/en-us/dotnet/api/system.environment.newline[Environment.NewLine] value.
-
-In general we work with files as lines so it important to know where one line ends and another beings. `ReadAllText` puts the burden on the code for figuring this out. WHen you need to read lines of text use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.readalllines[ReadAllLines] method instead. This method returns each line as an element in an array.
-
-.Reading a Text File as Lines
-```csharp
-string[] lines = File.ReadAllLines("somefile.txt");
-foreach (var line in lines)
-{    
-};
-```
-
-To write out a text file as lines use the https://docs.microsoft.com/en-us/dotnet/api/system.
-io.file.writealllines[WriteAllLines] method. This method writes out each element of the array as a separate line.
-
-.Writing a Text File As Lines
-```csharp
-File.WriteAllLines("newfile.txt", newLines);
-```
-
-NOTE: End of line characters vary by platform. When reading files generated on the same platform this is generally not an issue. If a program must deal with files generated on other platforms it must properly handle varying end of line characters. `ReadAllLines` will handle this automatically.
-
-### Binary Files
-
-Reading and writing binary files using buffered IO is similar to text files. The biggest difference is you are working with byte arrays instead. The https://docs.microsoft.com/en-us/dotnet/api/system.io.file.readallbytes[ReadAllBytes] method reads all the binary data into a byte array.
-
-.Reading a Binary File
-```csharp
-var data = File.ReadAllBytes("somefile.dat");
-```
-
-Writing is similarly done with https://docs.microsoft.com/en-us/dotnet/api/system.io.file.writeallbytes[WriteAllBytes].
-
-.Writing a Binary File
-```csharp
-File.WriteAllBytes("newfile.dat", data);
-```
-
-The biggest challenge is converting the byte array to .NET types. This is beyond the scope of this section but you can use https://docs.microsoft.com/en-us/dotnet/api/system.bitconverter[BitConverter] to help with this process.
-
-### Streaming
-
-As files get larger the buffered approach starts to become expensive. Furthermore if you do not need to read or write the entire file then buffered IO is wasteful. For anything beyond simple cases consider using link:stream-io.adoc[Stream IO] instead.
-
-## Working with Paths
-
-The `File` class does not manage paths. It simply passes any file paths onto the file system. To work with file paths refer to the link:paths.adoc[Paths] section.
+The https://docs.microsoft.com/en-us/dotnet/api/system.io.file[File] class does not manage paths.
+It simply passes any file paths onto the file system.
+To work with file paths refer to the link:paths.adoc[Paths] section.
 
 == See Also
 
-https://docs.microsoft.com/en-us/dotnet/api/system.bitconverter[BitConverter Class] +
-https://docs.microsoft.com/en-us/dotnet/api/system.io.directory[Directory Class] +
-https://docs.microsoft.com/en-us/dotnet/api/system.io.file[File Class] +
+link:readme.adoc[File IO] +
 link:paths.adoc[Paths] +
-https://docs.microsoft.com/en-us/dotnet/api/system.io.stream[Stream Class] +
-link:stream-io.adoc[Stream IO]
+link:stream-io.adoc[Stream IO] +
+https://docs.microsoft.com/en-us/dotnet/api/system.bitconverter[.NET BitConverter Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.io.directory[.NET Directory Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.text.encoding[.NET Encoding] +
+https://docs.microsoft.com/en-us/dotnet/api/system.io.file[.NET File Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.io.stream[.NET Stream Class] +

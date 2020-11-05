@@ -10,7 +10,7 @@ This chapter will cover using the file system.
 ** link:interface-idisposable.adoc[IDisposable Interface]
 ** link:using-statement.adoc[Using Statement]
 * link:files.adoc[File Class]
-** [Buffered IO]
+** link:buffered-io.adoc[Buffered IO]
 ** link:stream-io.adoc[Stream IO]
 * [Directory Class]
 * link:path.adoc[Path Class]
