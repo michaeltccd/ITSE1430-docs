@@ -1,0 +1,108 @@
+= Delegates
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+Delegates were first introduced back when talking about events and event handlers.
+Take a common example of handling an event.
+
+.Listening for an Event
+[source,csharp]
+----
+// Event handler
+private void OnCancelClicked ( object sender, EventArgs e )
+{
+   Close();
+}
+
+// Hooking up an event handler
+btnCancel.Click += OnCancelClicked;
+----
+
+The `OnCancelClicked` method is called when the `Click` event of `btnCancel` is raised.
+Specifically the instance (`this` in the example) and the method (`OncancelClicked`) are being added to a list of methods to call when the event is raised.
+The instance/method data is a delegate.
+Delegates allow for calling methods on instances at runtime by capturing the needed information (the instance and method) and storing them in a structure that allows the runtime to invoke them later.
+
+== What Is a Delegate?
+
+Delegates are useful outside of events.
+It is often necessary to invoke a method as part of another method call.
+Take, for example, sorting or filtering of a list.
+
+.Filtering a List
+[source,csharp]
+----
+IEnumerable<int> FindEvens ( IEnumerable<int> items )
+{
+   foreach (var item in items)
+      if (item % 2 == 0)
+         yield return item;
+}
+----
+
+Filtering is generic. The only thing that really changes is the boolean expression to check.
+Therefore it is possible to generalize this algorithm.
+A typical approach might be to create an interface that takes a value and determines whether it is true or not, a predicate.
+But creating interfaces, and their corresponding types, would litter the code with a lot of small types that are needed just so a method can be called.
+This is where delegates come into play.
+
+A https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates[.NET delegate] is a function declaration that is treated as a type.
+
+.Declaring a Delegate
+[source,csharp]
+----
+public delegate bool MeetsCondition ( int value );
+----
+
+Since a delegate is a type it can be used anywhere a type is allowed, including in parameters.
+
+.Filtering a List with a Delegate
+[source,csharp]
+----
+IEnumerable<int> Find ( IEnumerable<int> items, MeetsCondition condition )
+{
+   foreach (var item in items)
+      if (condition(item))
+         yield return item;
+}
+----
+
+The delegate can be called at runtime like any other method. 
+The difference is that the actual method being called is determined by the argument.
+
+Other languages refer to delegates as "function arguments", "function objects" or "functors".
+Effectively this means that a function (and any instance it is tied to) can be treated like a data object that can be passed around, stored and returned like any other data.
+Any method that meets the function signature can be used as an argument for the delegate.
+
+.Calling Find with a Delegate
+[source,csharp]
+----
+private void IsEven ( int value )
+{
+   return value % 2 == 0;
+}
+
+//Usage
+var evens = Find(numbers, IsEven);
+----
+
+NOTE: When using a method as a delegate do not include the function call parenthesis or arguments. Doing so will result in a function call.
+
+This is exactly how events work but as can be seen delegates can be used anywhere.
+Delegates may be instance or static members of a type.
+Provided the method meets the delegate signature then it is allowed.
+
+== Generic Delegates
+
+To avoid having many different delegate types defined the framework defines some common delegates that can be used in code.
+Prefer to use the common delegates over defining your own.
+
+.Common Delegates
+|===
+|===
+
+== See Also
+
+link:readme.adoc[Advanced Types] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates[.NET Delegates] +

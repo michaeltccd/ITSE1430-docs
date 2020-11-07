@@ -3,7 +3,10 @@ Michael Taylor <michael.taylor@tccd.edu>
 v0.1
 :toc:
 
+== Anonymous Methods
+
 == See Also
 
 link:readme.adoc[Advanced Types] +
+linK:delegates.adoc[Delegates] +
 https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions[C# Lambda Expressions] +
