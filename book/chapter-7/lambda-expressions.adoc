@@ -1,0 +1,9 @@
+= Lambda Expressions
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+== See Also
+
+link:readme.adoc[Advanced Types] +
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions[C# Lambda Expressions] +

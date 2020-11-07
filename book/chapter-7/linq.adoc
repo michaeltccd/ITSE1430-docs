@@ -1,0 +1,9 @@
+= LINQ
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+== See Also
+
+link:readme.adoc[Advanced Types] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/[.NET LINQ] +

@@ -1,0 +1,128 @@
+= Expression Body
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+C# has expanded the usefulness of link:lambda-expressions.adoc[lambda expressions] by allowing them to be used in some class members as well.
+An expression body is a link:lambda-expressions.adoc[lambda expressions] that is used as the body of a class member.
+
+At this time the following members may use expression bodies.
+
+- Properties
+- Methods
+- Constructors
+
+== Properties
+
+A full property might look like this.
+
+.Full Property Example
+[source,csharp]
+----
+public class Product
+{
+   public string Name 
+   {
+      get { return _name ?? ""; }
+      set { _name = value?.Trim(); }
+   }
+
+   private string _name;
+}
+----
+
+An auto property would be cleaner but cannot be used in this case because the backing field is being manipulated.
+An expression body is cleaner than the full syntax.
+
+.Expression Body Proeprty
+[source,csharp]
+----
+public class Product
+{
+   public string Name 
+   {
+      get => _name ?? "";
+      set => _name = value?.Trim();
+   }
+
+   private string _name;
+}
+----
+
+Notice the changes made.
+
+- The curly braces are removed
+- The lambda symbol (`=>`) is placed after the `get` and `set` keywords.
+- For the getter the expression body is just the expression to return.
+- For the setter the expression body is just the expression to execute.
+
+Like link:lambda-expressions.adoc[lambda expressions] a single expression is allowed.
+If more than one is needed then revert to the full syntax instead.
+For the getter the expression represents the value to return.
+For the setter the expression is simply evaluated.
+
+The compiler rewrites expression bodied members to the full syntax.
+There is no performance difference between the two approaches.
+
+=== Calculated Properties
+
+For the special case of a calculated property the syntax can be simplified even further.
+
+.Calculated Property
+[source,csharp]
+----
+public class Product
+{
+   public decimal DiscountedPrice
+   {
+      get { return Price * Discount;}
+   }
+}
+----
+
+.Calculated Property with Expression Body
+[source,csharp]
+----
+public class Product
+{
+   public decimal DiscountedPrice => Price * Discount;
+}
+----
+
+Using the lambda symbol (`=>`) eliminates the need to specify the getter altogether.
+
+CAUTION: Be very careful to not use `=` over `=>`. Using `=` creates a field with an initial value. Using `=>` creates a get only property.
+
+== Methods and Constructors
+
+Methods, and constructors, follow a similar syntax to the calculated property syntax.
+
+.Method
+[source,csharp]
+----
+public class Product
+{
+   public override string ToString()
+   {
+      return Name;
+   }
+}
+----
+
+.Method with Expression Body
+[source,csharp]
+----
+public class Product
+{
+   public override string ToString() => Name;
+}
+----
+
+The expression body cannot be empty.
+If no body is needed then use empty curly braces like normal.
+
+== See Also
+
+link:readme.adoc[Advanced Types] +
+link:lambda-expressions.adoc[Lambda Expressions] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/statements-expressions-operators/expression-bodied-members[C# Expression Bodied Members] +
