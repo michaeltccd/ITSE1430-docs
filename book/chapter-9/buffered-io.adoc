@@ -1,70 +1,209 @@
 = Buffered IO
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
-## Buffered IO
-
-For simple cases a file can be read or written using the `File` class directly. This is generally referred to as buffered IO because the file is buffered in memory.
-
+For simple cases a file can be read or written using the https://docs.microsoft.com/en-us/dotnet/api/system.io.file[File] class directly.
+This is referred to as buffered IO because the file is buffered in memory.
+The https://docs.microsoft.com/en-us/dotnet/api/system.io.file[File] class provides dedicated methods to read and write files using buffered IO.
 For the most part text and binary files are read/written the same way but with different methods. Working with the data however can vary.
 
-### Text Files
+The advantages of buffered IO include:
+
+- Simplicity
+- Automatic resource management
+
+The disadvantages of buffered IO include:
+
+- Performance
+- Memory usage
+
+== Text Files
+
+Text files are files that, when opened, contain only printable characters and a few control characters.
+Text files are generally the easiest format to work with but are also limited in what they can store.
+To store structured data a format such as XML or JSON is needed.
+These file formats introduce overhead to the file causing text files to generally be larger than corresponding binary files.
+However text files are generally easier to read and understand making them preferable to binary files except when size is a factor.
+
+=== Reading Text
 
 Reading text files can be done in one of two ways: as raw text or as lines. Reading the file as raw text is straightforward using the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.readalltext[ReadAllText] method.
 
 .Reading a Text File
-```csharp
+[source,csharp]
+----
 string content = File.ReadAllText("somefile.txt");
-```
+----
 
-The entire contents of the file is loaded into the string. This includes any newline characters. This is great when you need to do searching and replacing on textual content (e.g. changing all occurrences of a string). To write the file as a raw string you use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.writealltext[WriteAllText] method.
+The method takes the file to read and returns all the content of the file as a string.
+This includes any newline characters.
+This is great when you need to do searching and replacing on textual content (e.g. changing all occurrences of a string).
 
-.Writing a Text File
-```csharp
-File.WriteAllText("newfile.txt", content);
-```
+=== Dealing with New Lines
 
-There are no implied newline characters in the content so code is responsible for breaking up the text if newline characters are needed. To insert a newline character into a string use the https://docs.microsoft.com/en-us/dotnet/api/system.environment.newline[Environment.NewLine] value.
+When reading a raw file it is the responsibility of the code to handle newline characters, if needed.
+Newline characters differ based upon the platform that generated the file.
+Windows, for example, uses a carriage return/line feed (CR/LF) combination.
+Unix, on the other hand, uses a line feed (LF).
+Both formats need to be supported when reading files.
 
-In general we work with files as lines so it important to know where one line ends and another beings. `ReadAllText` puts the burden on the code for figuring this out. WHen you need to read lines of text use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.readalllines[ReadAllLines] method instead. This method returns each line as an element in an array.
+If newlines are important then the easier approach is to use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.readalllines[ReadAllLines] method instead.
+This method takes the file to read and returns an array of strings where each line is a separate element.
+The method handles the detection of the various new line characters automatically.
 
 .Reading a Text File as Lines
-```csharp
+[source,csharp]
+----
 string[] lines = File.ReadAllLines("somefile.txt");
-foreach (var line in lines)
-{    
-};
-```
+----
 
-To write out a text file as lines use the https://docs.microsoft.com/en-us/dotnet/api/system.
-io.file.writealllines[WriteAllLines] method. This method writes out each element of the array as a separate line.
+NOTE: This is the preferred approach in most cases.
 
-.Writing a Text File As Lines
-```csharp
-File.WriteAllLines("newfile.txt", newLines);
-```
+=== Writing Text
 
-NOTE: End of line characters vary by platform. When reading files generated on the same platform this is generally not an issue. If a program must deal with files generated on other platforms it must properly handle varying end of line characters. `ReadAllLines` will handle this automatically.
+There are corresponding write methods to write out text files.
+The https://docs.microsoft.com/en-us/dotnet/api/system.io.file.writealltext[WriteAllText] method writes a string to a text file.
+The https://docs.microsoft.com/en-us/dotnet/api/system.io.file.writealllines[WriteAllLines] method writes an array of strings to a text file.
+Each element is a separate line.
 
-### Binary Files
+With both methods if the file already exists then it is overwritten.
 
-Reading and writing binary files using buffered IO is similar to text files. The biggest difference is you are working with byte arrays instead. The https://docs.microsoft.com/en-us/dotnet/api/system.io.file.readallbytes[ReadAllBytes] method reads all the binary data into a byte array.
+.Writing a Text File
+[source,csharp]
+----
+//Write as text
+string content = "Hello World";
+File.WriteAllText("newfile.txt", content);
+
+//Write as lines
+string[] lines = new [] { "Line1" , "Line2" };
+File.WriteAllLines("newfile.txt", lines);
+----
+
+To append text to the end of an existing file then use the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.appendalltext[AppendAllText] and 
+https://docs.microsoft.com/en-us/dotnet/api/system.io.file.appendalllines[AppendAllLines] methods instead.
+
+=== Text Encoding
+
+One challenge when working with text files is the https://www.iana.org/assignments/character-sets/character-sets.xhtml[encoding], or character set.
+
+Text Encoding::
+   Mapping from the integral value to the corresponding textual representation.
+
+There are many encoding formats in use today.
+
+- https://en.wikipedia.org/wiki/ASCII[ANSI], and ASCII, are the oldest and most often used with languages as it compact.
+However ANSI/ASCII requires that code pages be used to represent all the textual languages in the world and this adds complexity. 
+- https://en.wikipedia.org/wiki/Windows-1252[Windows-1252] is the encoding historically used by Windows up until Windows 98. It is still heavily used in many websites on the Internet.
+- https://home.unicode.org/[Unicode] is the preferred format. It is larger than the other character sets but supports all languages in the world. It has been the default encoding for Windows for several decades. .NET natively uses this encoding for performance reasons.
+
+In most cases a text file does not put any encoding information in the file.
+The text reader tries to determine what encoding was used and normally just defaults to the operating system defaults, generally `Windows-1252` on Windows.
+
+Files stored in Unicode format contain a byte order mark (BOM) that text editors strip out.
+The BOM is a simple `0xFEFF` value (or similar) at the front of the text file.
+The BOM tells a reader that the file is saved as Unicode and what byte order the characters are using.
+This is needed for some of the Unicode formats.
+
+\.NET provides the https://docs.microsoft.com/en-us/dotnet/api/system.text.encoding[Encoding] class to wrap encodings.
+The common encodings are exposed as static fields for use in code.
+Custom encodings can be created if needed.
+
+NOTE: Unless an explicit encoding is needed then it is generally not necessary to work with encodings directly.
+
+== Binary Files
+
+Binary files are made up of bytes of data. 
+All the primitive types can be converted to their byte equivalent using the https://docs.microsoft.com/en-us/dotnet/api/system.bitconverter[BitConverter] class.
+
+NOTE: When writing strings it is necessary to use the https://docs.microsoft.com/en-us/dotnet/api/system.text.encoding[Encoding] and to write the length of the string so that reading code knows how much of the binary data is the string.
+
+Refer to reading and writing later on how to do this.
+
+=== Reading Binary
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.io.file.readallbytes[ReadAllBytes] method reads all the binary data into a byte array.
 
 .Reading a Binary File
-```csharp
-var data = File.ReadAllBytes("somefile.dat");
-```
+[source,csharp]
+----
+var data = File.ReadAllBytes("products.dat");
+----
 
-Writing is similarly done with https://docs.microsoft.com/en-us/dotnet/api/system.io.file.writeallbytes[WriteAllBytes].
+It accepts the filename to read.
+Once the binary data is in an array then it can be converted from binary back to the primitives using the https://docs.microsoft.com/en-us/dotnet/api/system.bitconverter[BitConverter] class.
+
+.Converting from Binary
+[source,csharp]
+----
+Product LoadProduct ( byte[] data ) 
+{
+   //NOTE - No error checking is being done
+   var product = new Product();
+
+   var offset = 0;  
+
+   //Id is Int32
+   product.Id = BitConverter.ToInt32(data, offset);
+   offset += sizeof(int);
+
+   //Name is a string that will be stored as Unicode, length prefixed
+   var length = BitConverter.ToInt32(data, offset);
+   offset += sizeof(int);
+
+   if (length > 0)
+   {
+      product.Name = Encoding.UTF8.GetString(data, offset, length);
+      offset += length;
+   };
+   
+   //Price is decimal
+   product.Price = BitConverter.ToDecimal(offset);
+
+   return product;
+}
+----
+
+=== Writing Binary
+
+Writing is similarly done with the https://docs.microsoft.com/en-us/dotnet/api/system.io.file.writeallbytes[WriteAllBytes] method.
 
 .Writing a Binary File
 ```csharp
-File.WriteAllBytes("newfile.dat", data);
+File.WriteAllBytes("products.dat", data);
 ```
 
-The biggest challenge is converting the byte array to .NET types. This is beyond the scope of this section but you can use https://docs.microsoft.com/en-us/dotnet/api/system.bitconverter[BitConverter] to help with this process.
+It is necessary to convert all data to binary before the contents can be written, including strings.
+
+.Converting to Binary
+[source,csharp]
+----
+byte[] SaveProduct ( Product product ) 
+{
+   var data = new List<byte>();
+   
+   //Id is Int32
+   byte[] buffer = BitConverter.GetBytes(product.Id);
+   data.AddRange(buffer);
+
+   //Name is a string that will be stored as Unicode, length prefixed
+   buffer = Encoding.UTF8.GetBytes(product.Name);
+   data.AddRange(BitConverter.GetBytes(buffer.Length));
+   data.AddRange(buffer);
+
+   //Price is decimal
+   buffer = BitConverter.GetBytes(product.Price);
+   data.AddRange(buffer);
+
+   return data.ToArray();
+}
+----
 
 == See Also
 
 link:readme.adoc[File IO] +
+https://www.iana.org/assignments/character-sets/character-sets.xhtml[Character Sets] +
+https://docs.microsoft.com/en-us/dotnet/api/system.bitconverter[.NET BitConverter Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.text.encoding[.NET Encoding Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.io.file[.NET File Class] +

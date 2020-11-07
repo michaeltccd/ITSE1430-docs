@@ -1,19 +1,84 @@
 = Path Class
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
 The https://docs.microsoft.com/en-us/dotnet/api/system.io.path[Path] class is a static class that provides standard path management functionality. 
 
-NOTE: While the operating system defines the core path rules most file systems have additional rules. In many cases path validation and management is pushed down to the file system. Therefore you may see different results when you are targeting different file systems.
+CAUTION: While the operating system defines the core path rules most file systems have additional rules. In many cases path validation and management is pushed down to the file system. Therefore you may see different results when you are targeting different file systems.
 
-## Common Operations
+== Parsing a File Path
 
-NOTE: Work in Progress
+Parsing a file path is often necessary to get the directory or filename that is being used.
+
+.Path Parsing Methods
+|===
+| Method | Purpose
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.path.endsindirectoryseparator[EndsInDirectorySeparator] | Determines if the string ends with a directory separator.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.path.getdirectoryname[GetDirectoryName] | Gets the full directory path, minus the filename.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.path.getextension[GetExtension] | Gets the file extension, including the dot.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.path.getfilename[GetFileName] | Gets the filename, including file extension, but not the directory path.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.path.getfilenamewithoutextension[GetFileNameWithoutExtension] | Gets the filename, excluding the file extension.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.path.trimendingdirectoryseparator[TrimEndingDirectorySeparator] | Removes any ending directory separator.
+|===
+
+.Using Path Parsing
+[source,csharp]
+----
+var filename = @"C:\temp\foldera\tempfile.txt";
+
+var directory = Path.GetDirectoryName(filename);  // C:\temp\foldera
+var extension = Path.GetExtension(filename);      // .txt
+var filename = Path.GetFilename(filename);        // tempfile.txt
+var filenamewithoutextension = Path.GetFilenameWithoutExtension(filename);  // .txt
+----
+
+WARNING: Operating systems follow different formats. Do not make assumptions about how file paths are created unless only a single operating system is targed.
+
+== Building Paths
+
+Building paths is a common need.
+
+.Path Building Methods
+|===
+| Method | Purpose
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.path.combine[Combine] | Combines two 
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.path.getfullpath[GetFullPath] | Converts a relative or partial path to a full path.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.path.getrelativepath[GetRelativePath] | Gets a relative path from one path to another.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.path.join[join] | Combines two paths together.
+|===
+
+.Using Path Building
+[source,csharp]
+----
+var filename = @".\tempfile.txt";
+
+//Assume working directory is C:\temp\foldera
+var fullpath = Path.GetFullPath(filename);     // C:\temp\foldera\tempfile.txt
+----
+
+== Working with Temp Files
+
+Creating temporary files is common.
+There are some support methods to work with them.
+
+.Temp File Methods
+|===
+| Method | Purpose
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.path.getrandomfilename[GetRandomFileName] | Returns a random filename. The file name may or may not be unique.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.path.gettempfilename[GetTempFileName] | Creates a temporary file and returns the name. The file is created in the user's temporary directory.
+| https://docs.microsoft.com/en-us/dotnet/api/system.io.path.gettemppath[GetTempPath] | Gets the temporary directory for the user.
+|===
+
+.Creating a Temporary File
+[source,csharp]
+----
+var tempFile = Path.Join(Path.GetTempPath(), Path.GetRandomFileName());
+----
 
 == See Also
 
 link:readme.adoc[File IO] +
-https://docs.microsoft.com/en-us/dotnet/api/system.io.directory[Directory Class] +
-https://docs.microsoft.com/en-us/dotnet/api/system.io.file[File Class] +
-https://docs.microsoft.com/en-us/dotnet/api/system.io.path[Path Class]
+https://docs.microsoft.com/en-us/dotnet/api/system.io.directory[.NET Directory Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.io.file[.NET File Class] +
+https://docs.microsoft.com/en-us/dotnet/api/system.io.path[.NET Path Class] +
