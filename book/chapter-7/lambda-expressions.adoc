@@ -1,12 +1,159 @@
 = Lambda Expressions
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
-== Anonymous Methods
+link:delegate.adoc[Delegates] provide the powerful ability to treat functions as data.
+This allows for creating a more generic function implementation that are extensible by alternating the data (delegates) being passed to it.
+The biggest issue with delegates is that it requires creating a new method.
+In many cases the delegate is only needed for a single call.
+Creating a method for a single call can be counter-productive.
+Furthermore creating a method means it may be used elsewhere in code meaning it generally needs to be more generic than perhaps is really needed.
+This is where an anonymous method comes in.
+
+Anonymous Method::
+   An unnamed method.
+
+Anonymous methods, also called lambdas, are unnamed methods.
+Because they are unnamed they cannot be called directly but must instead be used as delegates for other code to call.
+
+.Anonymous Method Syntax
+----
+anonymous-method ::= anonymous-method-parameters => anonymous-body
+anonymous-method-body ::= lambda-expression || lambda-statement
+lambda-expression ::= E
+lambda-statement ::= { S* }
+----
+
+The lambda indicator `=>` separates the parameters to the method from the lambda body.
+
+.Anonymous Method Example
+[source,csharp]
+----
+Func<int, bool> isEven = value => value % 2 == 0;
+----
+
+More often a lambda is used as the argument to a function directly.
+
+.Lambda In a Function Call
+[source,csharp]
+----
+IEnumerable<Student> GetPassingStudents ( IEnumerable<Student> students, student => student.Grade >= 70);
+----
+
+== Passing Parameters
+
+Most lambdas require at least one parameter. 
+For the common case of a single parameter the parameter name can be specified before the lambda symbol ('=>').
+
+.Lambda with Single Parameter
+[source,csharp]
+----
+student => student.Grade >= 70;
+----
+
+If multiple parameters are needed then wrap the parameter names in parenthesis so the compiler can tell where the parameters end.
+
+.Lambda with Multiple Parameters
+[source,csharp]
+----
+(x, y, z) => x + y - z;
+----
+
+In most cases it is not necessary to specify the parameter types.
+The compiler can infer them based upon the signature.
+But if needed the type can be specified.
+
+.Lambda with Parameters and Types
+[source,csharp]
+----
+(int x, int y, int z) => x + y - z;
+----
+
+CAUTION: Parameters are always input parameters to lambdas. Input/output and output parameters are not supported.
+
+== Lambda Expressions vs Statements
+
+The contents of the anonymous method are moved into a private method at compilation.
+The parameters to the lambda become parameter to the private method and the compiler rewrites the calling code to use the method instead.
+
+In most cases a lambda expression is used.
+A lambda expression is an expression that produces the results of the anonymous method.
+The compiler put the expression into a `return` statement automatically.
+
+.Lambda Generated Code
+[source,csharp]
+----
+//IEnumerable<Student> GetPassingStudents ( IEnumerable<Student> students, student => student.Grade >= 70)
+IEnumerable<Student> GetPassingStudents ( IEnumerable<Student> students, tempFunction);
+
+private bool tempFunction ( Student student )
+{
+   return student.Grade >= 70;
+}
+----
+
+If more than an expression is needed or if the lambda does not return a value then the block statement must be used to identify the body of the anonymous method.
+
+.Lambda with Multiple Statements
+[source,csharp]
+----
+Configure(options => {
+   options.PassScore = 70;
+   options.Curve = 10;
+});
+----
+
+NOTE: When using the block statement any `return` statements must be explicitly called.
+
+== Closure
+
+Closure is a logical wrapper placed around variables at the point a function call is made.
+In normal code closure is not an issue because of the language rules but anonymous methods introduce some challenges.
+Think of closure as a snapshot of all the variables used inside the anonymous method at the point the method is called.
+
+.Closure Example
+[source,csharp]
+----
+int value = 1;
+
+Func<int, int> counter = x => ++x;
+
+//Value of `value` is captured at point function call is made
+// result = 2
+// value = 1
+var result = counter(value);
+----
+
+Closure prevents anonymous methods from modifying the local variables and parameters outside the expression.
+To modify a value outside the method it needs to be a field of the class containing the lambda.
+
+== Local Functions
+
+Starting with C# 7 a https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/local-functions[local function] can be used instead of a lambda expression. Local functions have slightly better performance than lambda expressions but require a more complex syntax.
+
+.Local Function
+[source,csharp]
+----
+IEnumerable<Student> GetPassingStudents ( IEnumerable<Student> students )
+{
+   foreach (var student in students)
+      if (IsPassing(student))
+         yield return student;
+
+   //Local function
+   bool IsPassing ( Student student )
+   {
+      return student.Grade >= 70;
+   }
+}
+----
+
+In terms of behavior local functions and lambda expressions are equivalent.
 
 == See Also
 
 link:readme.adoc[Advanced Types] +
-linK:delegates.adoc[Delegates] +
+link:delegates.adoc[Delegates] +
 https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions[C# Lambda Expressions] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/local-functions[C# Local Functions] +

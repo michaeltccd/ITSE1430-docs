@@ -1,6 +1,6 @@
 = Delegates
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
 Delegates were first introduced back when talking about events and event handlers.
@@ -96,11 +96,17 @@ Provided the method meets the delegate signature then it is allowed.
 == Generic Delegates
 
 To avoid having many different delegate types defined the framework defines some common delegates that can be used in code.
-Prefer to use the common delegates over defining your own.
 
 .Common Delegates
 |===
+| Delegate Type | Example | Purpose
+| https://docs.microsoft.com/en-us/dotnet/api/system.action-1[Action<T>] | void Foo ( int ) | Function that accepts 1-16 arguments and returns nothing.
+| https://docs.microsoft.com/en-us/dotnet/api/system.comparison-1[Comparison<T>] | int Compare ( int x, int y ) | Compares two values and returns the results.
+| https://docs.microsoft.com/en-us/dotnet/api/system.func-1[Func<T>] | int Foo () | Function that accepts from 0-16 arguments and returns a result.
+| https://docs.microsoft.com/en-us/dotnet/api/system.predicate-1 | bool Foo ( int ) | Function that accepts an argument and returns `true` or `false`.
 |===
+
+NOTE: Prefer to use the common delegates over defining your own.
 
 == See Also
 
