@@ -1,0 +1,61 @@
+= Reading Data
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+When reading data from the database either a buffered or streamed approach can be used similar to how files work.
+However the differences are more dramatic.
+
+Consider using the buffered approach when:
+- The data size is small.
+- The data is not structurally well defined.
+- Modifications to the data are needed.
+- The data must be accessible while the database is offline.
+
+In all other cases use the streamed approach.
+
+To read data using the buffered approach refer to the section on link:dataset.adoc[Datasets]. 
+To read data using the streamed approach refer to the section on link:datareader.adoc[Data Readers].
+
+== Database Nulls
+
+In the database a value can be `NULL`.
+Database nulls are not the same as .NET `null`.
+Database nulls return the value of https://docs.microsoft.com/en-us/dotnet/api/system.dbnull.value[DBNull.Value] instead of `null`.
+This makes sense because most primitive types cannot be set to `null` so an `int`-returning function cannot represent `null`.
+
+Code must handle the case where the database has no value for a column.
+Unfortunately a simple null check does not work.
+Use the appropriate null checking method for the reading approach selected.
+Failure to check can result in an exception when retrieving a value.
+
+NOTE: At this time the C# https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator[null coalescing] and https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators[null conditional] operators do not work with `DBNull`.
+
+== Ordinal vs String Columns
+
+When reading data it is necessary to map from the database identifier to the client side data model. For ADO.NET this means using eithe a zero-based ordinal or a string name.
+
+=== Ordinal
+
+An ordinal is simply a zero-based offset of the column. The first column is ordinal 0, the second column ordinal 1, etc. 
+
+Ordinals closely mimic the index of an array and tend to map one-to-one to the underlying data. As a result ordinals tend to be very fast for accessing data. If performance is an issue then ordinals are the clear winner.
+
+The downside to ordinals is that ordering of columns is important. If a query can return data back in arbitrary column order then an ordinal cannot be used. There would be no way to tell, for example, between a name and description column based upon ordinal alone. Generally this is not an issue because queries should always be explicit about the columns they are returning. The ordering of the column cannot change without breaking existing code.
+
+=== Column Name
+
+A column name is simply the name of the column that was in the query. Most columns in a query have a name but some might not, for example calculated column values. Column names are rarely case sensitive. 
+
+Column names are generally easier to read. `GetString("Name")` makes more sense than `GetString(0)`. Furthermore the issue of column ordering goes away when using column names. The query can return columns back in any order and the name will always work.
+
+In order to use a column name it is necessary to map the column name to the index in the array of values being returned. In some cases this is handled by the infrastructure, for example `DataRow`. But in other cases this must be handled in the code explicitly. It is inefficient to keep looking up a column's index for each row as it wouldn't change for the life of the current query. Therefore caching is needed.
+
+Another issue with column names is that they must match what the query returns. Often a query returns the underlying column name from the table. If a column name changes then any query using it will also change. This will break code that relies on the name. To work around this impacted queries would need to use an alias to keep the original column name.
+
+== See Also
+
+link:readme.adoc[Data Access] +
+link:datareader.adoc[Data Readers] +
+link:dataset.adoc[Dataset] +
+https://docs.microsoft.com/en-us/dotnet/api/system.dbnull[.NET DBNull Class] +

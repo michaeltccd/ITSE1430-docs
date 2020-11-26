@@ -1,5 +1,6 @@
-# Database Providers
-ITSE 1430
+= Database Providers
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
 :toc:
 
 ADO.NET supports any database that has a database provider. While in this tutorial SQL Server has been used there are many other providers. For the most part they all work the same and use similar types. The biggest differences lie in the type names themselves and how parameters and commands are handled. Refer to the documentation for each provider for more detailed information. Here are some common providers.
@@ -7,27 +8,43 @@ ADO.NET supports any database that has a database provider. While in this tutori
 .Command ADO.NET Providers
 |===
 | Provider | Namespace | Description
-| SQL Server |  `System.Data.SqlClient` | Microsoft SQL Server
-| Oracle | `System.Data.OracleClient` | [Deprecated] Oracle
-| ODP.NET | `Oracle.ManagedDataAccess.Client` | Oracle (current version)
-| MySQL | `MySql.Data.MySqlClient` | MySQL
-| Sqlite | `System.Data.SQLite` | Sqlite
-| Access | `System.Data.OleDb` | Microsoft Access
+| SQL Server | https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient[System.Data.SqlClient] | Microsoft SQL Server
+| Oracle | https://docs.microsoft.com/en-us/dotnet/api/system.data.oracleclient[System.Data.OracleClient] | [Deprecated] Oracle
+| ODP.NET | https://www.oracle.com/database/technologies/appdev/dotnet/odp.html[Oracle.ManagedDataAccess.Client] | Oracle (current version)
+| MySQL | https://dev.mysql.com/doc/connector-net/en/connector-net-ref-mysqlclient.html[MySql.Data.MySqlClient] | MySQL
+| Sqlite | http://system.data.sqlite.org/index.html/doc/trunk/www/index.wiki[System.Data.SQLite] | Sqlite
+| Access | https://docs.microsoft.com/en-us/dotnet/api/system.data.oledb[System.Data.OleDb] | Microsoft Access
 |===
 
-## OLE DB
+== Generic Providers
+
+Some providers are available for use with any database with client drivers installed. 
+The generic providers are built on industry standard protocols and are useful only in the following situations:
+
+- Application needs to work with databases that may not be known at compile time.
+- Database does not have .NET providers defined.
+
+The downside to the generic providers include the following:
+
+- Generally slower than the more-specific providers.
+- May not expose all the functionality available from a database.
+- Require using the syntax and rules of the protocol being used rather than the database-specific protocol.
+
+CAUTION: Always prefer to use the database-specific providers.
+
+=== OLE DB
 
 https://en.wikipedia.org/wiki/OLE_DB[OLE DB] is a COM-based API provided by Windows for working with arbitrary databases. It was designed to be a replacement to the older `ODBC` interface. In theory any database that supports OLE DB, which is most of them, can be access through this interface. The https://docs.microsoft.com/en-us/dotnet/api/system.data.oledb[System.Data.OleDb] namespace contains the provider and types needed to talk to these databases. When using this provider code must follow the rules of OLE DB whic may differ from the regular providers. Furthermore none of the advanced features of a database are available when using the generic interface.
 
 If a program needs to use Microsoft Access then OLE DB must be used with the JET database provider.
 
-## ODBC
+=== ODBC
 
 https://en.wikipedia.org/wiki/Open_Database_Connectivity[ODBC] is an even older legacy technology. The biggest advantage of ODBC is that it is not platform specific so every database supports it. The https://docs.microsoft.com/en-us/dotnet/api/system.data.odbc[System.Data.Odbc] namespace contains the types for this provider. Unfortunately ODBC is outdated and has very specific requirements that other providers do not have. ODBC should only be used in the rare cases where no other provider will work.
 
 NOTE: In general do not use ODBC in .NET code. If generic behavior is needed then consider using OLE DB instead.
 
-## Getting a Generic Connection
+== Getting a Generic Connection
 
 ADO.NET was written to be database agnostic and it does provide the infrastructure to allow code to be written in a database agnostic way through discovery and use of the base types like https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection[DbConnection], https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand[DbCommand] and https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbparameter[DbParameter]. Code can be written to use these base types if desired. There is little inherit advantage one way or the other. Any database-specific rules must still be followed.
 
@@ -62,7 +79,7 @@ The provider factory exposes methods to create connections, commands, data adapt
 DbConnection conn = factory.CreateConnection();
 ----
 
-## Calling Generic Commands
+== Executing Generic Commands
 
 The hard part of working with generic code is that all the provider-specific rules must be followed including naming convention. Some of this is obtainable through analyzing data from the https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection.getschema[GetSchema] method of the connection. Unfortunately the information returned varies by providers.
 
@@ -79,8 +96,9 @@ if (row != null)
 
 Refer to https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/retrieving-database-schema-information[Retrieving Database Schema Information] for more information.
 
-## See Also
+== See Also
 
+link:readme.adoc[Data Access] +
 https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/data-providers[.NET Framework Data Providers] +
 https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbproviderfactory[DbProviderFactory] +
-https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/retrieving-database-schema-information[Retrieving Database Schema Information]
+https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/retrieving-database-schema-information[Retrieving Database Schema Information] +

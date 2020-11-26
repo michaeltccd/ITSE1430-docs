@@ -1,0 +1,25 @@
+= ADO.NET
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/ado-net-overview[ADO.NET] is the framework used to work with databases in .NET.
+Overall it is database-agnostic meaning it works with any supported database by using link:providers.adoc[database providers].
+A link:providers.adoc[database provider] is a .NET wrapper around a specific database and provides the necessary logic to interact with the specifics of the database.
+Database vary wildly in capability, technology and protocols.
+ADO.NET hides all the complexity behind simple to use types.
+
+In most cases an application will work with a single database provider and likely a single database but an application can work with any number of databases and providers at any one time.
+Unfortunately attempting to discuss every database would be difficult so this chapter will try to remain as generic as possible but use Microsoft SQL Server when specific examples are needed.
+
+When creating an application it is very important to separate the data access logic from the rest of the application.
+While it is unlikely that an application will completely replace a database it is common for database structures to change over time as requirements change and performance or feature requests are implemented.
+The section link:data-layer.adoc[Building a Data Access Layer] has a high level discussion of why a data access layer is important for any application beyond simple utility applications.
+ADO.NET code should always reside in the data access layer.
+
+== See Also
+
+link:readme.adoc[Data Access] +j
+link:data-layer.adoc[Building a Data Access Layer] +
+link:providers.adoc[Database Providers] +
+https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/ado-net-overview[ADO.NET Framework] +

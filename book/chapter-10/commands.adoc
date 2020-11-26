@@ -1,0 +1,237 @@
+= Commands
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+To do any work in a database a command must be sent. Each command is a request to the database to do some work. As with connections each provider has its own command type. 
+
+A https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand[command] consists of the command text to execute and the connection it is associated with. Without a connection the command has no context. Commands have some additional options to control their behavior.
+
+.Common Command Properties
+|===
+| Property | Description 
+| https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.commandtext[CommandText] | The command to execute.
+| https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.commandtype[CommandType] | The command type of the command.
+| https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.connection[Connection] | The connection to run the command under.
+| https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.parameters[Parameters] | The parameters associated with the command.
+|===
+
+Commands do implement the link:../chapter-9/interface-idisposable.adoc[IDisposable] interface but generally do nothing so code can clean up a command when done.
+Wrapping a command with a link:../chapter-9/using-statement.adoc[using] statement is generally appropriate.
+
+Commands can be reused, provided they are not disposed.
+It is common to execute a command, change the command text and run it again.
+This reduces the number of objects being created.
+
+CAUTION: Command behavior can vary wildly between providers. Ensure that commands are tested against the actual provider that will be used.
+
+== Creating a Command
+
+Creating a command can be done in several different ways. The common approach is to create the object directly. 
+
+.Creating a Command with New
+[source,csharp]
+----
+var cmd = new SqlCommand("SELECT ...", conn);
+----
+
+The alternative approach is to create it through the connection's https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlconnection.createcommand[CreateCommand] method.
+
+CAUTION: The connection object is generally passed to the constructor. A command must be associated with a connection to execute. The connection does not need to be open before creating the command.
+
+.Creating a Command with CreateCommand
+[source,csharp]
+----
+var cmd = conn.CreateCommand();
+cmd.CommandText = "SELECT ...";
+----
+
+Either approach works.
+In the former case it is more explicit what database provider is being used.
+In the latter case it requires less typing and the connection is automatically associated with the command.
+
+== Ad-Hoc Commands vs Stored Procedures
+
+A https://en.wikipedia.org/wiki/Stored_procedure[stored procedure] is a database procedure or function that is used to group a series of commands together.
+Stored procedure support varies by database but in all cases the procedure is called by specifying the name.
+An ad-hoc command is any SQL command, such as `SELECT` or `DELETE`, that can be understood by the database.
+Since an ad-hoc command and a stored procedure call look the same the framework needs an indicator specifying which type of command is being used.
+The https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.commandtype[CommandType] property specifies how to interpret the command.
+The default is an ad-hoc command.
+To call a stored procedure set https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.commandtype[CommandType] to https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.commandtype[CommandType.StoredProcedure].
+
+.Calling a SQL Stored Procedure
+[source,csharp]
+----
+var cmd = new SqlCommand("GetProducts", conn);
+cmd.CommandType = CommandType.StoredProcedure;
+----
+
+CAUTION: Failure to set https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.commandtype[CommandType] properly will result in a runtime error.
+
+== Command Parameters
+
+Often a command requires parameters.
+Parameterized queries can be used anywhere including in adhoc queries.
+
+Like programming parameters a parameter consists of a name, type, optional value, optional type information such as size or precision and a direction.
+The direction corresponds to a typical language parameter : input, output, input/output.
+
+CAUTION: The parameter types, and any optional type information, are normalized by ADO.NET but each database may or may not support all types.
+
+Parameter names are, likewise, specific to a database.
+Some databases, like SQL Server, require a parameter be prefixed with a character.
+In other databases only ordinal values are used.
+Refer to the documentation for the database provider for information on the required conventions for parameter naming.
+
+=== Adding Parameters To a Command
+
+Adding parameters to a command requires adding them to the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.parameters[Parameters] property.
+This can be done in several different ways.
+
+For SQL server (and some other providers) with an input parameter use the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlparametercollection.addwithvalue[AddWithValue] method.
+
+.Adding a Parameter with AddWithValue
+[source,csharp]
+----
+var cmd = new SqlCommand("AddProduct", conn);
+cmd.CommandType = CommandType.StoredProcedure;
+
+cmd.Parameters.AddWithValue("@name", name);
+----
+
+The above code adds a parameter called `@name` to the command with the value of `name` and a type of `text`.
+
+NOTE: SQL server requires an `@ (at)` sign in front of each parameter.
+It is a database configuration option whether case matters but most SQL databases are case insensitive.
+
+When using other database providers the more generic https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlparametercollection.add[Add] method can be used. It has several overloads.
+
+.Adding a Parameter with Add
+[source,csharp]
+----
+var cmd = new SqlCommand("AddProduct", conn);
+cmd.CommandType = CommandType.StoredProcedure;
+
+var parmDescription = cmd.Parameters.Add("@description", SqlDbType.NVarChar);
+parmDescription.Value = description;
+----
+
+For more complex parameters, such as output parameters, create the parameter directly.
+
+.Creating and Adding a Parameter
+[source,csharp]
+----
+var cmd = new SqlCommand("AddProduct", conn);
+cmd.CommandType = CommandType.StoredProcedure;
+
+var parmId = new SqlParameter("@id", 0);
+parmId.Direction = ParameterDirection.Output;
+cmd.Parameters.Add(parmId);
+----
+
+Like commands, a parameter can be created directly off the command object using the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.createparameter[CreateParameter] method.
+
+.Creating and Adding a Parameter
+[source,csharp]
+----
+var cmd = new SqlCommand("AddProduct", conn);
+cmd.CommandType = CommandType.StoredProcedure;
+
+var parmRating = cmd.CreateParameter();
+parmRating.ParameterName = "@rating";
+cmd.Parameters.Add(parmRating);
+----
+
+== SQL Injection Attacks
+
+https://owasp.org/www-community/attacks/SQL_Injection[SQL injection] attacks are one of the most common approaches to hacking software.
+A SQL injection attack occurs when someone injects SQL commands into a database request.
+It is not hard to do.
+Imagine the following simple command for allowing a user to search for products by name.
+
+.SQL Injection Attack
+[source,csharp]
+----
+IEnumerable<Product> FindProducts ( string searchTerm )
+{
+   var command = new SqlCommand($"SELECT Name, Price FROM Products WHERE name LIKE '%{searchTerm}%'");
+
+   return GetProducts(command);
+}
+----
+
+This looks harmless enough but image the user typed in the following search term: `%'; DELETE * FROM Products; SELECT * FROM Products WHERE name LIKE '%`
+While this may seem harmless the resulting query would first select all the products, then delete all the products from the database and finally select all the products again. 
+The resulting query is valid and therefore the database would not flag this as an error, assuming the user had sufficient privileges.
+While it seems unlikely the user would guess the exact database query to execute it really is not that hard and some trial and error, especially if error messages are returned, would make this easily doable.
+
+To prevent SQL injection attacks always use parameterized queries when accepting user input and strongly consider parameters in all other cases as well. 
+To circumvent an attack the above query can be easily rewritten like this.
+
+.SQL Injection Attack
+[source,csharp]
+----
+IEnumerable<Product> FindProducts ( string searchTerm )
+{
+   var command = new SqlCommand($"SELECT Name, Price FROM Products WHERE name LIKE '%@term%'");
+   command.Parameters.AddWithValue("@term", searchTerm);
+
+   return GetProducts(command);
+}
+----
+
+The database provider in combination with the database will properly detect SQL injection attempts to fail the call outright or encode the input such that no SQL text is executed.
+
+WARNING: Always use parameterized queries when accepting user input. This eliminates SQL injection attacks. 
+
+== Executing Commands
+
+Executing a command runs it on the database server.
+A command always returns a result but what that result means is dependent upon the command.
+Therefore there are different methods on the command to control how the return value is interpreted.
+
+=== Command With No Return Value
+
+Commands that just modify data like `DELETE` and `UPDATE` either return no data or return the number of rows impacted.
+In these cases the return value is typically ignored.
+To execute a command and ignore the result use the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.executenonquery[ExecuteNonQuery] method.
+
+.Executing a Command with No Return Value
+[source,csharp]
+----
+cmdDelete.ExecuteNonQuery();
+----
+
+=== Command With a Single Return Value
+
+Commands like `INSERT` generally return back a key representing the newly inserted row.
+Other commands may also return a single value with a count or some other value.
+For commands that return a single value, or in which only the first value is relevant the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.executescalar[ExecuteScalar] method can be used.
+This method returns the first value of the first row, if any. 
+
+.Executing a Command with a Single Return Value
+[source,csharp]
+----
+var result = cmdInsert.ExecuteScalar();
+
+//Capture the result as an int
+var id = Convert.ToInt32(result);
+----
+
+The value is treated as an `object` so typecasting must be done to convert it to the correct type.
+
+=== Command With Query Results
+
+Query commands can return a large number of rows with multiple data points in each row.
+Query results can be read as either a link:dataset[Dataset] using the https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/populating-a-dataset-from-a-dataadapter[Fill] method on a data adapter or using a data reader with the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.executereader[ExecuteReader] method.
+
+Refer to the sections link:dataset[Dataset] and link:datareader[Data Reader] for information on how to read data.
+
+== See Also
+
+link:readme.adoc[Data Access] +
+link:connections.adoc[Connections] +
+link:providers.adoc[Database Providers] +
+link:reading-data.adoc[Reading Data] +
+https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand[.NET SqlCommand Class] +
