@@ -1,0 +1,173 @@
+= Connections
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+Before any database work can be done a connection must be made. Each database has its own .NET provider that provides the necessary infrastructure to talk to the database.
+Each provider contains a https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection[DbConnection]-derived type to connect to a database.
+This is the entry point to the database but requires a connection string.
+
+Refer to link:providers.adoc[Database Providers] for more information on how providers work. 
+
+== Connection Strings
+
+To connect to a database a connection string is needed.
+A connection string provides the following information.
+
+- Server hosting the database
+- Database to connect to
+- Credentials to use for authentication
+- Options to use for connecting and reading data
+
+=== Connection String Format
+
+Each database provider may use different settings but almost all of them follow a similar https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/connection-string-syntax[style].
+Connection strings consist of key-value pairs separated by semicolons.
+Each key-value pair consists of a key followed by a value separated by an equal sign.
+
+.Connection String Syntax
+[source,text]
+----
+key1=value1;key2=value2;key3=value;...
+----
+
+Case does not matter and spacing between punctation is not relevant.
+Each key must be recognized by the provider and may contain spaces.
+Often multiple keys map to the same value so either key can be used.
+Each key has a value that is interpreted by the provider.
+
+Here are some of the common keys used.
+
+.Common Connection String Keys
+|===
+| Key | Description
+| `Server` | Server name
+| `Data Source` | Alternative key for server name
+| `Database` | Database name
+| `Initial Catalog` | Alternative key for database name
+| `Integrated Security` | `SSPI` or `true` to use current user for authentication
+| `UserName` | User name to authentication
+| `User ID` | Alternative key for user name
+| `Password` | Password for authentication
+|===
+
+.SQL Connection String
+[source,text]
+----
+//Connect to a SQL server database 'Movies' running on server 'dbserver1' using current user credentials
+Server=dbserver1;Database=Movies;Integrated Security=SSPI
+----
+
+=== Acquiring a Connection String
+
+Connection strings are configuration data.
+Therefore a connection string should not be hard coded in an application.
+The recommended approach is to store the connection string in an external, secure location such as a key vault, application-specific data store or configuration file.
+This allows the connection string to be changed without recompiling the code. 
+
+==== .NET Framework
+
+For a .NET framework application the connection string is generally stored in the config file for the application.
+
+.Configuration File Connection String
+[source,xml]
+----
+<connectionStrings>
+   <add name="ConnectionName" connectionString="connection string" providerName="System.Data.SqlClient" />
+</connectionStrings>
+----
+
+The `name` attribute is how the connection string is located at runtime.
+The `connectionString` contains the connection string.
+The `providerName` identifies the database provider associated with the string.
+This is generally the namespace of the database provider.
+
+CAUTION: XML is case sensitive. Ensure the case exactly matches what is required. Every starting XML element (<>) requires a corresponding end element (</>).
+
+To get the connection string you must use the https://docs.microsoft.com/en-us/dotnet/api/system.configuration.configurationmanager[ConfigurationManager] class which requires referencing the https://docs.microsoft.com/en-us/dotnet/api/system.configuration[System.Configuration] namespace.
+
+.Reading Connection String from Configuration File
+[source,csharp]
+----
+var connStringObject = ConfigurationManager.ConnectionStrings["ConnectionName"];
+
+var connString = connStringObject.ConnectionString;
+----
+
+The value used here must match the `name` attribute in the config file.
+
+#### .NET Core
+
+For a .NET Core application the `appsettings.json` file is used for a similar purpose.
+
+.Appsettings.json File
+[source,json]
+----
+{
+   "connectionStrings": [
+      "ConnectionName": "connectionString"
+   ]
+}
+----
+
+To read the value use the https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.configuration.configurationextensions.getconnectionstring[GetConnectionString] method on the https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration[Configuration] class.
+
+.Reading Connection String from appsettings.json
+[source,csharp]
+----
+var connString = Configuration.GetConnectionString("ConnectionName");
+----
+
+== Creating a Connection
+
+Once a connection string is available creating a connection simply requires creating an instance of the provider-specific connection type.
+The default for providers is to use the database provider name with the `-Connection` suffix.
+Here are some examples.
+
+.Connection Types by Provider
+|===
+| Provider | Connection Type 
+| Sql Server | https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlconnection[SqlConnection]
+| Oracle | https://docs.oracle.com/en/database/oracle/oracle-database/19/odpnt/OracleConnectionClass.html[OracleConnection]
+| MySql | https://dev.mysql.com/doc/dev/connector-net/6.10/html/T_MySql_Data_MySqlClient_MySqlConnection.htm[MySqlConnection]
+| Sqlite | http://system.data.sqlite.org/index.html/doc/trunk/www/index.wiki[SqliteConnection]
+|===
+
+NOTE: Only SQL Server is shipped as part of the .NET Framework. Other providers must be added as a dependency.
+
+Refer to the section on link:providers.adoc[Database Providers] for more information.
+
+.Creating a Connection
+[source,csharp]
+----
+using (var conn = new SqlConnection(connectionString))
+{      
+};
+----
+
+Connections implement the link:../chapter-9/interface-idisposable.adoc[IDisposable] interface and therefore must be cleaned up.
+Failure to do so will leak database resources.
+
+Creating the connection does not open a connection to the database.
+To open the database connection, which triggers a validation of the connection string, call the https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlconnection.open[Open] method.
+
+.Creating and Open Connection
+[source,csharp]
+----
+using (var conn = new SqlConnection(connectionString))
+{      
+   conn.Open();
+};
+----
+
+It is generally better to open the connection just before it is needed to avoid wasting a connection.
+
+== See Also
+
+link:readme.adoc[Data Access] +
+link:commands.adoc[Database Commands] +
+link:providers.adoc[Database Providers] +
+https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/connection-strings[.NET Connection Strings] +
+https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/connection-strings-and-configuration-files[.NET Connection Strings and Configuration Files] +
+https://www.connectionstrings.com/[ConnectionStrings Website] +
+https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlconnection[.NET SqlConnection Class] +

@@ -1,5 +1,6 @@
-# Building a Data Access Layer
-ITSE 1430
+= Building a Data Access Layer
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
 :toc:
 
 In a typical application architecture it is important to separate the layers of an application into different components. Modularizing an application provides many benefits including:
@@ -10,7 +11,7 @@ In a typical application architecture it is important to separate the layers of 
 
 In a typical 3-layer application the layers include: presentation, business and data. Most of the time the layers are separate assemblies but this is not technically required. In a pure architecture each layer may only talk to layers lower than it. For example the presentation layer can talk to the business layer but not the data layer.
 
-## Presentation
+== Presentation
 
 The presentation layer is the UI of the application. The presentation layer is responsible for displaying information to the user and reacting to user requests. 
 
@@ -20,7 +21,7 @@ For applications supporting multple platforms there may be multiple presentation
 
 The presentation layer may only communicate with the business layer.
 
-## Business
+== Business
 
 The buinsess layer is responsible for the bulk of the application logic. Business rules such as required fields, interaction between components and data constraints are enforced here. Business layers can be architected in any number of ways.
 
@@ -28,7 +29,7 @@ The primary goal of the business layer is to enforce business rules. The busines
 
 The business layer may only communicate with the data layer.
 
-## Data
+== Data
 
 The data layer is responsible for loading and saving data. Whether this data comes from a traditional database, file system or even a server on another machine is not relevant. 
 
@@ -36,9 +37,10 @@ The data layer normally works with objects that are persistence friendly. For da
 
 The data layer is only responsible for data consistency. Business rules and relationships are enforced in the higher business layer. The data layer may implement cross cuttin concerns like caching for performance reasons.
 
-## See Also
+== See Also
 
+link:readme.adoc[Data Access] +
 https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures[Common Web Application Architectures] +
 https://en.wikipedia.org/wiki/Multitier_architecture[Multitier Architecture] +
 https://www.codeproject.com/Articles/36847/Three-Layer-Architecture-in-C-NET-2[Three Layer Architecture in C#] +
-https://stackify.com/n-tier-architecture/[What is N-Tier Architecture]
+https://stackify.com/n-tier-architecture/[What is N-Tier Architecture] +

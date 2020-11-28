@@ -1,18 +1,18 @@
 = Chapter 10: Data Access
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 
 This chapter will cover working with databases with a focus on Microsoft SQL Server.
 
 == Table of Contents
 
-* link:..\..\archives\ado-net\readme.adoc[ADO.NET] (Archive)
-** link:..\..\archives\ado-net\data-layer.adoc[Data Layer] (Archive)
-** link:..\..\archives\ado-net\providers.adoc[Providers] (Archive)
-* link:..\..\archives\ado-net\connections.adoc[Connections] (Archive)
-* link:..\..\archives\ado-net\commands.adoc[Commands] (Archive)
-* link:..\..\archives\ado-net\ordinal-vs-string.adoc[Reading Data] (Archive) 
-** link:..\..\archives\ado-net\datasets.adoc[Using Datasets] (Archive)
-** link:..\..\archives\ado-net\datareader.adoc[Using Data Readers] (Archive)
+* link:ado-net.adoc[ADO.NET]
+** link:data-layer.adoc[Building a Data Access Layer]
+** link:providers.adoc[Providers]
+* link:connections.adoc[Connections]
+* link:commands.adoc[Commands]
+* link:reading-data.adoc[Reading Data]
+** link:datasets.adoc[Using Datasets]
+** link:datareader.adoc[Using Data Readers]
 
 
