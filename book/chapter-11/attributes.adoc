@@ -1,0 +1,222 @@
+= Attributes
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+Metadata is data about data.
+In .NET https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/attributes[attributes] are metadata.
+An attribute is a type applied to a compilation object like a type, method or parameter.
+It is important to note that an attribute is not related to objects or instances or any data at runtime. 
+Attributes provide metadata about compiled stuff and are fixed at the point of compilation.
+An example may help to clarify.
+
+.Attribute Example
+[source,csharp]
+----
+[Obsolete("Deprecated in 4.0. Use Bar instead.")]
+public void Foo () {}
+----
+
+In this example the `Foo` method has been marked as obsolete.
+The attribute provides metadata for whoever cares that the method, in this case, is obsolete and should not be used.
+
+For purposes of this discussion the term `target` will be used to identify the type, member, etc that an attribute is applied to.
+
+== Using Attributes
+
+To use an attribute place the attribute type name in square brackets above the target.
+
+.Using an Attribute
+[source,csharp]
+----
+[Description("Applied to the class")]
+public class Student
+{
+   [Description("Applied to a constructor or method")]
+   public Student ()
+   {}
+
+   [Description("Applied to a property")]
+   public string Name { get; set; }
+
+   [Description("Applied to a field")]
+   private string _name;
+
+   [return: Description("Applied to the return type")]
+   public string Foo () 
+   { return Name; }
+
+   public void Bar ( [Description("Applied to a parameter")] int id ) 
+   {}
+}
+----
+
+=== Attribute Declaration
+
+The syntax for the attribute name has several variants.
+
+- `[RequiredAttribute()]`
+- `[Required()]`
+- `[RequiredAttribute]`
+- `[Required]`
+
+Since all attribute types end with `-Attribute` the C# compiler allows you to leave off the suffix.
+The compiler will first look for an attribute with the suffix added.
+
+=== Constructor Parameters
+
+If an attribute requires data then it declares a constructor like any other type.
+When using the attribute the constructor parameters are wrapped in parenthesis just like a regular `new` expression.
+
+In the earlier example https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.descriptionattribute[Description] requires a string with the description.
+It's constructor accepts a string so the attribute requires a string be passed as an argument.
+
+CAUTION: Because attributes are metadata all arguments needed by an attribute must be representable as a compile time constant, generally a literal. Objects, including arrays, are not supported in attribute declarations.
+
+If the attribute has a default constructor then the parenthesis can be left off.
+
+NOTE: Attributes do not get automatically created at runtime until explicitly requested by whatever code intends to use them. Therefore attributes have no impact on instance creation nor any performance issues.
+
+=== Attribute Properties
+
+Many attributes have optional properties either to clarify behavior or override existing behavior.
+Because attributes pre-date support for object initializer syntax they use a variant syntax instead.
+The settable properties of an attribute can be set by specifying their name and value in the constructor call.
+
+.Setting Attribute Properties
+[source,csharp]
+----
+public class StudentModel
+{
+   [Required(AllowEmptyStrings = false, ErrorMessage = "You must have a name")]
+   public string Name { get; set; }
+}
+----
+
+If an attribute also has constructor parameters then they must be specified first.
+When viewing the attribute declaration in Intellisense it will separate the properties from the constructor parameters with the word `Properties`.
+
+== Attribute Targets
+
+Attributes have some control over what they can be applied to.
+Attributes can specify the kinds of objects they work with such as classes, types, interfaces, method, return values and parameters.
+Atttempting to use an attribute on an unsupported kind results in a compilation error.
+
+Most attributes only make sense being applied once to an object but some can be applied more than once.
+An attribute must opt into being used more than once on an object.
+Attempting to use an attribute more than once on an object when it is isn't supported is a compiler error.
+
+Finally some attributes do not make sense when applied to derived types.
+An attribute can determine whether it is applicable to derived types or overridden methods.
+Refer to the documentation for each attribute to determine this.
+
+== Common Attributes
+
+Attributes have no impact on runtime behavior automatically.
+In order for an attribute to provide value it must be explicitly coded for.
+This is beyond the scope of this class but there are several categories of attributes that are common enough to warrant a brief discussion.
+
+=== Compiler Attributes
+
+Compiler attributes are known by the compiler and therefore can impact compilation.
+
+.Compiler Attributes
+|===
+| Attribute | Purpose
+| https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.conditionalattribute[Conditional] | Makes an identifier conditionally available, such as debug only builds.
+| https://docs.microsoft.com/en-us/dotnet/api/system.obsoleteattribute[Obsolete] | Marks a type or member as obsolete causing a compiler warning or error.
+|===
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.obsoleteattribute[Obsolete] attribute is the most useful.
+It should be applied to any member or type that should not be used anymore.
+When the compiler sees a reference to something that has this attribute it generates a compiler warning with the given message.
+This helps other developers replace the obsolete call.
+
+NOTE: At this time it is not possible to create custom compiler attributes.
+
+=== Validation Attributes
+
+Validation attributes provide metadata for validating a property or field.
+Validation attributes are heavily used in web development but can be used elsewhere.
+The https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validator[Validator] class understands and uses validation attributes in addition to the https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.ivalidatableobject[IValidatableObject] interface.
+
+NOTE: Prefer to use validation attributes over the interface whenever possible. It is easier to read and requires less code.
+
+.Validation Attributes
+|===
+| Attribute | Purpose
+| https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.maxlengthattribute[MaxLength] | Ensures a string/array does not exceed a max length.
+| https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.minlengthattribute[MinLength] | Ensures a string/array is at least a min length.
+| https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.rangeattribute[Range] | Ensures a value is within a specific range.
+| https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.regularexpressionattribute[RegularExpression] | Ensures a string value matches a regular expression pattern.
+| https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.requiredattribute[Required] | Marks a value as required.
+| https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.stringlengthattribute[StringLength] | Ensures a string is within a min and max length.
+|===
+
+All validation attributes derive from https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validationattribute[ValidationAttribute].
+They all work the same way by taking the value of the property or field they are applied to and testing the value for whatever condition the attribute is checking.
+The value is either valid or it isn't.
+
+.Using Validation Attributes
+[source,csharp]
+----
+public class StudentModel
+{
+   [Required(AllowEmptyStrings = false)]
+   [StringLength(100)]
+   public string FirstName { get; set;}
+
+   [Required(AllowEmptyStrings = false)]
+   [StringLength(100)]
+   public string LastName { get; set;}
+
+   [Range(0, 100)]
+   public int Grade { get; set; }
+}
+----
+
+CAUTION: One limitation of validation attributes is that they apply to a single property. Validation that requires looking at a whole object, multiple objects or multiple properties on the same object generally cannot be done with validation attributes.
+
+=== Required
+
+The https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.requiredattribute[Required] attribute is special.
+The first thing to understand about it is that it only looks for `null`.
+Therefore it is not useful on value types such as integers.
+The second thing to understand is that an empty string is not `null` as has been discussed previously.
+However `null` and empty string are generally considered the same the https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.requiredattribute[Required] attribute has a property https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.requiredattribute.allowemptystrings[AllowEmptyStrings] that can be set to `false` to make empty strings also fail validation.
+
+NOTE: In general string properties and fields should set https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.requiredattribute.allowemptystrings[AllowEmptyStrings] to `false`. Other types can ignore this property.
+
+The last thing to note about this attribute is that the https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validator[Validator] class first scans for properties and fields that have a https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.requiredattribute[Required] attribute that is false.
+If it finds any then no further validation is done.
+To override this you must call the overload that accepts a boolean to validate all properties.
+
+=== Custom Error Messages
+
+Each validation attribute has a default error message.
+In some cases the error message is fine.
+In other cases a more useful error message is desired.
+All the validation attributes have a settable property https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validationattribute.errormessage[ErrorMessage] property that can be set to customize the error message.
+
+.Custom Error Message
+[source,csharp]
+----
+public class StudentModel
+{
+   [Range(0, 100, ErrorMessage = "Grade cannot be greater than 100.")]
+   public int Grade { get; set; }
+}
+----
+
+== Creating Custom Attributes
+
+It is very easy to create a custom attribute.
+An attribute, after all, is just a regular class.
+But this topic is beyond the scope of the class.
+Refer to the .NET documentation on how to define your own attributes.
+
+== See Also
+
+link:readme.adoc[Web Development] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/attributes[.NET Attributes] +
+https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.validationattribute[.NET ValidationAttribute] +

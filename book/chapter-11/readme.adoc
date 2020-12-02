@@ -1,4 +1,4 @@
-= Chapter 11: MVC
+= Chapter 11: Web Development
 Michael Taylor <michael.taylor@tccd.edu>
 v0.1
 

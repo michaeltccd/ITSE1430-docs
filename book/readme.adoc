@@ -18,7 +18,7 @@ The source code is available link:../src/readme.md[here].
 * link:chapter-8/readme.adoc[Chapter 8 - Error Handling]
 * link:chapter-9/readme.adoc[Chapter 9 - Files]
 * link:chapter-10/readme.adoc[Chapter 10 - Data Access]
-* link:chapter-11/readme.adoc[Chapter 11 - MVC]  
+* link:chapter-11/readme.adoc[Chapter 11 - Web Development]  
 * [Chapter 12 - Advanced Concepts]
   ** [Asynchronous Code]
   ** [Reflection]
