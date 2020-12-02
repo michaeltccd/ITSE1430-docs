@@ -1,0 +1,186 @@
+= Deferred Execution
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+When returning an link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>] instance from a method it is common to use a technique known as https://docs.microsoft.com/en-us/dotnet/standard/linq/deferred-execution-lazy-evaluation[deferred execution].
+
+== Retrieval vs Enumeration
+
+The best way to understand deferred execution is with an example.
+
+.Querying Data
+[source,csharp]
+----
+var files = Directory.GetFiles(filePath);
+foreach (var file in files)
+{
+   if (String.Compare(file, "test.dat", true) == 0)
+   {
+      ProcessData(file);
+      break;
+   };
+};
+----
+
+Imagine that the directory being enumerated had one thousand (1000) files in it and it takes roughly 10ms per file.
+Given the above code you might imagine that it would stop retrieving the files in the directory once it found the matching file. 
+But that is not the case. 
+
+The above code would take a minimum of (1000 * 10ms) = 10000ms = 10 seconds to run.
+https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.getfiles[Directory.GetFiles] would retrieve all the files from the directory and then the `foreach` statement would begin enumerating the filenames one by one until it found a match.
+It wouldn't matter whether the file it was searching for was the first or last, all the files in the directory would have to be retrieved first so the method call would take 10 seconds.
+This is necessary because https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.getfiles[Directory.GetFiles] returns an array. 
+To return an array, or https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[List<T>] for that matter, it must populate the object with all the items first before returning them.
+This is a limitation of using fixed length data structures.
+
+The call to https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.getfiles[Directory.GetFiles] blocks until all the files are retrieved from the directory.
+If the directory is on a slow, or very large drive, this could take a while.
+Even if the entire directory contents aren't needed the code must take the hit for reading them all.
+
+Now look at this example.
+
+.Enumerating Data
+[source,csharp]
+----
+var files = Directory.EnumerateFiles(filePath);
+foreach (var file in files)
+{
+   if (String.Compare(file, "test.dat", true) == 0)
+   {
+      ProcessData(file);
+      break;
+   };
+};
+----
+
+https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.enumeratefiles[Directory.EnumerateFiles] returns link:../chapter-6/interface-ienumerable.adoc[IEnumerable<string>].
+Because it returns link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>] deferred execution can be used.
+In this case the directory contents are enumerated on demand when requested by the code.
+Each time the next value is needed it is retrieved from the directory, logically.
+That means that the code controls how much enumeration is occurring.
+If the code asks for every file then it will enumerate them all.
+However, as is common, the code will enumerate, on average, half the contents before it finds what it is looking for.
+Given the earlier example we would expect this code to take, on average, 5 seconds to run but it could take anywhere from 10ms to 10 seconds depending upon where the file is in the returned results.
+This is deferred execution.
+
+CAUTION: Methods returning link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>] should be assumed to be using deferred execution, but this is not required.
+
+== How It Works
+
+The link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>] instance that is returned is a wrapper object around the real results.
+When the method is called it creates a new instance of the wrapper and returns it.
+At this point there is no need to enumerate anything, although some initialization may occur.
+When the first item is requested from the wrapper then it calls the underlying method to return the first result.
+This generally occurs inside a `foreach` statement.
+Each time the wrapper is called it calls to the underlying method to return the next item.
+Therefore the wrapper only bothers making the, generally more expensive, method call to retrieve the next item when it is needed rather than all at once.
+
+C# iterators provide the best example of this.
+
+.C# Iterator
+[source,csharp]
+----
+public IEnumerable<int> GetValues ()
+{
+   for (var index = 0; index < 5; ++index)
+   {
+      Console.WriteLine("Getting next item");
+      yield return index + 1;
+   }
+}
+
+//Returns wrapper around GetValues but no enumeration has occurred yet
+var values = GetValues();
+foreach (var value in values)
+{
+   Console.WriteLine(value);
+};
+
+//Expected Output
+// Getting next item
+// 1
+// Getting next item
+// 2
+// Getting next item
+// 3
+// Getting next item
+// 4
+// Getting next item
+// 5
+----
+
+NOTE: How much of the initial method is called is an implementation detail of the compiler.
+
+== Advantages and Disadvantages
+
+The primary benefit of deferred execution is performance.
+Enumeration can be expensive if retrieving an item is expensive or there are a lot of them.
+With deferred execution the expense of retrieving an item is only taken when the item is actually needed.
+In theory if no items are ever requested then there is no overhead, beyond the wrapper initialization.
+
+There are disadvantages to deferred execution as well.
+The biggest issue is with error handling. 
+In most cases to handle errors you would wrap the calling code in a `try-catch`.
+But this will not work for deferred execution unless you also wrap the enumeration logic.
+The method call to get the items will rarely fail but any code to retrieve the items, such as connecting to a database, will not run until enumerating the items.
+Imagine this code.
+
+.Bad Exception Handling
+[source,csharp]
+----
+public IEnumerable<int> GetBadValues ()
+{
+   yield return 1;
+   throw new Exception("Failed");
+}
+
+IEnumerable<int> values = null;
+
+//Useless try-catch
+try
+{   
+   values = GetBadValues();
+} catch
+{
+   //Will not be hit because no items enumerated
+};
+
+//Exception is thrown here
+foreach (var value in values)
+    ;
+----
+ 
+Another issue with deferred execution is when working with object lifetimes.
+If enumeration requires a connection to a file or database or similar shared resource then the object must remain available until the enumeration is complete.
+This makes managing lifetimes correctly very difficult.
+Imagine this code.
+
+.Bad Lifetime Management
+[source,csharp]
+----
+public IEnumerable<int> GetSharedValues ( Database database )
+{   
+   return database.GetValues();
+}
+
+IEnumerable<int> values = null;
+
+//Useless try-catch
+using (var database = new Database())
+{   
+   values = GetSharedValues(database);
+};
+
+//Database is gone, will probably throw an exception.
+foreach (var value in values)
+   ;
+----
+
+WARNING: Always assume link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>] returning methods use deferred execution. To force the enumeration of the items in cases where it is needed to use one of the conversion extension methods defined link:linq-extension-methods.adoc[here].
+
+== See Also
+
+link:readme.adoc[Advanced Types] +
+link:linq.adoc[LINQ] +
+https://docs.microsoft.com/en-us/dotnet/standard/linq/deferred-execution-lazy-evaluation[.NET Deferred Execution] +

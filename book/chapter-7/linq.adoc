@@ -1,75 +1,24 @@
 = LINQ
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
-Earlier the concept of an link:extension-methods.adoc[extension method] was introduced as a way to extend types that otherwise could not be extended with new "instance" methods.
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/[LINQ], Language Integrated Natural Query, is a framework for writing natural queries against enumerable sets of items in .NET. Earlier link:extension-methods.adoc[extension methods] were introduced as a way to extend types that otherwise could not be extended with new "instance" methods.
 Extension methods provide the illusion of being an instance method when in reality they are static methods on a link:static-classes.adoc[static class].
-The primary reason this was added was to support https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/[LINQ] - Language Integrated Natural Query.
-The purpose of LINQ is to allow for more natural queries on link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>].
 
-NOTE: LINQ only works with link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>].
+== Extension Methods
 
-== Common Extensions
+LINQ provides its functionality as extenion methods off the link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>] interface.
+LINQ only works with link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>].
 
-LINQ provides a lot of functionality out of the box and there are many libraries that extend this.
-The core extension methods are defined on the https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable[Enumerable] class.
+Refer to the section link:linq-extension-methods.adoc[LINQ Extension Methods] for a discussion on some of the more commonly used extension methods.
 
-To use the bulk of the LINQ functionality import the https://docs.microsoft.com/en-us/dotnet/api/system.linq[System.Linq] namespace.
+== LINQ Syntax
 
-=== Conversion
+While the extension methods are useful they are not exactly natural. 
+In C# there is a more natural way of writing some LINQ queries.
 
-Sometimes it is necessary to convert something that is enumerable into a more concrete type.
-That is what the conversion methods are for.
-
-.Conversion Extension Methods
-|===
-| Method | Purpose
-| https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.toarray[ToArray] | Converts an enumerable to an array.
-| https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.tolist[ToList] | Converts an enumerable to a https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1[List<T>].
-|===
-
-The above methods take an link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>] and convert it to the appropriate type.
-If the underlying object is already of the appropriate type then nothing happens.
-
-.Conversion Example
-[source,csharp]
-----
-IEnumerable<Student> students = GetStudents();
-
-Student[] studentArray = students.ToArray();
-List<Studnent> studentList = students.ToList();
-----
-
-The methods require the entire set of items to be enumerated before the method returns.
-
-=== Cast
-
-Since https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/[LINQ] requires link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>] an issue comes up when working with older collections that support only https://docs.microsoft.com/en-us/dotnet/api/system.collections.ienumerable[IEnumerable]. 
-To convert to link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>] several casting methods are available.
-
-.Cast Extension Methods
-|===
-| Method | Purpose
-| https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.cast[Cast<T>] | Converts each value to `T` and throws an exception if it fails.
-| https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.oftype[OfType<T>] | Converts each value to `T` and returns those that successfully convert.
-|===
-
-Both methods convert https://docs.microsoft.com/en-us/dotnet/api/system.collections.ienumerable[IEnumerable] instances to link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>] but handle errors slightly differently.
-Both methods enumerate the items one by one.
-??
-
-????
-
-queries - select, from, group by, order by
-
-count
-first/single/last
-oftype/cast
-
-deferred execution
-
-== LINQ syntax
+Refer to the section link:linq-syntax.adoc[LINQ Syntax] for more information on the LINQ syntax.
 
 == LINQ Providers
 
@@ -85,7 +34,7 @@ Therefore be sure to always test code against the provider that is needed as it 
 == See Also
 
 link:readme.adoc[Advanced Types] +
-link:extensionmethods.adoc[Extension Methods] +
-link:static-classes.adoc[Static Classes] +
-https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable[.NET Enumerable Class] +
+link:deferred-execution.adoc[Deferred Execution] +
+link:linq-extension-methods.adoc[LINQ Extension Methods] +
+link:linq-syntax.adoc[LINQ Syntax] +
 https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/[.NET LINQ] +

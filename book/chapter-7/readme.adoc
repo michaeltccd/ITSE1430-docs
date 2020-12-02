@@ -1,6 +1,6 @@
 = Chapter 7: Advanced Types
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 
 This chapter will cover some advanced concepts on types.
 
@@ -12,5 +12,8 @@ This chapter will cover some advanced concepts on types.
 * link:delegates.adoc[Delegates]
 * link:lambda-expressions.adoc[Lambda Expressions]
 * link:linq.adoc[LINQ]
+** link:deferred-execution.adoc[Deferred Execution]
+** link:linq-extension-methods.adoc[LINQ Extension Methods]
+** link:linq-syntax.adoc[LINQ Syntax]
 * link:expression-body.adoc[Expression Bodies]
 * [Anonymous Types]

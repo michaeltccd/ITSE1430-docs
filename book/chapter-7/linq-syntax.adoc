@@ -1,0 +1,76 @@
+= LINQ Syntax
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+While using the link:linq-extension-methods.adoc[LINQ extension methods] is fine the syntax is not exactly natural.
+In C# LINQ syntax can be used instead.
+LINQ syntax allows for a SQL-like syntax when writing LINQ queries.
+Take the following extension method code.
+
+.LINQ Extension Method
+[source,csharp]
+----
+IEnumerable<Student> students = GetStudents();
+
+//Get passing students, ordered by last name and then first
+var passingStudents = students.Where(x => x.Grade >= 70)
+                              .OrderBy(x => x.LastName).ThenBy(x => x.FirstName);
+----
+
+This is readable but not natural.
+LINQ syntax allows for a SQL-like syntax to be used instead.
+
+.LINQ Extension Method
+[source,csharp]
+----
+var passingStudents = from s in GetStudents()
+                      where s.Grade >= 70
+                      orderby s.LastName, s.FirstName
+                      select s;
+----
+
+This is more "SQL" like.
+Furthermore the ordering can be done with a single clause.
+The `from` clause identifies the link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>] to enumerate and the temporary variable to store each item in. 
+This temporary variable is available for the rest of the expression.
+The optional `where` clause filters the set of items.
+The optional `orderby` clause orders the results.
+The final `select` allows for transforming the results into a different type if needed.
+
+.LINQ Syntax
+----
+linq-expression ::= from id in E [where-clause] [orderby-clause] [select-clause]
+where-clause ::= where E
+orderby-clause ::= orderby E {, E}*
+select-clause ::= select E
+----
+
+There is no performance differences between LINQ syntax and calling the extension methods directly.
+Under the hood the compiler rewrites the LINQ syntax into the equivalent extension method calls.
+
+WARNING: The order of the clauses in a LINQ expression are fixed and cannot be adjusted.
+
+In addition to the standard `from-where-select` clauses you can also do grouping and joining in LINQ syntax.
+Refer to the full documentation for information on how to do this.
+
+== Combining with Extension Methods
+
+LINQ syntax is only designed to replace the query extension methods such as `Select`, `Where`, `OrderBy` and `Group`.
+The results of a LINQ expression is link:../chapter-6/interface-ienumerable.adoc[IEnumerable<T>] so additional extension methods may be called as well.
+The only requirement is that the LINQ expression must be wrapped in parenthesis otherwise the compiler will attempt to apply the extension methods to the `select` clause.
+
+.Get Student with LINQ Syntax
+[source,csharp]
+----
+var student (from s in GetStudents()
+             where s.Id == id                       
+             select s).FirstOrDefault();
+----
+
+== See Also
+
+link:readme.adoc[Advanced Types] +
+link:extensionmethods.adoc[Extension Methods] +
+link:static-classes.adoc[Static Classes] +
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/[.NET LINQ] +
