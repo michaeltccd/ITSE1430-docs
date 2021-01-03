@@ -49,7 +49,7 @@ image:create-repo.png[Create Repository]
 
 After the repository has been set up you do not need to do anything else. You now have your own copy of the class repository. 
 
-WARN: Once you have created your repository and submitted your first lab assignment you will not be allowed to change the repository for labs. Only a single repository will be used for the entire semester. If you have issues getting your existing repository to work then contact the instructor for assistance.
+WARNING: Once you have created your repository and submitted your first lab assignment you will not be allowed to change the repository for labs. Only a single repository will be used for the entire semester. If you have issues getting your existing repository to work then contact the instructor for assistance.
 
 == A Note on Repository Names
 
