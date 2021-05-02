@@ -6,9 +6,9 @@ This chapter will cover web development basics with the Model View Controller (M
 
 == Table of Contents
 
-* link:attributes.adoc[Attributes]
-* link:nuget.adoc[Package Management]
-* [ASP.NET]
+* link:aspnet.adoc[ASP.NET]
+* link:http-basics.adoc[How HTTP Works]
+* link:mvc.adoc[MVC]
 * [Routing]
 * [Controllers]
 ** [Actions]

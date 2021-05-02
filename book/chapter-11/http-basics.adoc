@@ -1,0 +1,23 @@
+= How HTTP Works
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+URL and verb
+- host
+- app
+- query string
+
+HTTP header and request
+HTTP header and response
+
+HTTP status codes
+
+Testing tools
+- Browser
+- F12 tools
+
+== See Also
+
+link:readme.adoc[Web Development] +
+link:aspnet.adoc[ASP.NET]

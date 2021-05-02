@@ -1,0 +1,134 @@
+= ASP.NET
+Michael Taylor <michael.taylor@tccd.edu>
+v1.0
+:toc:
+
+The https://dotnet.microsoft.com/apps/aspnet[ASP.NET] framework is used for web development in .NET.
+ASP.NET is a framework that is mostly extensible allowing for a lot of variety in how web applications are configured and run.
+
+Refer to the section link:http-basics.adoc[How HTTP Works] for information on how web applications function.
+
+== Parts of a Web Application
+
+ASP.NET consists of many different components needed to run a web application.
+In some cases the components used depend upon the architecture selected.
+
+=== Web Server
+
+All web applications require a web server. 
+The web server is responsible for listening to HTTP requests, negotiating communication requirements with the sender, determining where to send the request for processing and returning the response back to the sender. 
+
+In general a web server is application agnostic.
+A web server can host any number of web applications and each application can be written using a different technology and provide different sets of features.
+
+For Windows the web server is IIS. It is not installed by default but runs continuously once installed. On a machine with Visual Studio and the Web Development workload installed then a local instance of IIS is installed called IIS Express (IISX). 
+IISX behaves like IIS except it is local only.
+
+Installing and configuring the web server is beyond the scope of this course.
+
+=== Middleware
+
+The middleware is responsible for everything from determining how to respond to requests from HTTP to authentication, from error handling to optimizations like caching.
+In some cases the entire behavior of the application can be customized using middleware.
+
+Middleware normally integrates with the web server and is beyond the scope of this course.
+
+=== Web Application
+
+The web application is responsible for determining what an application requires to handle a request, sending the request to the appropriate component for processing and any application-level features such as logging, error handling, etc.
+Web applications can be architected in many different ways.
+One of the most common is link:mvc.adoc[Model View Controller] which is covered later.
+
+A web application generally runs in a sandbox environment. 
+The web server ensures that the web application does not have access to resources outside the web application for security reasons.
+
+In ASP.NET a web application is responsible for setting up the application services, forwarding requests to the developer-provided code and providing shared configuration information.
+
+NOTE: This class will focus on web applications that provide a user interface for the user to interact with. It is important to note that this is not required and many web applications, known as web APIs, have no user interface. It is up to the application to determine what is and is not available.
+
+== Server vs Client Side Components
+
+When working with a web application it is important to remember that there is both server and client side components.
+
+Server Side Component::
+   A component that is run on the web server.
+Client Side Component::
+   A component that runs in the web browser.
+
+Server side components run on the web server and provide the backend processing needed for a web application.
+This often includes accessing a database, providing authentication and authorization services and enforcing business rules.
+Server side components run in the context of the web application that hosts them.
+Server side components have the full resources of the web server and can access otherwise inaccessible services available to the back end.
+Heavy use of server side components can have a detrimental impact on the web server making it harder to support many user requests at one time.
+
+Client side components run in the web browser. 
+https://www.javascript.com/[Javascript] is the language of choice for client side components.
+Javascript is a scripting engine that is used to make sites interactive.
+Client side components are most useful for providing fast interaction with the user without the need for the web server.
+Client side components can send requests back to the server but they are limited in accessing only what the web browser allows, are completely dependent upon what the web browser supports and cannot access resources that are not publicly accessible.
+
+Javascript is a complex but loose language that is universally supported in browsers.
+There are other languages, such as https://www.typescriptlang.org/[Typescript], that are often used to develop client side code.
+The code is then transcompiled down to Javascript.
+This allows for more stringent checks during development while still allowing universal support in browsers.
+
+Javascript is very limited in what features it exposes.
+There are many open source Javascript libraries that can be used to build client-heavy sites more easily. 
+Some common frameworks are given below.
+
+- https://angular.io/[Angular]
+- https://reactjs.org/[React]
+- https://vuejs.org/[Vue]
+
+Refer to provided links for more information.
+For this course no client side code will be needed.
+The Web Programming courses are available to learn more about these technologies.
+
+== Web Site vs Web Application
+
+When using Visual Studio it is important to distinguish between a Visual Studio web site and a Visual Studio web application.
+Outside of Visual Studio there is generally no distinction.
+
+Web Application::
+   A standard Visual Studio project that, when compiled, produces a web application that can run on a supported web server.
+Web Site::
+   A folder that, when opened, contains a web site that can be modified.
+
+Opening an application as a web site is useful when there are no server side component changes that require compilation and when working with unsupported web technologies like Ruby or CGI.
+Web sites are shown as folder structures and any files can be edited but there is very little editor support.
+One benefit of a web site is that it can be opened faster and can allow changes directly on a web server to make quick adjustments.
+
+A web application, in Visual Studio, consists of a standard project structure like all other project types in Visual Studio. 
+Web applications almost always have compiled source files such as C# in addition to client side files like Javascript and HTML.
+Web applications tend to provide the most robust editing and debugging experience because of the added data available.
+
+CAUTION: Be very careful when working with Visual Studio that you do not accidentally create or open a web application as a web site otherwise it may cause problems.
+
+== Available Runtimes
+
+There are currently two ASP.NET runtimes available to correspond to the .NET runtimes mentioned before: `ASP.NET` and `ASP.NET Core`.
+Which version to use will depend upon whether the .NET Framework or .NET Core is desired.
+While they follow the same design, use the same type names and appear very similar they are fundamentally different platforms.
+
+ASP.NET is based upon a monolithic framework and newer functionality has been placed over existing infrastructure over the years to produce a powerful, but inconsistent, framework for building web applications.
+While customizations can be done it is far more limiting than ASP.NET Core and is not up to date on the latest standards.
+Since it is in maintenance mode no new features will be added and as time goes on it will become more out of date.
+
+ASP.NET Core is a lightweight and extensible framework. 
+It is designed to be updated easily over time to take advantage of new technologies without the need for complex hacks.
+Outside the web application setup it mostly looks and behaves like an existing ASP.NET application.
+
+NOTE: Going forward there is no reason to use ASP.NET (.NET Framework). This framework is needed for legacy applications only.
+
+== See Also
+
+link:readme.adoc[Web Development] +
+link:http-basics.adoc[How HTTP Works] +
+link:mvc.adoc[Model View Controller] +
+https://dotnet.microsoft.com/apps/aspnet[ASP.NET] +
+https://angular.io/[Angular] +
+https://www.javascript.com/[Javascript] +
+https://reactjs.org/[React] +
+https://www.typescriptlang.org/[Typescript] +
+https://vuejs.org/[Vue]
+

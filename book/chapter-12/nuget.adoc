@@ -187,5 +187,5 @@ From here you can sync up all projects to use the same package version.
 
 == See Also
 
-link:readme.adoc[Web Development] +
+link:readme.adoc[Advanced Concepts] +
 https://nuget.org[NuGet] +

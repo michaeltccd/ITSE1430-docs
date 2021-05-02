@@ -1,0 +1,11 @@
+= Chapter 12: Advanced Concepts
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+
+This chapter will cover some advanced concepts that do not fit well in other chapters.
+
+== Table of Contents
+
+* link:attributes.adoc[Attributes]
+* link:nuget.adoc[Package Management]
+
