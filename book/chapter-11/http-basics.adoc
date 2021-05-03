@@ -1,23 +1,243 @@
 = How HTTP Works
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
-URL and verb
-- host
-- app
-- query string
+When using a web browser to view a web page the interaction on the user side seems simple - enter a URL or click a link on a page and the browser shows a new web page. 
+Behind the scenes though the process is quite a bit more complicated. 
+It is not possible to build a correct web application without having a basic understanding of how this process works.
+In this section we will discuss the process that occurs to display (render) a page in the browser.
 
-HTTP header and request
-HTTP header and response
+== HTTP 
 
-HTTP status codes
+Hyper Text Transfer Protocol, or https://developer.mozilla.org/en-US/docs/Web/HTTP[HTTP], is the protocol used to communicate with a web server.
+The protocol is specified as part of the URL as discussed later.
+HTTP defines the interaction between an HTTP client (e.g. a web browser) and an HTTP server (e.g. a web server).
+In this section we will use the terms `client` to represent the HTTP client and `server` to represent the HTTP server. 
 
-Testing tools
-- Browser
-- F12 tools
+HTTP is a text-based protocol.
+If binary data is needed then it must be encoded as text using something like https://developer.mozilla.org/en-US/docs/Glossary/Base64[Base64 encoding].
+HTTP follows roughly this approach
+
+. Client creates an HTTP message, the HTTP request, containing the data needed by the server.
+. Client sends the HTTP request to a well-defined URL representing the server.
+. Server processes the request.
+. Server returns an HTTP message, the HTTP response, containing the results of the request.
+
+HTTP is a stateless protocol meaning each request sent to the server is a new, unique request unrelated to any previous request. 
+If any sort of state management is needed then it is the responsibility of the client and/or server to maintain that state.
+What this also means is that it is possible to send multiple requests to the server and have them processed in an arbitrary order. 
+
+== HTTP Message
+
+An HTTP message consists of zero or more HTTP headers and a body. 
+In reality an HTTP message always contains at least one HTTP header but it is not required by the protocol.
+
+NOTE: HTTP is case insensitive as far as the protocol is concerned but some servers may not be.
+
+The HTTP request and response are identical in structure but contain different sets of data.
+The following are examples of an HTTP request and response.
+
+.HTTP Request
+[source,http]
+----
+GET / HTTP/1.1
+Host: www.time.gov
+Connection: keep-alive
+sec-ch-ua: " Not A;Brand";v="99", "Chromium";v="90", "Microsoft Edge";v="90"
+sec-ch-ua-mobile: ?0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36 Edg/90.0.818.51
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+----
+
+.HTTP Response
+[source,http]
+----
+HTTP/1.1 200 OK
+Date: Mon, 03 May 2021 07:09:16 GMT
+Server: Apache
+X-Frame-Options: ALLOWALL
+Strict-Transport-Security: max-age=31536000; includeSubdomains;preload
+X-XSS-Protection: 1;mode=block
+X-Content-Type-Options: nosniff
+Last-Modified: Mon, 03 May 2021 07:05:01 GMT
+Accept-Ranges: bytes
+Content-Length: 17569
+Cache-Control: max-age=0, no-store, no-cache, must-revalidate
+Pragma: no-cache
+Expires: Thu, 1 Jan 1970 00:00:00 GMT
+Connection: close
+Content-Type: text/html; charset=UTF-8
+Body: [HTML]
+----
+
+The HTTP request and responses can be easily viewed in any web browser using the browser's developer tools, `F12` for all current browsers.
+The developer tools are a great way to view and validate HTTP requests.
+
+=== HTTP Header
+
+An HTTP header is metadata that is used to help understand the body.
+HTTP headers are key-value pairs where the key may be a pre-defined header name or a custom name.
+The value is a string value. 
+
+For HTTP requests the HTTP header may contain information about the request being made such as
+
+- Client identity
+- User preferences such as language, time zone information, etc.
+- Acceptable response formats
+- Authentication information
+
+An HTTP response generally has headers that provide the following information
+
+- Format of the response body
+- Length of the response body
+- Server that processed the request
+
+Some HTTP headers can appear in requests and responses while others can appear in only one or the other.
+Additionally some HTTP headers are free form text while others allow for specific values only.
+For a list of pre-defined HTTP headers refer to https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers[MDN].
+
+=== HTTP Body
+
+The HTTP body contains the data needed for the request or response. 
+It can be empty if there is no data to share.
+The HTTP headers provide information about the body including its format, the media type.
+
+The client and server must agree on the media type.
+The media type is represented by the https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type[Content-Type] HTTP header.
+There are many media types but some common ones include the following.
+
+- https://www.iana.org/assignments/media-types/application/html[HTML]
+- https://www.iana.org/assignments/media-types/application/json[JSON]
+- https://www.iana.org/assignments/media-types/text/xml[XML]
+- https://www.iana.org/assignments/media-types/application/x-www-form-urlencoded[Form URL Encoding]
+- https://www.iana.org/assignments/media-types/application/pdf[PDF]
+
+In most cases the client supports multiple media types and sends an https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept[Accept] header to the server indicating which ones are supported.
+The server has a set of supported media types and picks one of the media types supported by the request.
+The `Content-Type` header in the response tells the client what media type was selected by the server.
+
+== Sending the Request
+
+Once the HTTP request is ready it must be sent to the server.
+Whether the server resides on the local network or across the internet is not relevant.
+
+To send the request the client needs the URL and HTTP method, verb.
+
+=== URL
+
+The URL is the uniform resource location that uniquely identifies the server, application and application-specific location to request.
+The verb indicates what action is being taken.
+
+The format of a URL is `scheme://host[/path][?query-string]`.
+
+scheme::
+   The scheme of the URL. For HTTP it is either `http` or `https`.
+host::
+   The domain name (e.g. `www.google.com`) or IP address (e.g. `12.34.56.78`) of the server.
+path::
+   The application path on the server. The path is completely dependent upon the web application.
+query-string::
+   The optional query string containing parameters for the request. Query strings have the format `key=value` where each key is separated by an ampersand (e.g. `?key1=10&key2=Account`).
+
+https://www.cloudflare.com/learning/dns/what-is-dns/[DNS] is commonly used to map user-friendly names like `www.google.com` to IP addresses.
+DNS is constantly updated with the name mappings so that when a client sends a request to the name it is mapped to the appropriate IP address.
+
+NOTE: To send the request the domain name must be converted to an IP address. The remainder of the URL is server and application-specific and is not translated.
+
+=== Verb
+
+The HTTP method, or verb, is also required to send a request. 
+The verb tells the server what action to take. 
+A single URL can respond differently depending upon the verb being used.
+
+The available https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods[verbs] are pre-defined by HTTP but include the following.
+
+.HTTP Verbs
+|===============
+| Verb | Purpose 
+| GET | Retrieves data
+| POST | Creates new data
+| PUT | Updates existing data
+| DELETE | Deletes data
+|===============
+
+GET requests retrieve data and should never modify server resources.
+As such a client is free to send as many GET requests as desired and can cache the results.
+Other requests potentially modify data and must be managed carefully.
+For example a PUT to a `/movie/10` URL may update an existing movie.
+A DELETE to the same URL may delete the movie.
+
+Web browsers do not normally expose the verb directly but it is still there.
+When entering a URL into the browser's address bar and pressing ENTER it triggers a GET to the given URL.
+Clicking links on a web page generally trigger a GET request as well.
+Clicking buttons generally trigger a POST or PUT request.
+
+== Getting the Response
+
+When the HTTP response comes back the first thing that should be checked is the status.
+The HTTP status code indicates whether the request was successful, partially successful or failed.
+The status code is an integral value.
+While technically any value could be used there are many well defined values that are used instead.
+
+.Common Status Codes
+|================
+| Status Code | Meaning
+| 200 | Success
+| 204 | Success (with no body)
+| 307 | Moved
+| 400 | Request was bad
+| 401 | Authentication failed
+| 403 | Access denied
+| 404 | Resource not found
+| 500 | Server error
+|================
+
+The full range of HTTP status codes can be found https://developer.mozilla.org/en-US/docs/Web/HTTP/Status[here].
+To avoid having to handle all possible status codes they are broken up into ranges.
+
+.Status Code Ranges
+|===============
+| Range | Meaning
+| 1xx | Informational (rarely used)
+| 2xx | Successful
+| 3xx | Redirects
+| 4xx | Client side errors
+| 5xx | Server side errors
+|===============
+
+Client side errors generally indicate the client has sent bad data and it needs to be corrected.
+Server side errors indicate the server failed to process the, otherwise valid, request.
+
+== HTTP vs HTTPS
+
+HTTP defines how the client and server communicate but there is an additional aspect that is generally not discussed, security. 
+Sending plaintext HTTP messages across the network would easily allow malicious users to see sensitive information such as login credentials and credit card numbers.
+To make this harder encryption can be added on top of the request.
+Encryption happens at the message level to help ensure no information in the message can be read except the intended target.
+Encryption requires that the client and server agree upon the algorithm and keys to use.
+Therefore there is a handshaking process that occurs.
+Once the client and server are in agreement all further communication is done encrypted.
+
+To distinguish the unencrypted and encrypted endpoints the URL scheme is changed from `http` to `https`.
+It is important to note that this simply indicates the use of encryption and does not impact the HTTP messages otherwise.
+
+To support encryption a web server must be configured with an SSL certificate that is created for client/server encryption.
+Currently it is recommended that all sites use encryption whether they need it or not.
+Some browsers assume encryption by default and will warn the user when using an unencrypted URL.
 
 == See Also
 
 link:readme.adoc[Web Development] +
-link:aspnet.adoc[ASP.NET]
+link:aspnet.adoc[ASP.NET] +
+https://developer.mozilla.org/en-US/docs/Web/HTTP[HTTP] +
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers[HTTP Headers] +
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Status[HTTP Status Codes] +
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods[HTTP Verbs]
