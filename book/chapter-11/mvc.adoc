@@ -1,17 +1,170 @@
 = Model View Controller
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
-pattern
-parts
-project layout
+There are many different architectural patterns to building web applications but the most popular for the last decade is Model-View-Controller or https://dotnet.microsoft.com/apps/aspnet/mvc[MVC].
+As with most patterns MVC breaks up a web application into areas of responsibility and then manages the communication between areas.
 
-pros and cons
+Model::
+   The model is the data. Specifically it is the data needed to respond to a request.
+View::
+   The view is the user interface. It takes the data and displays it to the user.
+Controller::
+   The controller is the processor. It is responsible for getting the appropriate data and passing it to the view.
 
-urls and routing
+CAUTION: MVC is specifically designed for web applications that have a user interface. While the pattern can be used for applications that do not have one there are better approaches.
+
+== Model
+
+In MVC the model is the data. 
+The model does not communicate with the other components, it is just data.
+The model is created by the controller and consumed by the view.
+
+The model may or may not correspond to any data stored in a database.
+In a perfect world the model and database line up exactly but this is rarely true.
+In most cases the model represents the data, in a final state, needed by any view that will use it.
+
+.Example Model
+[source,csharp] 
+----
+public class MovieModel
+{
+   public int Id { get; set; }
+
+   public string Title { get; set; } 
+}
+----
+
+Models are not object-oriented classes nor should they implement any business rules.
+A model is a https://martinfowler.com/eaaCatalog/dataTransferObject.html[data transfer object] meaning it is used to get data from point A (the back end system) to point B (the view).
+
+The following guidelines are generally used for models.
+
+- Avoid base types unless they are used to wrap values that are needed by several models.
+- Avoid nested model properties. Flatten the data whenever possible.
+- Use simple data such as strings, booleans and integers.
+- Include only the data by the view.
+- Add a `Model` or `ViewModel` suffix to the type to make it clear what its purpose is.
+
+== View
+
+The view is the user interface of the application.
+The view consumes the model to merge the fixed user interface with the data it needs.
+The controller selects the view to use based upon whatever business rules are followed.
+
+The view, at least for web applications, is HTML.
+How the data and HTML are merged depends upon the view engine being used.
+In ASP.NET there are two supported view engines - Razor and Web Forms.
+These will be covered in a later section.
+
+Since this course is focused on C# and HTML is not a pre-requisite we will not spend much time talking about views.
+
+== Controller
+
+The controller is where the bulk of the work goes.
+It is the processor that takes request data, processes the request and produces a response (through a view).
+The controller generally calls into the back end system to process the request.
+The returned data is then converted to a model and passed to the view the controller determines should be shown for the given request.
+
+A controller generally represents a single resource such as a movie, a blog post or an employee.
+A controller generally provides all the functionality needed by the resource including creation, retrieval, editing and deletion.
+By having a controller per resource it makes it easier to create and manage URLs.
+In most MVC architectures the resource is part of the URL.
+For example the `/movies/10` URL would request the movie with ID 10 from the controller that manages movies.
+The URL `/blog/10/comments` would get the comments associated with the blog post identified as 10 from the controller tha managed blog posts or comments.
+
+.Example Controller
+[source,csharp]
+----
+public class MovieController 
+{
+   public ActionResult Get ( int id )
+   {
+      var model = GetMovieById(id);
+      if (model == null)
+         return NotFound();
+
+      return View("Details", model);
+   }
+
+   public ActionResult Delete ( int id )
+   {
+      D/eleteMovie(id);
+
+      return View("List");
+   }
+}
+----
+
+Because the controller is responsible for so much it tends to have a lot of dependencies and can be difficult to break up.
+This often results in what is called a https://en.wikipedia.org/wiki/God_object[god class]. 
+A god class is a class that has a lot of different dependencies and responsibilities.
+God classes are bad because they are harder to manage over time and provide contention when multiple people are working on the same code base.
+It is very important that controllers offload the work to other types to reduce this problem but it is ultimately unavoidable.
+
+== ASP.NET MVC Project Layout
+
+ASP.NET MVC uses a convention-based approach to laying out the project.
+The advantage of this is that it is easy to look at an MVC project and quickly find what you are looking for.
+Unfortunately this also means that related types are not grouped together making it harder to find where such types are used.
+
+The following project layout is used for current ASP.NET Core web applications.
+The layout may vary depending upon the settings chosen when creating the project.
+
+The `Controllers` folder contains the MVC controllers. 
+Controllers are named `ResourceController` where `Resource` is the name of the resource.
+In ASP.NET Core the name is not relevant nor is the folder. 
+
+The `Models` folder contains the models.
+There is no convention here.
+The folder is pre-created just to provide a place to store model types.
+If the models are needed in other projects then they are generally moved out of the ASP.NET project altogether.
+When dealing with a large number of resources subfolders can be created to more cleanly separate the models.
+
+The `Views` folder contains the views.
+This folder is heavily convention based and cannot be changed without adjusting the application settings.
+Each controller has a subfolder here, minus the `-Controller`.
+Within the subfolder is a CSHTML (for C# Razor) file for each view.
+View names can be anything but if they do not match the method on the controller then they must be explicitly named.
+Normally simple names like `list.cshtml`, `details.cshtml` and `edit.cshmtl` are used.
+The view names are not seen by the end user.
+
+The `wwwroot` folder contains the client-side files for ASP.NET Core.
+This includes any CSS style sheets, images and Javascript files.
+The structure of this folder can vary and must match what the views are expecting.
+
+The `Properties` folder contains project properties.
+By default the `launchsettings.json` file resides here.
+This file helps configure the debugging options for the application.
+The files in this folder are either compiled into the code or not used by the application at runtime.
+
+The files in the root of the project are the startup files.
+Unless you know what you are doing do not modify these files.
+
+Additional folders can be created to store the application-specific code.
+If they are source files then they will be automatically compiled as part of the application.
+
+== Advantages and Disadvantages
+
+MVC has many advantages.
+
+- Easy to set up and understand.
+- Helps enforce separation of concerns especially between the UI and backend processing.
+- Easier to break up work across multiple developers, UX designers or entire teams.
+- Clean separation of areas of an application.
+- Intuitive URLs.
+- Conventions make it easier to get new functionality working without much extra setup.
+
+There are also disadvantages that should be taken into consideration.
+
+- Separation can be easily violated accidentally or on purpose.
+- Not all problems fit cleanly into an MVC pattern.
+- Separation of code by type means more folders and files have to be edited to make adjustments.
+- Controllers tend to act like a god class making them harder to manage.
+- As applications get larger the odds of name conflicts increase.
 
 == See Also
 
 link:readme.adoc[Web Development] +
-link:aspnet.adoc[ASP.NET]
+https://dotnet.microsoft.com/apps/aspnet/mvc[MVC]

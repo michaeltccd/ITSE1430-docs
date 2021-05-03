@@ -1,0 +1,19 @@
+= Views
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+Views..
+
+Refer to the section link:mvc.adoc[Model View Controller] for information on the role of the view in MVC.
+
+== HTML Basics
+
+== Razor
+
+== Shared Layouts
+
+== See Also
+
+link:readme.adoc[Web Development] +
+link:mvc.adoc[Model View Controller] +

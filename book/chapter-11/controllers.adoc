@@ -1,0 +1,19 @@
+= Controllers
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+Controllers...
+
+Refer to the section link:mvc.adoc[Model View Controller] for information on the role of the controller in MVC.
+
+== Routing
+
+== Actions
+
+== Action Results
+
+== See Also
+
+link:readme.adoc[Web Development] +
+link:mvc.adoc[Model View Controller] +

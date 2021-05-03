@@ -1,0 +1,19 @@
+= Models
+Michael Taylor <michael.taylor@tccd.edu>
+v0.1
+:toc:
+
+Models...
+
+Refer to the section link:mvc.adoc[Model View Controller] for information on the role of the model in MVC.
+
+== Creating a Model
+
+== Model Binding
+
+== Returning Models
+
+== See Also
+
+link:readme.adoc[Web Development] +
+link:mvc.adoc[Model View Controller] +

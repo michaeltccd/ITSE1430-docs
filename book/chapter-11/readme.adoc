@@ -1,6 +1,6 @@
 = Chapter 11: Web Development
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 
 This chapter will cover web development basics with the Model View Controller (MVC) pattern.
 
@@ -9,12 +9,8 @@ This chapter will cover web development basics with the Model View Controller (M
 * link:aspnet.adoc[ASP.NET]
 * link:http-basics.adoc[How HTTP Works]
 * link:mvc.adoc[MVC]
-* [Routing]
-* [Controllers]
-** [Actions]
-** [Action Results]
-* [Models]
-** [Model Binding]
-* [Views]
+* link:controllers.adoc[Controllers]
+* link:models.adoc[Models]
+* link:views.adoc[Views]
 
 
