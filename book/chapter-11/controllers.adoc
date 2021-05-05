@@ -3,9 +3,49 @@ Michael Taylor <michael.taylor@tccd.edu>
 v0.1
 :toc:
 
-Controllers...
+The controller is the processor that takes request data, processes the request and produces a response.
+The controller generally calls into the back end system to process the request.
+The returned data is then converted to a model and passed to the view the controller determines should be shown for the given request.
 
-Refer to the section link:mvc.adoc[Model View Controller] for information on the role of the controller in MVC.
+??
+
+A controller generally represents a single resource such as a movie, a blog post or an employee.
+A controller generally provides all the functionality needed by the resource including creation, retrieval, editing and deletion.
+By having a controller per resource it makes it easier to create and manage URLs.
+In most MVC architectures the resource is part of the URL.
+For example the `/movies/10` URL would request the movie with ID 10 from the controller that manages movies.
+The URL `/blog/10/comments` would get the comments associated with the blog post identified as 10 from the controller tha managed blog posts or comments.
+
+.Example Controller
+[source,csharp]
+----
+public class MovieController 
+{
+   public ActionResult Get ( int id )
+   {
+      var model = GetMovieById(id);
+      if (model == null)
+         return NotFound();
+
+      return View("Details", model);
+   }
+
+   public ActionResult Delete ( int id )
+   {
+      D/eleteMovie(id);
+
+      return View("List");
+   }
+}
+----
+
+Because the controller is responsible for so much it tends to have a lot of dependencies and can be difficult to break up.
+This often results in what is called a https://en.wikipedia.org/wiki/God_object[god class]. 
+A god class is a class that has a lot of different dependencies and responsibilities.
+God classes are bad because they are harder to manage over time and provide contention when multiple people are working on the same code base.
+It is very important that controllers offload the work to other types to reduce this problem but it is ultimately unavoidable.
+
+???
 
 == Routing
 

@@ -3,15 +3,35 @@ Michael Taylor <michael.taylor@tccd.edu>
 v0.1
 :toc:
 
-Views..
+The view is the user interface of the application.
+The view consumes the model to merge the fixed user interface with the data it needs.
+The controller selects the view to use based upon whatever business rules are followed.
 
-Refer to the section link:mvc.adoc[Model View Controller] for information on the role of the view in MVC.
+???
+
+
+The view, at least for web applications, is HTML.
+How the data and HTML are merged depends upon the view engine being used.
+In ASP.NET there are two supported view engines - Razor and Web Forms.
+These will be covered in a later section.
+
+Since this course is focused on C# and HTML is not a pre-requisite we will not spend much time talking about views.
+
+???
 
 == HTML Basics
 
 == Razor
 
 == Shared Layouts
+
+== Model Alternatives
+
+To get data into a view a link:model.adoc[model] should generally be used.
+In some rare cases it might be desirable to pass additional data to a view that doesn't fit comfortably into a model.
+Examples may include error messages, page titles or common lookup values.
+
+???
 
 == See Also
 

@@ -1,19 +1,255 @@
 = Models
 Michael Taylor <michael.taylor@tccd.edu>
-v0.1
+v1.0
 :toc:
 
-Models...
+In MVC the model is the data needed by a view. 
+The model does not communicate with the other components, it is just data.
+The model is created by the controller and consumed by the view.
+In general each view has its own view-specific model but in some cases models can be reused across views.
 
-Refer to the section link:mvc.adoc[Model View Controller] for information on the role of the model in MVC.
+The model may or may not correspond to any data stored in a database.
+In a perfect world the model and database line up exactly but this is rarely true.
+In most cases the model represents the data, in a final state, needed by any view that will use it.
 
 == Creating a Model
 
+As far as MVC is concerned there is nothing special about a model. 
+Any type can technically be a model although it is generally a class.
+
+Models are not object-oriented classes nor should they implement any business rules.
+A model is a https://martinfowler.com/eaaCatalog/dataTransferObject.html[data transfer object] meaning it is used to get data from point A (the controller) to point B (the view).
+
+.Declaring a Model
+[source,csharp]
+----
+public class MovieModel
+{
+   //Properties
+}
+----
+
+=== Properties
+
+When creating a model type avoid anything other than properties.
+When returning models from actions only the data is sent.
+When receiving models as parameters to an action only the data is received.
+Defining methods on models, other than as helper methods for views, is not useful.
+
+Properties should be simple, either primitives or other model types.
+The data is what is important so using simple properties such as auto properties is the best approach.
+It is not even necessary to worry about `null` vs empty strings in models because client side languages do not care.
+
+.Model Properties
+[source,csharp]
+----
+public class MovieModel
+{
+   public int Id { get; set; }
+
+   public string Name { get; set; }
+   public string Description { get; set; }
+
+   public int ReleaseYear { get; set; } = 1900
+   public int RunLength { get; set; }
+
+   public bool IsClassic { get; set; }
+}
+----
+
+NOTE: It is OK to define default values for fields when appropriate.
+
+Views should not have to understand any underlying business structure.
+Since a model provides only the data needed by a view it makes sense to flatten any hierarchies in the model, when possible.
+
+.Flattened Model
+[source,csharp]
+----
+public class AddressModel
+{
+   public string AddressLine1 { get; set; }
+
+   public string City { get; set; }
+
+   public int StateId { get; set; }
+   public string StateName { get; set; }
+
+   public int CountryId { get; set; }
+   public string CountryName { get; set; }
+
+   public string ZipCode { get; set; }
+}
+----
+
+NOTE: Flattening collections of items and optional properties is generally not recommended.
+
+=== Constructors
+
+In general avoid adding constructors to a model.
+The runtime will automatically create a model as needed and will not call any special constructors.
+
+In some cases having multiple constructors can be useful. 
+The most common case is when multiple objects are used to produce a single model.
+Another useful case is when transforming a business object to a model.
+A constructor can be used to implement a simple mapping layer between the two types.
+
+.Business Object Mapping
+[source,csharp]
+----
+public class MovieModel
+{
+   public MovieModel ()
+   {}
+
+   public MovieModel ( Movie item )
+   {
+      Id = item.Id;
+      Name = item.Title;
+      Description = item.Description;
+      ReleaseYear = item.ReleaseYear;
+      RunLength = item.RunLength;
+      IsClassic = item.IsClassic;
+   }
+
+   public int Id { get; set; }
+
+   public string Name { get; set; }
+   public string Description { get; set; }
+
+   public int ReleaseYear { get; set; } = 1900
+   public int RunLength { get; set; }
+
+   public bool IsClassic { get; set; }
+}
+----
+
+CAUTION: When defining constructors ensure a default constructor is always defined. The runtime requires a default constructor to create models.
+
+=== Using Business Types
+
+At first it may seem redundant to have a business type and a model.
+For simple cases it is possible the business type and model have the same properties.
+However as applications evolve business rules tend to impact how the business type is implemented.
+Especially when dealing with nested objects a model tends to vary quite a bit from the business type.
+An additional consideration is that business objects tend to have data that should not be displayed in a view.
+
+Because of these concerns a model type should always be created.
+A model provides a layer of abstraction between the business layout and view layout needs.
+It also makes it easier to make adjustments to the data later to meet the view requirements without also impacting the business layer.
+
+In very rare cases it might be OK to use a business type as a model.
+These cases are generally reserved for generic types such as addresses that are already acting as a data transfer object.
+
 == Model Binding
 
+The runtime implements https://docs.microsoft.com/en-us/aspnet/core/mvc/models/model-binding[model binding] automatically on actions that accept a model.
+When an action with a model parameter is invoked the binder automatically creates an instance of the model parameter.
+
+.Model Binding
+[source,csharp]
+----
+[HttpPost]
+public IActionResult Create ( [FromBody] MovieModel model )
+{
+   if (model.Id != 0)
+      return BadRequest();
+
+   //Create the new item
+}
+----
+
+CAUTION: The model binder will always create the model parameter even if none of the properties are set.
+
+After creating the model argument the binder will then attempt to assign a value to each of the model's properties by looking for corresponding named values in the data received from the client.
+If no matches are found then the property remains at its default value.
+
+The following locations are searched.
+
+- Query string
+- Body in supported format
+- Form collection values
+
+The binder is also responsible for converting the, generally string, value from the client to the appropriate type for the property.
+If conversion fails then a runtime error occurs.
+Custom model binding converters can be defined if needed.
+
+=== Validation
+
+ASP.NET fully supports the https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.ivalidatableobject[IValidatableObject] interface and validation attributes.
+Consider implementing one or both when client-side validation is desired.
+
+.Model Validation
+[source,csharp]
+----
+public class MovieModel
+{
+   public int Id { get; set; }
+
+   [Required(AllowEmptyStrings = false)]
+   public string Name { get; set; }
+   public string Description { get; set; }
+
+   [Range(1900, 2100)]
+   public int ReleaseYear { get; set; }
+   
+   [Range(0, 10_000)]
+   public int RunLength { get; set; }
+
+   public bool IsClassic { get; set; }
+}
+----
+
+NOTE: It is not necessary to completely validate the model at this point. Validation related to user input is most appropriate here.
+
+When a model is passed as a parameter to an action the runtime automatically validates it.
+To check the results of validation use the https://docs.microsoft.com/en-us/aspnet/core/mvc/models/validation[ModelState.IsValid] property.
+
+.Validating a Model
+[source,csharp]
+----
+[HttpPut]
+public IActionResult Update ( [FromBody] MovieModel model )
+{
+   if (ModelState.IsValid)
+   {
+      //Update in database
+   };
+}
+----
+
 == Returning Models
+
+Returning a model from an action simply requires that the model be created first.
+In most cases an MVC action will return a view but this is not required.
+If an action needs to return a model then use the https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase.ok[Ok] method.
+
+.Returning a Model
+[source,csharp]
+----
+public MovieModel GetMovie ( int id )
+{
+   var movie = GetMovieById(id);
+
+   return Ok(movie);
+}
+----
+
+== Guidelines
+
+Some general guidelines for model types.
+
+- DO NOT define a base type unless several models will share a common set of properties.
+- DO use either `Model` or `ViewModel` in the type name and consider placing models in their own namespace.
+- PREFER simple properties such as auto properties.
+- DO flatten complex types so a view does not need to access nested properties.
+- ENSURE the model type has a default constructor.
+- DO add validation attributes and/or implement `IValidatableObject` if client-side validation is desired.
+- INCLUDE only the properties needed by the view.
+- USE primitives or model types as parameters to actions and as the return value from actions.
 
 == See Also
 
 link:readme.adoc[Web Development] +
 link:mvc.adoc[Model View Controller] +
+https://docs.microsoft.com/en-us/aspnet/core/mvc/models/model-binding[Model Binding] +
+https://docs.microsoft.com/en-us/aspnet/core/mvc/models/validation[Model Validation]

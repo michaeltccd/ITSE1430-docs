@@ -21,31 +21,7 @@ In MVC the model is the data.
 The model does not communicate with the other components, it is just data.
 The model is created by the controller and consumed by the view.
 
-The model may or may not correspond to any data stored in a database.
-In a perfect world the model and database line up exactly but this is rarely true.
-In most cases the model represents the data, in a final state, needed by any view that will use it.
-
-.Example Model
-[source,csharp] 
-----
-public class MovieModel
-{
-   public int Id { get; set; }
-
-   public string Title { get; set; } 
-}
-----
-
-Models are not object-oriented classes nor should they implement any business rules.
-A model is a https://martinfowler.com/eaaCatalog/dataTransferObject.html[data transfer object] meaning it is used to get data from point A (the back end system) to point B (the view).
-
-The following guidelines are generally used for models.
-
-- Avoid base types unless they are used to wrap values that are needed by several models.
-- Avoid nested model properties. Flatten the data whenever possible.
-- Use simple data such as strings, booleans and integers.
-- Include only the data by the view.
-- Add a `Model` or `ViewModel` suffix to the type to make it clear what its purpose is.
+Refer to the section link:models.adoc[Models] for more information.
 
 == View
 
@@ -53,12 +29,7 @@ The view is the user interface of the application.
 The view consumes the model to merge the fixed user interface with the data it needs.
 The controller selects the view to use based upon whatever business rules are followed.
 
-The view, at least for web applications, is HTML.
-How the data and HTML are merged depends upon the view engine being used.
-In ASP.NET there are two supported view engines - Razor and Web Forms.
-These will be covered in a later section.
-
-Since this course is focused on C# and HTML is not a pre-requisite we will not spend much time talking about views.
+Refer to the section link:views.adoc[Views] for more information.
 
 == Controller
 
@@ -67,41 +38,7 @@ It is the processor that takes request data, processes the request and produces 
 The controller generally calls into the back end system to process the request.
 The returned data is then converted to a model and passed to the view the controller determines should be shown for the given request.
 
-A controller generally represents a single resource such as a movie, a blog post or an employee.
-A controller generally provides all the functionality needed by the resource including creation, retrieval, editing and deletion.
-By having a controller per resource it makes it easier to create and manage URLs.
-In most MVC architectures the resource is part of the URL.
-For example the `/movies/10` URL would request the movie with ID 10 from the controller that manages movies.
-The URL `/blog/10/comments` would get the comments associated with the blog post identified as 10 from the controller tha managed blog posts or comments.
-
-.Example Controller
-[source,csharp]
-----
-public class MovieController 
-{
-   public ActionResult Get ( int id )
-   {
-      var model = GetMovieById(id);
-      if (model == null)
-         return NotFound();
-
-      return View("Details", model);
-   }
-
-   public ActionResult Delete ( int id )
-   {
-      D/eleteMovie(id);
-
-      return View("List");
-   }
-}
-----
-
-Because the controller is responsible for so much it tends to have a lot of dependencies and can be difficult to break up.
-This often results in what is called a https://en.wikipedia.org/wiki/God_object[god class]. 
-A god class is a class that has a lot of different dependencies and responsibilities.
-God classes are bad because they are harder to manage over time and provide contention when multiple people are working on the same code base.
-It is very important that controllers offload the work to other types to reduce this problem but it is ultimately unavoidable.
+Refer to the section link:controllers.adoc[Controllers] for more information.
 
 == ASP.NET MVC Project Layout
 
@@ -167,4 +104,7 @@ There are also disadvantages that should be taken into consideration.
 == See Also
 
 link:readme.adoc[Web Development] +
+link:controllers.adoc[Controllers] +
+link:models.adoc[Models] + 
+link:views.adoc[Views] +
 https://dotnet.microsoft.com/apps/aspnet/mvc[MVC]
