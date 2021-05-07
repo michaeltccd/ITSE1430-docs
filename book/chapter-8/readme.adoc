@@ -10,4 +10,4 @@ This chapter will cover reporting and handling errors.
 * link:handling-exceptions.adoc[Handling Exceptions]
 * link:try-catch.adoc[Try-Catch Statement]
 * link:try-finally.adoc[Try-Finally Statement]
-* link:raising-exceptions.adoc[Raising Exceptions]
+* link:throwing-exceptions.adoc[Raising Exceptions]

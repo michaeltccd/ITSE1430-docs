@@ -14,7 +14,7 @@ Consider using the buffered approach when:
 
 In all other cases use the streamed approach.
 
-To read data using the buffered approach refer to the section on link:dataset.adoc[Datasets]. 
+To read data using the buffered approach refer to the section on link:datasets.adoc[Datasets]. 
 To read data using the streamed approach refer to the section on link:datareader.adoc[Data Readers].
 
 == Database Nulls
@@ -57,5 +57,5 @@ Another issue with column names is that they must match what the query returns. 
 
 link:readme.adoc[Data Access] +
 link:datareader.adoc[Data Readers] +
-link:dataset.adoc[Dataset] +
+link:datasets.adoc[Dataset] +
 https://docs.microsoft.com/en-us/dotnet/api/system.dbnull[.NET DBNull Class] +

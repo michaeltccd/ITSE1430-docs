@@ -7,37 +7,160 @@ The controller is the processor that takes request data, processes the request a
 The controller generally calls into the back end system to process the request.
 The returned data is then converted to a model and passed to the view the controller determines should be shown for the given request.
 
-??
+== Routing
 
-A controller generally represents a single resource such as a movie, a blog post or an employee.
-A controller generally provides all the functionality needed by the resource including creation, retrieval, editing and deletion.
-By having a controller per resource it makes it easier to create and manage URLs.
-In most MVC architectures the resource is part of the URL.
-For example the `/movies/10` URL would request the movie with ID 10 from the controller that manages movies.
-The URL `/blog/10/comments` would get the comments associated with the blog post identified as 10 from the controller tha managed blog posts or comments.
+Before creating a controller it is important to understand how the runtime finds the code to use to process a request.
+It is all based upon routing rules.
+The default routing rule uses the form `<host>/<resource>/<action>`. 
+For example the URL `https://myapp.company.com/movies/add` would map to the `add` action on the `movies` resource.
+By using simple routing rules it is easy for code, and users, to determine the URL.
+
+In MVC everything is a resource.
+A resource is an entity that can be interacted with (e.g. read, created, deleted or updated).
+Each resource has its own set of actions.
+For example a country might be readable, an order might be creatable and readable and a movie might be creatable, readable and viewable.
+Resources may have non-standard actions as well such as paying for an order, cancelling a transaction or checking out a movie.
+
+In ASP.NET if no action is specified then it can be defaulted.
+The default convention is `index`.
+Therefore the URLs `https://myapp.company.com` and `https://myapp.company.com/index` are the same thing.
+Furthermore if no resource is specified then it defaults to `home`.
+Hence the following URLs are the same: `https://myapp.company.com`, `https://myapp.company.com/home` and `https://myapp.company.com/home/index`.
+
+In addition to the resource and action, additional paths may be specified.
+These generally map to parameters on the action being called but can also be just added as additional parts of the URL.
+
+== Creating a Controller
+
+Each resource is represented by a separate controller class. 
+This helps limit the scope of each controller but is not strictly enforced.
+
+Within a controller class is all the functionality needed to manage that resource.
+This can result in a lot of code in the class as discussed later.
+
+By convention the runtime will search for all controllers in the web application project and expose them automatically via the routing rules.
+To be considered a controller the following rules must be followed.
+
+- Must derive from https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controller[Controller]
+- Must be a public class
+- Must be creatable
+
+While the default project layout creates a `Controllers` folder, this is for convenience and not required by the runtime.
+
+WARNING: Controller class names must either be unique in the application or use explicit routing rules to allow them to be found.
 
 .Example Controller
 [source,csharp]
 ----
-public class MovieController 
+public class MovieController : Controller
 {
-   public ActionResult Get ( int id )
+   public MovieModel GetMovie ( int id )
    {
-      var model = GetMovieById(id);
-      if (model == null)
-         return NotFound();
+      var movie = GetMovieById(id);
+      var model = new MovieModel(movie);
 
-      return View("Details", model);
-   }
-
-   public ActionResult Delete ( int id )
-   {
-      D/eleteMovie(id);
-
-      return View("List");
-   }
+      return View("details", model);
+   }   
 }
 ----
+
+== Custom Routing
+
+By default the resource in the routing rules are mapped to controller names.
+The `-Controller` suffix is ignored and the runtime finds the first controller that matches the resource name, case insensitive.
+
+If the default routing rules are not sufficient then a controller class, and its actions, can be annotated to change the rules.
+Use the https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.routeattribute[RouteAttribute] to specify a custom URL to access the resource.
+
+.Custom Routing
+[source,csharp]
+----
+[Route("me/movies")]
+public class MovieController : Controller
+{
+}
+----
+
+In the above example the controller will use the `/me/movies` URL instead of the default `/movies`.
+Actions automatically inherit the route of the controller.
+
+== Actions
+
+The public methods of a controller are known as actions. 
+
+.Example Action
+[source,csharp]
+----
+public class MovieController : Controller
+{
+   // /movie/list
+   public IActionResult List ( )
+   {
+      var model = GetMovies();
+
+      return View(model);
+   }
+} 
+----
+
+CAUTION: All public methods of a controller are considered actions. The default routing rules use the action name as part of the URL so be careful when creating public methods.
+
+An action should validate any input parameters, pass the data to the back end for processing, get the results of processing, convert to a model and return the appropriate result.
+
+NOTE: If an exception occurs while running an action then a 500 (Internal Server Error) is automatically returned.
+
+By default an action responds to any HTTP method/verb specified.
+This is generally a bad idea. 
+Use the approprite attribute to handle only specific verbs.
+
+.Action Verbs
+|=====
+| Verb | Attribute
+| GET | https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.httpgetattribute[HttpGet]
+| POST | https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.httppostattribute[HttpPost]
+| PUT | https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.httpputattribute[HttpPut]
+| DELETE | https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.httpdeleteattribute[HttpDelete]
+|=====
+
+Similar to controllers, an action can have a custom route.
+Each verb attribute has an override accepting the (controller-relative) route to the action.
+
+.Custom Routing on Action
+[source,csharp]
+----
+[Route("me/movies")]
+public class MovieController : Controller
+{
+   // /me/movies/all
+   [HttpGet("all")]
+   public IActionResult List ( )
+   {
+      var model = GetMovies();
+
+      return View(model);
+   }
+} 
+----
+
+=== Parameters in the URL
+
+??
+
+=== Parameters in the Body
+
+GET restrictions
+
+== Action Results
+
+view
+validation error
+404
+bad request
+file
+
+== Managing Controller Dependencies
+
+ctor, ioc
 
 Because the controller is responsible for so much it tends to have a lot of dependencies and can be difficult to break up.
 This often results in what is called a https://en.wikipedia.org/wiki/God_object[god class]. 
@@ -47,13 +170,10 @@ It is very important that controllers offload the work to other types to reduce 
 
 ???
 
-== Routing
-
-== Actions
-
-== Action Results
 
 == See Also
 
 link:readme.adoc[Web Development] +
 link:mvc.adoc[Model View Controller] +
+https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controller[Controller Class] +
+https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.routeattribute[RouteAttribute]

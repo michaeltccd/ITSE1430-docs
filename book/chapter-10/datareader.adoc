@@ -198,7 +198,7 @@ You should not use a data reader if you need any of the following behavior.
 == See Also
 
 link:readme.adoc[Data Access] +
-link:dataset.adoc[Datasets] +
+link:datasets.adoc[Datasets] +
 link:reading-data.adoc[Reading Data] +
 https://docs.microsoft.com/en-us/dotnet/api/system.dbnull[.NET DBNull Class] +
 https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader[.NET SqlDataReader Class] +
