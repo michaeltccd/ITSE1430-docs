@@ -35,7 +35,7 @@ There are several ways to create a repository: create a new one, import a templa
 To import the template repository do the following.
 
 . Make sure you are logged into Github with your TCCD account.
-. Go to the template repository URL - https://github.com/michaeltccd/itse1430
+. Go to the template repository URL - https://github.com/michaeltccd/itse1430-template
 . You should see an option to `Use this template` at the top of the repository just before the list of files.
 +
 image:use-template.png[Use Template Repository]
