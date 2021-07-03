@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Company>Your Name</Company>
+    <Product>Movie Library</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MovieLibrary.SqlServer\MovieLibrary.SqlServer.csproj" />
+    <ProjectReference Include="..\MovieLibrary\MovieLibrary.csproj" />
+  </ItemGroup>
+
+</Project>
