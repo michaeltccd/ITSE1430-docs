@@ -1,6 +1,6 @@
 = .NET Runtime
 Michael Taylor <michael.taylor@tccd.edu>
-v1.1
+v1.2
 :toc:
 
 C# the language was written to demonstrate the abilities of .NET the framework. \.NET is a combination of runtime and framework library for running applications. It is impossible to study C# without also studying .NET. No other language exposes such a low level view of the runtime as C#. 
@@ -41,14 +41,14 @@ Today there are 3 .NET runtimes supported by Microsoft.
    The original framework designed for Windows. It is the most feature complete but evolves slowly given the decades worth of code written for it.
 
 .NET Core::
-   The re-envisioned version of the framework that is smaller and faster. It is designed for Windows, Linux and MacOS. Unfortunately it does not have all the same features because of cross platform concerns. 
+   The re-envisioned version of the framework that is smaller and faster. It is designed for Windows, Linux and MacOS. Unfortunately it does not have all the same features because of cross platform concerns. This framework is deprecated. 
 
-.NET 5::
+.NET 5+::
    This is the next generation of the platform expected to go live in Nov 2020. It is built in .NET Core but with the compatibility of .NET Framework.
 
-When you design to build a .NET application you currently have to decide which platform to use. Some applications cannot currently be built with .NET Core but .NET Framework only supports Windows. .NET 5 is supposed to solve this problem but it is still in early access. Ultimaely .NET 5 will be the platform going forward with .NET Framework and .NET Core going away.
+When you design to build a .NET application you currently have to decide which platform to use. Some applications cannot currently be built with .NET Core/5+ but .NET Framework only supports Windows. .NET 5+ attempts to solve some of this problem but still will not support legacy features. .NET 6+ will be the platform for the future while .NET Framework will remain around until the operating systems it shipped with are no longer supported.
 
-For purposes of C# only a few of the newest language features are not available on .NET Framework. The language itself supports any of the above platforms.
+Starting with C# and .NET 5 many of the new language features only work on .NET 5+ and some language features require .NET 6 or newer. In this course we will focus on language features that are available for all platforms when possible.
 
 == Assemblies
 
