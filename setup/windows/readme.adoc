@@ -1,6 +1,6 @@
 = Setting Up Windows
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 Windows is designed for a novice user. Programming is considered an advanced scenario and therefore the default Windows settings and programs are not ideal. The following are recommended changes you make to your computer to simplify your programming efforts.
@@ -12,6 +12,9 @@ Most files have a file extension that help identify the type of file but users a
 Showing the file extensions helps avoid accidentally changing the wrong files.
 
 . Open `Windows Explorer` (not Internet Explorer).
+. For Windows 11
+.. Go to the `View` option in the ribbon bar.
+.. Go to `Show \ File name extensions` in the menu.
 . For Windows 10
 .. Go to the `View` tab in the ribbon bar.
 .. Check the option `File name extensions`
@@ -28,7 +31,7 @@ All files shown in Windows Explorer will now show the (generally 3 letter) file 
 
 Windows ships with built in support for archive (.zip) files but there are several problems with it. For one it is really slow even for small files. Secondly it shows the file as a folder which gives you the illusion of it actually being a folder in which you can double click files. But this rarely works and more likely will cause errors so replacing the standard Windows archive program with a better one is recommended. 
 
-One freely available and solid program is https://www.7zip.org)[7-Zip]. I recommend that you install it (or another tool).
+One freely available and solid program is https://www.7zip.org[7-Zip]. I recommend that you install it (or another tool).
 
 . Download the https://www.7zip.org[program]. For most computers the 64-bit exe version is the correct version.
 . Run the setup program to install it. 
