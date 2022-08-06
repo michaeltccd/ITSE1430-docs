@@ -19,7 +19,7 @@ WARNING: Mac, Linux and Android are not supported operating systems. These platf
 
 In addition to the prerequisites for the course you also need the following software.
 
-- Visual Studio 2019
+- Visual Studio 2022
 - Github account
 
 CAUTION: We will discuss all this during the first week of class. You do not need to complete this before we talk about it. If you do decide to set this up before class then note that you may need to redo it in order to align with class requirements.
