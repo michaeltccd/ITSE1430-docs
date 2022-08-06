@@ -11,7 +11,7 @@ NOTE: Refer to the link:../../gettingstarted/creating-solution.adoc[Creating a S
 
 . Start Visual Studio. 
 . In the `Start Window` click the option to `Create a new project`.
-. In the `Create a new project` window search for `Console App` in the search field or scroll through the project templates and find `Console App (.NET Core)` for C# and then click the project template.
+. In the `Create a new project` window search for `Console App` in the search field or scroll through the project templates and find `Console App` for C# and then click the project template.
 +
 WARNING: Be sure that the project template has `C#` has the language. There are multiple templates with the same name but differ by language.
 +
@@ -20,6 +20,9 @@ WARNING: Selecting the wrong project type will generally result in having to cre
 .. Set `Project name` to `HelloWorld`.
 .. Set `Location` is set to the Github repository (e.g. `c:\users\<user>\source\repos\itse1430\classwork`).
 .. Set `Solution` to the simplified name to `HelloWorld`.
+.. Click `Next`
+.. Set `Framework` to `.NET 6.0 (Long-term support)`.
+.. Uncheck `Do not use top-level statements`.
 .. Click `Create` to create the project.
 
 == Navigating the IDE
@@ -29,18 +32,7 @@ Once the project is created the editor window should appear with the sample code
 .program.cs
 [source,csharp]
 ----
-using System;
-
-namespace HelloWorld
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
-        }
-    }
-}
+Console.WriteLine("Hello World!");
 ----
 
 The editor window is where the code will be written. Refer to the link:../../gettingstarted/visualstudio/editor-window.adoc[Editor Window] section of the Getting Started guide for more information about the editor window.
@@ -71,7 +63,7 @@ CAUTION: There is never a reason to run the code inside the IDE without using de
 
 When running the debugger the debugger attempts to run the program from start to end as quickly as possible. In this first example you should see `Hello World!` displayed along with some information about the console. The program has terminated but the console window remains open so you can see any output. You can close the console window if you want.
 
-Sometimes it is necessary to step through the code to debug an issue. Let's do that now. In the document window set a breakpoint on the first line of `Main` (line 8). 
+Sometimes it is necessary to step through the code to debug an issue. Let's do that now. In the document window set a breakpoint on the `Console.WriteLine` call.
 
 To set a breakpoint do one of the following.
 . Click in the left (gray) margin of the document window.
