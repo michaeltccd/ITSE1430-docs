@@ -22,7 +22,7 @@ WARNING: Selecting the wrong project type will generally result in having to cre
 .. Set `Solution` to the simplified name to `HelloWorld`.
 .. Click `Next`
 .. Set `Framework` to `.NET 6.0 (Long-term support)`.
-.. Uncheck `Do not use top-level statements`.
+.. Check `Do not use top-level statements`.
 .. Click `Create` to create the project.
 
 == Navigating the IDE
@@ -32,7 +32,16 @@ Once the project is created the editor window should appear with the sample code
 .program.cs
 [source,csharp]
 ----
-Console.WriteLine("Hello World!");
+namespace ConsoleApp1
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello, World!");
+        }
+    }
+}
 ----
 
 The editor window is where the code will be written. Refer to the link:../../gettingstarted/visualstudio/editor-window.adoc[Editor Window] section of the Getting Started guide for more information about the editor window.
