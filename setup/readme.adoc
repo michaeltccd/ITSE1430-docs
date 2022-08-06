@@ -5,11 +5,11 @@ v1.0
 
 == Prerequisites
 
-Before you begin note the following prerequisites for your environment.
+Before you begin note the following prerequisites for your environment. Refer to the official requirements https://docs.microsoft.com/en-us/visualstudio/releases/2022/system-requirements[here].
 
-- Windows 10 1703 or higher
+- Windows 10 1909 or higher or Windows 11 version 21H2 or higher
 - 1.8 Ghz or faster processor (quad core or higher strongly recommended)
-- 2 GB memory (4 GB or more strongly recommended)
+- 4 GB memory (16 GB or more strongly recommended)
 - 20+ GB hard drive space
 - Fast internet connection for downloading software
 
