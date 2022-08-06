@@ -1,13 +1,15 @@
 = Setting Up Visual Studio
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 CAUTION: Setting up Visual Studio will take a while and requires a persistent internect connection. Be sure that you have a stable network connection, sufficient power and enough hard drive space before continuing.
 
+NOTE: Screenshots may vary a little from what you actually see.
+
 == Download Visual Studio
 
-There are several editions available but you must ensure you use the version listed in the course requirements. Community Edition is free and can be downloaed https://visualstudio.microsoft.com/vs/community/[here]. 
+There are several editions available but you must ensure you use the version listed in the course requirements. Community Edition is free and can be downloaded https://visualstudio.microsoft.com/vs/community/[here]. 
 
 NOTE: If you already have a copy of Visual Studio (of the correct version) installed then you can use it instead but you may need to install additional components.
 
@@ -15,8 +17,8 @@ NOTE: If you already have a copy of Visual Studio (of the correct version) insta
 
 . Run the setup program. 
 . Select the following Workloads. Alternatively ou can use the `template/tools/.vsconfig` file provided in your own repository to auto-select the workloads.
-   - .NET desktop development
    - ASP.NET and web development
+   - .NET desktop development   
    - Data storage and processing
    - Other workloads may be installed if desired.
 +
@@ -60,7 +62,7 @@ After setting up your Github repository do the following.
 +
 image:import-wizard.png[Import Wizard]
 . Select the `No, just import new settings` option and click `Next`. 
-. Using the `Browse` button locate the `template/tools/.vssettings` file in your class repository.
+. Using the `Browse` button locate the `template/tools/*.vssettings` file in your class repository.
 . Ensure that all check boxes are checked and click `Finish`.
 +
 image:import-options.png[Import Options]
