@@ -1,6 +1,6 @@
 = Parts of C#
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 Let's take apart the `Hello World` program from earlier.
@@ -8,23 +8,21 @@ Let's take apart the `Hello World` program from earlier.
 .program.cs
 [source,csharp]
 ----
-using System;
-
 namespace HelloWorld
 {
-    class Program
+    internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Hello, World!");
         }
     }
 }
 ----
 
-The keywords are: `using`, `namespace`, `class`, `static` and `void`.
+The keywords are: `namespace`, `internal`, `class`, `static` and `void`.
 
-The identifiers are: `System`, `HelloWorld`, `Program`, `Main`, `args`, `Console` and `WriteLine`.
+The identifiers are: `HelloWorld`, `Program`, `Main`, `string`,  `args`, `Console` and `WriteLine`.
 
 The operators are: `[]`.
 
