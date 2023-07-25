@@ -1,11 +1,8 @@
-using System;
+namespace MovieLibrary.WebHost.Models;
 
-namespace MovieLibrary.WebHost.Models
+public class ErrorViewModel
 {
-    public class ErrorViewModel
-    {
-        public string RequestId { get; set; }
+    public string RequestId { get; set; }
 
-        public bool ShowRequestId => !String.IsNullOrEmpty(RequestId);
-    }
+    public bool ShowRequestId => !String.IsNullOrEmpty(RequestId);
 }
