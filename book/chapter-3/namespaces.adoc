@@ -1,6 +1,6 @@
 = Namespaces
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 
 One of the challenges with modular programming is ensuring uniqueness of identifiers. 
 As programs get larger the odds of two areas of code using the same identifiers increases.
@@ -15,11 +15,10 @@ In many languages, including C#, namespaces form a hierarchy. The further down t
 :Example Namespaces
 |===
 | Namespace | Purpose
-| System | Core types needed by all .NET code.
-| System.Data | Types related to working with databases.
-| System.Data.SqlClient | Types related to working with SQL databases.
-| System.Text | Types related to working with text.
-| System.Text.RegularExpressions | Types related to regular expressions.
+| `System` | Core types needed by all .NET code.
+| `System.Data` | Types related to working with databases.
+| `System.Text` | Types related to working with text.
+| `System.Text.RegularExpressions` | Types related to regular expressions.
 |===
 
 == Full Type Names
@@ -164,6 +163,71 @@ Aliasing should only be used when there is a conflict between namespace. In gene
 
 NOTE: When using a namespace alias the namespace alias qualifier can also be used (`::`). This is equivalent to the normal namespace separator (`.`) but has the added advantage of only working with namespaces.
 
+== Implicit Usings
+
+In many applications there are common sets of namespaces used including the `System` and `Microsoft` namespaces. Since these are almost always needed then many C# files tend to have many boilerplate using declarations at the top of the file. Starting with .NET 6 implicit using statements are supported.
+
+Implicit usings are pre-defined sets of namespaces that are automatically included at the start of every C# file. Therefore they should not be added with a using declaration. This dramatically cuts down on the boilerplate code starting each file. For example here is a typical C# file without implicit usings enabled.
+
+.File Without Implicit Usings
+[source,csharp]
+----
+using System;
+using System.Collections.Generics;
+using System.Diagnostics;
+using System.Text;
+
+using MyCompany.MyProduct;
+
+public class MyData
+{
+   public List<string> Names;
+}
+----
+
+Here is the same file with implicit usings enabled.
+
+.File With Implicit Usings
+[source,csharp]
+----
+using System.Diagnostics;
+
+using MyCompany.MyProduct;
+
+public class MyData
+{
+   public List<string> Names;
+}
+----
+
+Different project types have different sets of namespaces that are implicitly included. Implicit usings are enabled at the project level using a project setting.
+
+=== Defining Custom Implicit Usings
+
+It is common to have some custom namespaces that every C# file in a project needs. To support this you can add additional namespaces to the list of implicit usings that are included. This is done at the project level. To do so add a using declaration for the namespace prefixed with the keyword `global`.
+
+.Custom Implicit Usings
+[source,csharp]
+----
+global using System.Diagnostics;
+global using MyCompany.MyProduct;
+----
+
+NOTE: It is standard to place all custom implicit namespaces into a single `usings.cs` file at the root of the project.
+
+With the above custom namespaces then the earlier code simplifies down even more.
+
+.File With Implicit Custom Usings
+[source,csharp]
+----
+public class MyData
+{
+   public List<string> Names;
+}
+----
+
+CAUTION: Do not implicitly include all namespaces used by a project. This can cause problems in some cases. Identify the namespaces used in the majority of files and implicit include them.
+
 == Declaring Namespaces
 
 All code in C# is contained in a namespace. To declare a namespace use the `namespace` keyword.
@@ -176,6 +240,7 @@ namespace-declaration ::= namespace identifier { S* }
 The `identifier` can be simple or complex. Any number of statements can be contained inside the namespace. Namespace declarations do not end with a semicolon.
 
 .Namespace Declaration Example
+[source,csharp]
 namespace Company
 {
    //Full type name = Company.MyType
@@ -185,11 +250,34 @@ namespace Company
 
 The namespace may be a new namespace or an existing namespace. The compiler merges all namespaces that match together when defining scope.
 
+=== Simplified Namespace Declarations
+
+Starting with .NET 6 a namespace declaration can use a simpler syntax.
+
+.Namespace Simplified Declaration Syntax (.NET 6+)
+----
+namespace-declaration ::= namespace identifier { S* } 
+                        | namespace identifier ;
+----
+
+It is no longer necessary to place the namespace contents into a block which reduces the amount of identation being used. It has no impact on the actual code. Here is the previous example rewritten.
+
+.Namesapce Simplified Declaration Example
+[source,csharp]
+----
+namespace Company;
+
+//Full type name = Company.MyType
+public class MyType
+{}
+----
+
 == Declaring Nested Namespaces
 
 Namespace statements can be nested if desired.
 
 .Nested Namespace Example
+[source,csharp]
 namespace Company
 {
    namespace Product
@@ -202,6 +290,7 @@ namespace Company
 While this is allowed it is generally easier to simply use a compound identifier.
 
 .Nested Namespace Example
+[source,csharp]
 namespace Company.Product
 {
    //Full type name = Company.Product.MyType

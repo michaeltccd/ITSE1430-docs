@@ -1,6 +1,6 @@
 = Parts of C#
 Michael Taylor <michael.taylor@tccd.edu>
-v1.1
+v1.2
 :toc:
 
 Let's take apart the `Hello World` program from earlier.
@@ -173,3 +173,22 @@ For simple programs it may be OK to put multiple things into a single file. As a
 ----
 //Code for the Program type
 ----
+
+== Top-Level Statements (.NET 6)
+
+Starting with .NET 6 C# supports top-level statements. This is really only applicable to the entry point of a program. If you look back to the Hello World program at the beginning of the section then you can see that there is a lot of boiler-plate code and only one actual line of code that does anything we care about. This is pretty common even in more complex programs. C# supports placing the statements directly at the root of the file and the compiler will auto-generate the remaining boiler plate code. Here's the Hello World program rewritten to use top-level statements.
+
+.Top-Level Statements
+[source,csharp]
+----
+Console.WriteLine("Hello, World!");
+----
+
+Functionally the code remains unchanged but there are some fundamental differences in how the code works and there are many cases where top-level statements cannot be used. Here are some differences to be aware of.
+
+- The code is placed into a class that has an undefined name and cannot be referenced directly.
+- The code is placed into the root namespace of the project.
+- Using declarations can be specified before any executable code.
+- Variables can be declared but have a scope of everywhere in the file, including functions.
+- Functions can be defined but have some limitations.
+- Function overloading is not supported when declaring functions.

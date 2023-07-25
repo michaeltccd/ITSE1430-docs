@@ -44,7 +44,7 @@ namespace HelloWorld
 }
 ----
 
-NOTE: The above code is moree complex than we need for demonstration purposes. Going forward keep the `Do not use top-level statements` checkbox unchecked to simplify the code.
+NOTE: The above code is more complex than we need for demonstration purposes. Going forward keep the `Do not use top-level statements` checkbox unchecked to simplify the code.
 
 The editor window is where the code will be written. Refer to the link:../../gettingstarted/visualstudio/editor-window.adoc[Editor Window] section of the Getting Started guide for more information about the editor window.
 

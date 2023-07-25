@@ -1,6 +1,6 @@
 = Type Checking
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 Type checking is often necessary when working with generic code that works with `object`. 
@@ -129,11 +129,15 @@ Otherwise the identifier is initialized to the default value of the type.
 .Pattern Matching Example
 [source,csharp]
 ----
-object value = "Hello";
-
-if (value is string str)   // str is either null or the value as a string
-{   
+void HandleData ( object value )
+{
+   if (value is string str)   // str is either null or the value as a string
+   {   
+   }
 }
+
+//Example call
+HandleData("Hello");
 ----
 
 The pattern matching example is equivalent to the following code.
@@ -141,18 +145,57 @@ The pattern matching example is equivalent to the following code.
 .Pattern Matching Code
 [source,csharp]
 ----
-object value = "Hello";
-
-string str;
-if (value is string)
-   str = (string)value;
-else
-   str = null;
+void HandleData ( object value )
+{
+   string str;
+   if (value is string)
+      str = (string)value;
+   else
+      str = null;
+   
+}
 ----
 
 Besides the smaller code it eliminates the need for an `if` statement making it possible to do this type check and cast in a larger expression.
 
 NOTE: There are more advanced usages of pattern matching in C# in later versions including the ability to apply conditions on properties and using pattern matching in switch statements. 
+
+=== Null Checking with Pattern Matching (.NET 6)
+
+Starting with .NET 6 you can use pattern matching to check for null as well.
+
+.Is Null Operator Syntax
+----
+is-operator ::= E is null | E is not null
+----
+
+Here is the example from the earlier section on nullablity.
+
+.Null Checking
+[source,csharp]
+----
+void PrintMessage ( string message )
+{
+   if (message != null)
+   {
+      //Safe to use value
+   }
+}
+----
+
+Here is the version using pattern matching.
+
+.Null Pattern Matching 
+[source,csharp]
+----
+void PrintMessage ( string message )
+{
+   if (message is not null)
+   {
+      //Safe to use value
+   }
+}
+----
 
 == See Also
 

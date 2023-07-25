@@ -1,6 +1,6 @@
 = Using Statement
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.1
 :toc:
 
 The link:../chapter-8/try-finally.adoc[Try-Finally] statement can be used to clean up resources, such as files or database connections, even in the case of exceptions but the syntax is a little complex.
@@ -95,6 +95,35 @@ using (var instance3 = new SomeType3())
    //Code
 };
 ----
+
+== Simplified Using Statements
+
+Starting with .NET 6 the simplified using statement can be used instead. This statement eliminates the curly braces.
+
+.Using Statement Simplified Syntax (.NET 6)
+----
+using expression;
+----
+
+The simplified version has the following differences:
+
+- Parenthensis around the expression are removed.
+- Statement ends with a semicolon.
+- Curly braces are removed.
+
+Here is the earlier example using the simplified syntax.
+
+.Simplified Using Statement with Declaration
+[source,csharp]
+----
+using var instance = new SomeType();
+
+//Code
+----
+
+Functionality the behavior is the same. However since a block statement is no longer used to identify the scope of the using variable then it is considered to be in scope from the statement to the end of the scope containing the statement.
+
+CAUTION: Be careful managing scope using the simplified syntax. In general the scope of the using is longer than it normally would be. If you need more precise control over the scope then use the normal using statement.
 
 == See Also
 
