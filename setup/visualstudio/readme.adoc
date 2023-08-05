@@ -1,6 +1,6 @@
 = Setting Up Visual Studio
 Michael Taylor <michael.taylor@tccd.edu>
-v1.1
+v1.2
 :toc:
 
 CAUTION: Setting up Visual Studio will take a while and requires a persistent internect connection. Be sure that you have a stable network connection, sufficient power and enough hard drive space before continuing.
@@ -69,6 +69,27 @@ image:import-options.png[Import Options]
 .	Visual Studio should now be set up to use the common settings.
 
 NOTE: For this class your lab assignments will go into the `labs` subfolder of your repository. You will need to ensure you change to this subfolder when creating projects.
+
+== Configuring Live Share
+
+https://visualstudio.microsoft.com/services/live-share/[Live Share] is coding sharing built into Visual Studio (and Visual Studio Code). 
+It allows collaboration on code in the same environment and allows for viewing the code of another user. Live Share will be available during class instruction for those students who would rather copy the code we create in class rather than typing it in themselves. 
+
+NOTE: For classroom computers this step is necessary if you wish to use Live Share. For home computers this step is not necessary.
+
+Live Share must be configured on the client before it can be used.
+
+1. Navigate to https://vscode.dev/liveshare/{joinSessionId} to an external site. (note: this is an invalid URL, that is fine)
+2. It should open in the web browser. Ignore/dismiss any error dialogs.
+3. Open the settings (gear in bottom left corner, then select Settings).
++
+image:vscode-settings.png[Visual Studio Code Settings]
+4. In the settings dialog expand the `Extensions` node and find `Visual Studio Live Share` extension.
+5. Scroll down to the `Liveshare: Launcher Client` setting and change to `visualStudio` to open in Visual Studio. Leave as `web` to have it open in the web browser instead.
++
+image:liveshare-settings.png[Live Share Settings]
+
+CAUTION: Live Share is continually updated and may behave oddly during the semester. It is a tool to assist students who are having difficulty typing in all the code during class. Students are responsible for keeping up with the classwork even when Live Share is not functioning correctly.
 
 == See Also
 

@@ -1,6 +1,6 @@
 = Setup for ITSE 1430
 Michael Taylor <michael.taylor@tccd.edu>
-v1.0
+v1.2
 :toc:
 
 == Prerequisites
@@ -13,7 +13,7 @@ Before you begin note the following prerequisites for your environment. Refer to
 - 20+ GB hard drive space
 - Fast internet connection for downloading software
 
-WARNING: Mac, Linux and Android are not supported operating systems. These platforms are not supported and no assistance can be given if you choose to use them. Visual Studio Code and Visual Studio for Mac currently do not support the necessary project types used by the course. You may be able to them however most of the tools discussed below will not work and no support can be given for its use. You are responsible for ensuring any labs completed using other version of Visual Studio work correctly in VS 2019 as well.
+WARNING: Mac, Linux and Android are not supported operating systems. These platforms are not supported and no assistance can be given if you choose to use them. Visual Studio Code and Visual Studio for Mac currently do not support the necessary project types used by the course. You may be able to them however most of the tools discussed below will not work and no support can be given for its use. You are responsible for ensuring any labs completed using other version of Visual Studio work correctly in the specified version of Visual Studio as well.
 
 == Set Up
 
@@ -22,7 +22,7 @@ In addition to the prerequisites for the course you also need the following soft
 - Visual Studio 2022
 - Github account
 
-CAUTION: We will discuss all this during the first week of class. You do not need to complete this before we talk about it. If you do decide to set this up before class then note that you may need to redo it in order to align with class requirements.
+NOTE: We will discuss all this during the first week of class. You do not need to complete this before we talk about it. If you do decide to set this up before class then note that you may need to redo it in order to align with class requirements.
 
 link:visualstudio/readme.adoc[Setting up Visual Studio] +
 link:github/readme.adoc[Setting up Github] +
