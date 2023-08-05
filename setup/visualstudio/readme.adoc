@@ -16,13 +16,14 @@ NOTE: If you already have a copy of Visual Studio (of the correct version) insta
 == Install Visual Studio
 
 . Run the setup program. 
-. Select the following Workloads. Alternatively ou can use the `template/tools/.vsconfig` file provided in your own repository to auto-select the workloads.
-   - ASP.NET and web development
-   - .NET desktop development   
-   - Data storage and processing
-   - Other workloads may be installed if desired.
+. Select the following Workloads.
+  - ASP.NET and web development
+  - .NET desktop development   
+  - Data storage and processing 
 +
 image:visualstudio-installer.png[Visual Studio Installer]
++
+NOTE: Other workloads can be installed if desired.
 . Change the `Location` if you want to put Visual Studio in a different directory.
 . Finish the installation. This will take a while as most files will need to be downloaded.
 
